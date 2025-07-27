@@ -11,33 +11,234 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
+            /* Tema Escuro (padrão) */
             --color-bg: #020617;
             --color-surface: #0f172a;
-            --color-glass: rgba(30, 41, 59, 0.5);
+            --color-card-bg: #1e293b;
+            --color-card-border: #334155;
+            --color-glass: rgba(30, 41, 59, 0.8);
             --color-border: rgba(255, 255, 255, 0.1);
-            --color-text-primary: #e2e8f0;
-            --color-text-secondary: #94a3b8;
+            --color-text-primary: #f8fafc;
+            --color-text-secondary: #e2e8f0;
+            --color-text-muted: #cbd5e1;
             --color-brand: #2563eb;
+            --color-brand-hover: #1d4ed8;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-danger: #ef4444;
+            --color-purple: #8b5cf6;
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            --shadow-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
         }
-        body { font-family: 'Inter', sans-serif; background-color: var(--color-bg); color: var(--color-text-primary); }
-        .glass-effect { background: var(--color-glass); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid var(--color-border); }
-        .card-glow { transition: all 0.2s ease-in-out; }
-        .card-glow:hover { border-color: var(--color-brand); transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2), 0 8px 10px -6px rgba(0,0,0,0.2); }
-        .status-tag { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-        .modal-overlay { opacity: 0; visibility: hidden; transition: opacity 0.3s ease; }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-content { transform: scale(0.95) translateY(20px); transition: transform 0.3s ease; }
-        .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
-        .spinner { border-top-color: var(--color-brand); animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        #modal-body::-webkit-scrollbar { width: 8px; }
-        #modal-body::-webkit-scrollbar-track { background: #1e293b; }
-        #modal-body::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
-        #modal-body::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        /* Tema Claro */
+        @media (prefers-color-scheme: light) {
+            :root {
+                --color-bg: #f8fafc;
+                --color-surface: #ffffff;
+                --color-card-bg: #ffffff;
+                --color-card-border: #e5e7eb;
+                --color-glass: rgba(255, 255, 255, 0.9);
+                --color-border: rgba(0, 0, 0, 0.1);
+                --color-text-primary: #0f172a;
+                --color-text-secondary: #334155;
+                --color-text-muted: #64748b;
+                --color-brand: #2563eb;
+                --color-brand-hover: #1d4ed8;
+                --color-success: #10b981;
+                --color-warning: #f59e0b;
+                --color-danger: #ef4444;
+                --color-purple: #8b5cf6;
+                --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.1);
+                --shadow-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--color-bg); 
+            color: var(--color-text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .glass-effect { 
+            background: var(--color-glass); 
+            backdrop-filter: blur(14px); 
+            -webkit-backdrop-filter: blur(14px); 
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-card);
+        }
+
+        .card-glow { 
+            transition: all 0.3s ease-in-out;
+            border-radius: 12px;
+            border: 1px solid var(--color-card-border);
+        }
+
+        .card-glow:hover { 
+            border-color: var(--color-brand); 
+            transform: translateY(-4px); 
+            box-shadow: var(--shadow-hover);
+        }
+
+        .status-tag { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            padding: 0.375rem 0.75rem; 
+            border-radius: 9999px; 
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Status específicos com cores reforçadas */
+        .status-novo { background-color: #2563eb; color: #ffffff; }
+        .status-contato { background-color: #f59e0b; color: #ffffff; }
+        .status-proposta { background-color: #10b981; color: #ffffff; }
+        .status-negociacao { background-color: #8b5cf6; color: #ffffff; }
+
+        .modal-overlay { 
+            opacity: 0; 
+            visibility: hidden; 
+            transition: opacity 0.3s ease; 
+        }
+
+        .modal-overlay.active { 
+            opacity: 1; 
+            visibility: visible; 
+        }
+
+        .modal-content { 
+            transform: scale(0.95) translateY(20px); 
+            transition: transform 0.3s ease; 
+        }
+
+        .modal-overlay.active .modal-content { 
+            transform: scale(1) translateY(0); 
+        }
+
+        .spinner { 
+            border-top-color: var(--color-brand); 
+            animation: spin 1s linear infinite; 
+        }
+
+        @keyframes spin { 
+            to { transform: rotate(360deg); } 
+        }
+
+        #modal-body::-webkit-scrollbar { 
+            width: 8px; 
+        }
+
+        #modal-body::-webkit-scrollbar-track { 
+            background: var(--color-card-bg); 
+        }
+
+        #modal-body::-webkit-scrollbar-thumb { 
+            background: var(--color-text-muted); 
+            border-radius: 4px; 
+        }
+
+        #modal-body::-webkit-scrollbar-thumb:hover { 
+            background: var(--color-text-secondary); 
+        }
+
         .btn-disabled {
-            background-color: #475569;
+            background-color: var(--color-text-muted);
+            color: var(--color-text-primary);
             cursor: not-allowed;
             opacity: 0.6;
+        }
+
+        /* Botões com cores reforçadas */
+        .btn-primary {
+            background-color: var(--color-brand);
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-brand-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-success {
+            background-color: var(--color-success);
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-success:hover {
+            background-color: #059669;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Cards do modal com melhor contraste */
+        .modal-card {
+            background-color: var(--color-card-bg);
+            border: 1px solid var(--color-card-border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: var(--shadow-card);
+        }
+
+        .modal-card h3 {
+            color: var(--color-text-primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .modal-card p, .modal-card li, .modal-card dd {
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        .modal-card dt {
+            color: var(--color-text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* Filtros com melhor contraste */
+        .filter-btn-active {
+            background-color: var(--color-brand) !important;
+            color: #ffffff !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .filter-btn-inactive {
+            background-color: transparent;
+            color: var(--color-text-muted);
+            border: 1px solid var(--color-border);
+        }
+
+        .filter-btn-inactive:hover {
+            background-color: var(--color-glass);
+            color: var(--color-text-secondary);
+        }
+
+        /* Responsividade melhorada */
+        @media (max-width: 768px) {
+            .card-glow {
+                border-radius: 8px;
+            }
+            
+            .status-tag {
+                font-size: 0.7rem;
+                padding: 0.25rem 0.5rem;
+            }
         }
     </style>
 </head>
@@ -69,18 +270,18 @@
         <div class="glass-effect rounded-lg p-4 mb-8 flex flex-col sm:flex-row justify-between items-center gap-4 sticky top-4 z-10">
             <div class="flex items-center gap-4 overflow-x-auto pb-2">
                 <div id="filters-profile" class="flex flex-wrap justify-center gap-2">
-                    <button data-filter="all" class="filter-btn-profile bg-blue-500/20 text-white px-4 py-2 rounded-full text-sm font-medium">Todos</button>
-                    <button data-filter="Turista" class="filter-btn-profile bg-transparent text-slate-400 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2"><i data-lucide="sun-moon"></i> Turistas</button>
-                    <button data-filter="Morador" class="filter-btn-profile bg-transparent text-slate-400 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2"><i data-lucide="home"></i> Moradores</button>
-                    <button data-filter="Divulgador" class="filter-btn-profile bg-transparent text-slate-400 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2"><i data-lucide="megaphone"></i> Parceiros</button>
+                    <button data-filter="all" class="filter-btn-profile filter-btn-active px-4 py-2 rounded-full text-sm font-medium">Todos</button>
+                    <button data-filter="Turista" class="filter-btn-profile filter-btn-inactive px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2"><i data-lucide="sun-moon"></i> Turistas</button>
+                    <button data-filter="Morador" class="filter-btn-profile filter-btn-inactive px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2"><i data-lucide="home"></i> Moradores</button>
+                    <button data-filter="Divulgador" class="filter-btn-profile filter-btn-inactive px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2"><i data-lucide="megaphone"></i> Parceiros</button>
                 </div>
                 <div class="border-l border-slate-700 h-8 mx-2"></div>
                 <div id="filters-status" class="flex flex-wrap justify-center gap-2">
-                     <button data-status-filter="all" class="filter-btn-status bg-blue-500/20 text-white px-4 py-2 rounded-full text-sm font-medium">Todos os Status</button>
-                    <button data-status-filter="Novo" class="filter-btn-status bg-transparent text-slate-400 px-4 py-2 rounded-full text-sm font-medium">Novos</button>
-                    <button data-status-filter="Em Contato" class="filter-btn-status bg-transparent text-slate-400 px-4 py-2 rounded-full text-sm font-medium">Em Contato</button>
-                    <button data-status-filter="Proposta" class="filter-btn-status bg-transparent text-slate-400 px-4 py-2 rounded-full text-sm font-medium">Proposta</button>
-                    <button data-status-filter="Negociação" class="filter-btn-status bg-transparent text-slate-400 px-4 py-2 rounded-full text-sm font-medium">Negociação</button>
+                     <button data-status-filter="all" class="filter-btn-status filter-btn-active px-4 py-2 rounded-full text-sm font-medium">Todos os Status</button>
+                    <button data-status-filter="Novo" class="filter-btn-status filter-btn-inactive px-4 py-2 rounded-full text-sm font-medium">Novos</button>
+                    <button data-status-filter="Em Contato" class="filter-btn-status filter-btn-inactive px-4 py-2 rounded-full text-sm font-medium">Em Contato</button>
+                    <button data-status-filter="Proposta" class="filter-btn-status filter-btn-inactive px-4 py-2 rounded-full text-sm font-medium">Proposta</button>
+                    <button data-status-filter="Negociação" class="filter-btn-status filter-btn-inactive px-4 py-2 rounded-full text-sm font-medium">Negociação</button>
                 </div>
             </div>
             <div class="flex items-center gap-4">
@@ -138,10 +339,10 @@
             'Baixo': { icon: 'trending-down', color: 'text-slate-500', text: 'Potencial Baixo' }
         };
         const statusStyling = {
-            'Novo': { class: 'bg-blue-500/20 text-blue-400', icon: 'sparkle' },
-            'Em Contato': { class: 'bg-yellow-500/20 text-yellow-400', icon: 'phone-forwarded' },
-            'Proposta': { class: 'bg-green-500/20 text-green-400', icon: 'file-check-2' },
-            'Negociação': { class: 'bg-purple-500/20 text-purple-400', icon: 'handshake' }
+            'Novo': { class: 'status-novo', icon: 'sparkle' },
+            'Em Contato': { class: 'status-contato', icon: 'phone-forwarded' },
+            'Proposta': { class: 'status-proposta', icon: 'file-check-2' },
+            'Negociação': { class: 'status-negociacao', icon: 'handshake' }
         };
         const profileIcons = { 'Turista': 'sun-moon', 'Morador': 'home', 'Divulgador': 'megaphone', 'N/A': 'help-circle' };
         
@@ -181,7 +382,7 @@
 
             filteredDossiers.forEach((dossier, index) => {
                 const card = document.createElement('button');
-                card.className = 'card-glow glass-effect rounded-lg p-5 text-left flex flex-col gap-4';
+                card.className = 'card-glow glass-effect p-5 text-left flex flex-col gap-4';
                 card.style.animationDelay = `${index * 50}ms`;
                 card.dataset.id = dossier.id;
                 
@@ -292,7 +493,7 @@
 
             const hasPhone = telefone && telefone.replace(/\D/g, '').length > 8;
             const whatsappBtnHTML = hasPhone
-                ? `<a href="https://wa.me/55${telefone.replace(/\D/g, '')}" target="_blank" class="bg-green-600 text-white hover:bg-green-500 font-bold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2">
+                ? `<a href="https://wa.me/55${telefone.replace(/\D/g, '')}" target="_blank" class="btn-success flex items-center justify-center gap-2">
                      <i data-lucide="send" class="w-4 h-4"></i>Iniciar Conversa
                    </a>`
                 : `<button disabled class="btn-disabled font-bold py-2 px-4 rounded-lg flex items-center justify-center gap-2">
@@ -313,7 +514,7 @@
                 </div>
                 <div class="flex items-center gap-2">
                     ${whatsappBtnHTML}
-                    <button id="copy-proposal-btn" class="bg-blue-600 text-white hover:bg-blue-500 font-bold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2"><i data-lucide="copy-plus" class="w-4 h-4"></i>Copiar Proposta</button>
+                    <button id="copy-proposal-btn" class="btn-primary flex items-center justify-center gap-2"><i data-lucide="copy-plus" class="w-4 h-4"></i>Copiar Proposta</button>
                     <div class="relative">
                         <select onchange="updateLeadStatus('${details.id}', this.value)" class="bg-slate-700 text-white hover:bg-slate-600 font-bold py-2 pl-4 pr-8 rounded-lg appearance-none cursor-pointer">
                             ${leadStatuses.map(s => `<option value="${s}" ${s === details.status ? 'selected' : ''}>${s}</option>`).join('')}
@@ -332,15 +533,15 @@
                     <!-- Coluna Principal (3/5) -->
                     <div class="lg:col-span-3 space-y-6">
                         <!-- PAINEL 2: Análise Comercial -->
-                        <div class="glass-effect p-5 rounded-lg border border-slate-700">
+                        <div class="modal-card">
                             <h3 class="flex items-center gap-3 text-base font-semibold text-white mb-3"><i data-lucide="user-check" class="w-5 h-5 text-blue-400"></i>Resumo do Perfil (IA)</h3>
                             <p class="text-slate-300 leading-relaxed text-sm">${sanitizeHTML(details.resumo) || '<span class="text-slate-400">Resumo não disponível.</span>'}</p>
                         </div>
-                        <div class="glass-effect p-5 rounded-lg border border-slate-700">
+                        <div class="modal-card">
                             <h3 class="flex items-center gap-3 text-base font-semibold text-white mb-4"><i data-lucide="search-check" class="w-5 h-5 text-purple-400"></i>Necessidades Reveladas (IA)</h3>
                             <ul class="space-y-3 text-slate-200">${necessidadesHTML}</ul>
                         </div>
-                        <div class="glass-effect p-5 rounded-lg border border-slate-700">
+                        <div class="modal-card">
                             <h3 class="flex items-center gap-3 text-base font-semibold text-white mb-4"><i data-lucide="shield-alert" class="w-5 h-5 text-yellow-400"></i>Objeções Prováveis (IA)</h3>
                             <ul class="space-y-3 text-slate-200">${objecoesHTML}</ul>
                         </div>
@@ -353,12 +554,12 @@
                     <!-- Coluna Direita (2/5) -->
                     <div class="lg:col-span-2 space-y-6">
                         <!-- PAINEL 4: Histórico -->
-                        <div class="glass-effect p-5 rounded-lg border border-slate-700">
+                        <div class="modal-card">
                             <h3 class="flex items-center gap-3 text-base font-semibold text-white mb-4"><i data-lucide="message-square-text" class="w-5 h-5 text-slate-400"></i>Histórico de Interações</h3>
                             <dl class="space-y-2">${respostasHTML}</dl>
                         </div>
                         <!-- PAINEL 5: Metadados -->
-                        <div class="glass-effect p-5 rounded-lg border border-slate-700">
+                        <div class="modal-card">
                             <h3 class="flex items-center gap-3 text-base font-semibold text-white mb-4"><i data-lucide="database" class="w-5 h-5 text-slate-400"></i>Dados do Lead</h3>
                             <dl class="text-sm">
                                 <div class="flex justify-between py-1"><dt class="text-slate-400">WhatsApp</dt><dd class="font-mono">${telefone ? sanitizeHTML(telefone) : 'Não informado'}</dd></div>
@@ -432,8 +633,12 @@
             document.getElementById('filters-profile').addEventListener('click', (e) => {
                 const button = e.target.closest('button');
                 if (button) {
-                    document.querySelectorAll('.filter-btn-profile').forEach(btn => { btn.classList.remove('bg-blue-500/20', 'text-white'); btn.classList.add('bg-transparent', 'text-slate-400'); });
-                    button.classList.add('bg-blue-500/20', 'text-white');
+                    document.querySelectorAll('.filter-btn-profile').forEach(btn => { 
+                        btn.classList.remove('filter-btn-active'); 
+                        btn.classList.add('filter-btn-inactive'); 
+                    });
+                    button.classList.remove('filter-btn-inactive');
+                    button.classList.add('filter-btn-active');
                     currentProfileFilter = button.dataset.filter;
                     renderDossiers();
                 }
@@ -441,8 +646,12 @@
             document.getElementById('filters-status').addEventListener('click', (e) => {
                 const button = e.target.closest('button');
                 if (button) {
-                    document.querySelectorAll('.filter-btn-status').forEach(btn => { btn.classList.remove('bg-blue-500/20', 'text-white'); btn.classList.add('bg-transparent', 'text-slate-400'); });
-                    button.classList.add('bg-blue-500/20', 'text-white');
+                    document.querySelectorAll('.filter-btn-status').forEach(btn => { 
+                        btn.classList.remove('filter-btn-active'); 
+                        btn.classList.add('filter-btn-inactive'); 
+                    });
+                    button.classList.remove('filter-btn-inactive');
+                    button.classList.add('filter-btn-active');
                     currentStatusFilter = button.dataset.statusFilter;
                     renderDossiers();
                 }
