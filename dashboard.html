@@ -106,45 +106,170 @@
             transform: translateY(-2px);
         }
 
-        /* Seção de Apresentação */
-        .presentation-section {
-            margin-bottom: 3rem;
-            padding: 2rem;
-            background: var(--color-glass);
+        /* Painel de Boas-vindas Flutuante */
+        .welcome-panel {
+            position: relative;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--color-ocean-deep) 0%, var(--color-ocean-medium) 50%, var(--color-ocean-light) 100%);
             backdrop-filter: blur(20px);
-            border: 1px solid var(--color-border);
-            border-radius: 20px;
-            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(244, 230, 211, 0.3);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 12px 40px rgba(13, 79, 115, 0.4);
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transform: translateY(0);
+            opacity: 1;
         }
 
-        .presentation-section h2 {
+        .welcome-panel.minimized {
+            transform: translateY(-120px);
+            opacity: 0;
+            pointer-events: none;
+            margin-bottom: 0;
+        }
+
+        .welcome-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(244, 230, 211, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .welcome-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .welcome-title {
             color: var(--color-white-warm);
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 800;
+            margin: 0 0 0.5rem 0;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            letter-spacing: -0.02em;
+        }
+
+        .welcome-subtitle {
+            color: var(--color-sand-warm);
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            font-weight: 500;
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .welcome-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-item {
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: rgba(244, 230, 211, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(244, 230, 211, 0.2);
+            transition: all 0.3s ease;
         }
 
-        .presentation-section p {
+        .feature-item:hover {
+            background: rgba(244, 230, 211, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            color: #ffd700;
+            flex-shrink: 0;
+        }
+
+        .feature-text {
             color: var(--color-sand-warm);
-            font-size: 1rem;
-            font-weight: 500;
-            line-height: 1.7;
-            margin-bottom: 1rem;
-        }
-
-        .presentation-section strong {
-            color: var(--color-ocean-light);
+            font-size: 0.875rem;
             font-weight: 600;
+            line-height: 1.4;
         }
 
-        .presentation-section hr {
+        .welcome-cta {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(244, 230, 211, 0.2);
+        }
+
+        .cta-text {
+            color: var(--color-white-warm);
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .cta-arrow {
+            color: #ffd700;
+            animation: bounce 2s infinite;
+        }
+
+        .minimize-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(244, 230, 211, 0.2);
+            border: 1px solid rgba(244, 230, 211, 0.3);
+            color: var(--color-sand-warm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 3;
+        }
+
+        .minimize-btn:hover {
+            background: rgba(244, 230, 211, 0.3);
+            transform: scale(1.1);
+        }
+
+        .restore-btn {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-ocean-light), var(--color-ocean-medium));
             border: none;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--color-border), transparent);
-            margin: 1.5rem 0;
+            color: var(--color-white-warm);
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-button);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .restore-btn.visible {
+            display: flex;
+        }
+
+        .restore-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(41, 128, 185, 0.4);
         }
 
         /* Controles e Filtros */
@@ -152,21 +277,70 @@
             background: var(--color-glass);
             backdrop-filter: blur(20px);
             border: 1px solid var(--color-border);
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 1.5rem;
             margin-bottom: 2rem;
-            position: sticky;
-            top: 1rem;
-            z-index: 100;
             box-shadow: var(--shadow-card);
+            transition: all 0.3s ease;
+        }
+
+        .filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .filters-title {
+            color: var(--color-white-warm);
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: rgba(41, 128, 185, 0.2);
+            border: 1px solid var(--color-ocean-light);
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            color: var(--color-ocean-light);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-toggle:hover {
+            background: rgba(41, 128, 185, 0.3);
+            transform: translateY(-1px);
         }
 
         .filters-container {
             display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .filter-row {
+            display: flex;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 0.75rem;
             align-items: center;
             justify-content: center;
+            width: 100%;
+        }
+
+        .filter-row-label {
+            color: var(--color-sand-warm);
+            font-size: 0.875rem;
+            font-weight: 600;
+            min-width: 120px;
+            text-align: center;
+            opacity: 0.8;
         }
 
         .filter-group {
@@ -174,13 +348,7 @@
             flex-wrap: wrap;
             gap: 0.5rem;
             align-items: center;
-        }
-
-        .filter-divider {
-            width: 1px;
-            height: 2rem;
-            background: var(--color-border);
-            margin: 0 0.5rem;
+            justify-content: center;
         }
 
         /* Botões de Filtro */
@@ -228,6 +396,8 @@
             gap: 1rem;
             margin-top: 1rem;
             justify-content: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--color-border);
         }
 
         .dossier-count {
@@ -622,30 +792,79 @@
             }
         }
 
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-8px);
+            }
+            60% {
+                transform: translateY(-4px);
+            }
+        }
+
+        @keyframes welcomeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .welcome-panel {
+            animation: welcomeSlideIn 0.8s ease-out;
+        }
+
         /* Responsividade */
         @media (max-width: 768px) {
             .container {
                 padding: 0.5rem;
             }
 
-            .presentation-section,
+            .welcome-panel {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .welcome-features {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .feature-item {
+                padding: 0.625rem 0.875rem;
+            }
+
             .controls-section {
                 padding: 1rem;
                 margin-bottom: 1.5rem;
             }
 
-            .filters-container {
+            .mobile-toggle {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .filters-container.collapsed {
+                display: none;
+            }
+
+            .filter-row {
                 flex-direction: column;
                 gap: 1rem;
             }
 
-            .filter-group {
-                justify-content: center;
-                width: 100%;
-            }
-
-            .filter-divider {
-                display: none;
+            .filter-row-label {
+                min-width: auto;
+                font-size: 0.8rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
             }
 
             .dossier-grid {
@@ -669,6 +888,13 @@
                 right: 1rem;
                 width: 48px;
                 height: 48px;
+            }
+
+            .restore-btn {
+                top: 0.5rem;
+                right: 0.5rem;
+                width: 44px;
+                height: 44px;
             }
         }
 
@@ -710,45 +936,91 @@
 </head>
 <body class="min-h-screen">
     <div class="container">
-        <!-- CABEÇALHO -->
-        <header>
-            <h1>Vitrine de Oportunidades</h1>
-            <p>Leads Qualificados em Tempo Real | Conexão Búzios</p>
-        </header>
+        <!-- PAINEL DE BOAS-VINDAS FLUTUANTE -->
+        <section id="welcome-panel" class="welcome-panel">
+            <button id="minimize-btn" class="minimize-btn" aria-label="Minimizar painel">
+                <i data-lucide="minus" class="w-4 h-4"></i>
+            </button>
+            
+            <div class="welcome-header">
+                <h1 class="welcome-title">Vitrine de Oportunidades</h1>
+                <p class="welcome-subtitle">Leads Qualificados em Tempo Real | Conexão Búzios</p>
+            </div>
 
-        <!-- Bloco de Apresentação e Orientação -->
-        <section class="presentation-section">
-            <h2>
-                <i data-lucide="lightbulb" class="w-6 h-6 text-amber-400"></i>
-                O que é este painel?
-            </h2>
-            <div class="space-y-3 leading-relaxed max-w-5xl mx-auto text-base">
-                <p>Este é um painel inteligente que apresenta <strong>leads reais e qualificados</strong>, capturados pelo projeto Conexão Búzios. Ele serve para identificar e aproveitar oportunidades comerciais de forma visual, organizada e prática.</p>
-                <p>É ideal para <strong>profissionais de vendas, turismo, serviços, divulgadores e investidores</strong> interessados no ecossistema de Búzios. Aqui você encontra perfis de leads, seus interesses, histórico de respostas, propostas personalizadas por IA e contato direto via WhatsApp.</p>
-                <p>O valor está na eficiência: ele economiza seu tempo, organiza os contatos e conecta você apenas com quem tem <strong>intenção real</strong>. É o seu funil de vendas inteligente, funcionando 24 horas por dia.</p>
-                <hr>
-                <p class="text-sm italic">Se você entendeu, viu valor e sentiu que precisa disso, a próxima pergunta lógica é: como faço para entrar agora?</p>
+            <div class="welcome-features">
+                <div class="feature-item">
+                    <i data-lucide="zap" class="feature-icon"></i>
+                    <span class="feature-text">Leads qualificados em tempo real</span>
+                </div>
+                <div class="feature-item">
+                    <i data-lucide="filter" class="feature-icon"></i>
+                    <span class="feature-text">Sistema inteligente de filtros</span>
+                </div>
+                <div class="feature-item">
+                    <i data-lucide="briefcase" class="feature-icon"></i>
+                    <span class="feature-text">Ideal para vendas e turismo</span>
+                </div>
+                <div class="feature-item">
+                    <i data-lucide="message-circle" class="feature-icon"></i>
+                    <span class="feature-text">Contato direto via WhatsApp</span>
+                </div>
+                <div class="feature-item">
+                    <i data-lucide="eye" class="feature-icon"></i>
+                    <span class="feature-text">Transparência total dos dados</span>
+                </div>
+                <div class="feature-item">
+                    <i data-lucide="clock" class="feature-icon"></i>
+                    <span class="feature-text">Funciona 24 horas por dia</span>
+                </div>
+            </div>
+
+            <div class="welcome-cta">
+                <p class="cta-text">Pronto para descobrir suas oportunidades em Búzios?</p>
+                <i data-lucide="arrow-down" class="cta-arrow w-6 h-6"></i>
             </div>
         </section>
 
+        <!-- BOTÃO RESTAURAR PAINEL -->
+        <button id="restore-btn" class="restore-btn" aria-label="Restaurar painel de boas-vindas">
+            <i data-lucide="info" class="w-5 h-5"></i>
+        </button>
+
         <!-- FILTROS E CONTROLES -->
         <div class="controls-section">
-            <div class="filters-container">
-                <div class="filter-group" id="filters-profile">
-                    <button data-filter="all" class="filter-btn active">Todos</button>
-                    <button data-filter="Turista" class="filter-btn"><i data-lucide="sun-moon"></i> Turistas</button>
-                    <button data-filter="Morador" class="filter-btn"><i data-lucide="home"></i> Moradores</button>
-                    <button data-filter="Divulgador" class="filter-btn"><i data-lucide="megaphone"></i> Parceiros</button>
+            <div class="filters-header">
+                <h3 class="filters-title">
+                    <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+                    Filtros e Controles
+                </h3>
+                <button id="mobile-toggle" class="mobile-toggle">
+                    <i data-lucide="filter" class="w-4 h-4"></i>
+                    <span id="toggle-text">Filtrar</span>
+                </button>
+            </div>
+            
+            <div id="filters-container" class="filters-container">
+                <div class="filter-row">
+                    <span class="filter-row-label">Perfil do Lead:</span>
+                    <div class="filter-group" id="filters-profile">
+                        <button data-filter="all" class="filter-btn active">Todos</button>
+                        <button data-filter="Turista" class="filter-btn"><i data-lucide="sun-moon"></i> Turistas</button>
+                        <button data-filter="Morador" class="filter-btn"><i data-lucide="home"></i> Moradores</button>
+                        <button data-filter="Divulgador" class="filter-btn"><i data-lucide="megaphone"></i> Parceiros</button>
+                    </div>
                 </div>
-                <div class="filter-divider"></div>
-                <div class="filter-group" id="filters-status">
-                    <button data-status-filter="all" class="filter-btn active">Todos os Status</button>
-                    <button data-status-filter="Novo" class="filter-btn">Novos</button>
-                    <button data-status-filter="Em Contato" class="filter-btn">Em Contato</button>
-                    <button data-status-filter="Proposta" class="filter-btn">Proposta</button>
-                    <button data-status-filter="Negociação" class="filter-btn">Negociação</button>
+                
+                <div class="filter-row">
+                    <span class="filter-row-label">Status da Negociação:</span>
+                    <div class="filter-group" id="filters-status">
+                        <button data-status-filter="all" class="filter-btn active">Todos os Status</button>
+                        <button data-status-filter="Novo" class="filter-btn">Novos</button>
+                        <button data-status-filter="Em Contato" class="filter-btn">Em Contato</button>
+                        <button data-status-filter="Proposta" class="filter-btn">Proposta</button>
+                        <button data-status-filter="Negociação" class="filter-btn">Negociação</button>
+                    </div>
                 </div>
             </div>
+
             <div class="controls-info">
                 <span id="dossier-count" class="dossier-count" aria-live="polite"></span>
                 <button id="refresh-btn" class="refresh-btn" aria-label="Atualizar dossiês">
@@ -1173,8 +1445,88 @@
 
         const closeModal = () => { modalOverlay.classList.remove('active'); if (lastFocusedElement) lastFocusedElement.focus(); };
 
+        // Variáveis globais para o painel de boas-vindas
+        let welcomePanelVisible = true;
+        let autoMinimizeTimer = null;
+
+        // Função para minimizar o painel de boas-vindas
+        function minimizeWelcomePanel() {
+            const welcomePanel = document.getElementById('welcome-panel');
+            const restoreBtn = document.getElementById('restore-btn');
+            
+            welcomePanel.classList.add('minimized');
+            restoreBtn.classList.add('visible');
+            welcomePanelVisible = false;
+            
+            if (autoMinimizeTimer) {
+                clearTimeout(autoMinimizeTimer);
+                autoMinimizeTimer = null;
+            }
+        }
+
+        // Função para restaurar o painel de boas-vindas
+        function restoreWelcomePanel() {
+            const welcomePanel = document.getElementById('welcome-panel');
+            const restoreBtn = document.getElementById('restore-btn');
+            
+            welcomePanel.classList.remove('minimized');
+            restoreBtn.classList.remove('visible');
+            welcomePanelVisible = true;
+            
+            // Reiniciar timer de auto-minimização
+            startAutoMinimizeTimer();
+        }
+
+        // Função para iniciar timer de auto-minimização
+        function startAutoMinimizeTimer() {
+            if (autoMinimizeTimer) clearTimeout(autoMinimizeTimer);
+            
+            autoMinimizeTimer = setTimeout(() => {
+                if (welcomePanelVisible) {
+                    minimizeWelcomePanel();
+                }
+            }, 8000); // 8 segundos
+        }
+
+        // Função para toggle dos filtros em mobile
+        function toggleMobileFilters() {
+            const filtersContainer = document.getElementById('filters-container');
+            const toggleText = document.getElementById('toggle-text');
+            const isCollapsed = filtersContainer.classList.contains('collapsed');
+            
+            if (isCollapsed) {
+                filtersContainer.classList.remove('collapsed');
+                toggleText.textContent = 'Ocultar';
+            } else {
+                filtersContainer.classList.add('collapsed');
+                toggleText.textContent = 'Filtrar';
+            }
+        }
+
         // --- INICIALIZAÇÃO E EVENT LISTENERS ---
         document.addEventListener('DOMContentLoaded', () => {
+            // Event listeners para o painel de boas-vindas
+            document.getElementById('minimize-btn').addEventListener('click', minimizeWelcomePanel);
+            document.getElementById('restore-btn').addEventListener('click', restoreWelcomePanel);
+            
+            // Pausar timer quando mouse está sobre o painel
+            const welcomePanel = document.getElementById('welcome-panel');
+            welcomePanel.addEventListener('mouseenter', () => {
+                if (autoMinimizeTimer) {
+                    clearTimeout(autoMinimizeTimer);
+                    autoMinimizeTimer = null;
+                }
+            });
+            
+            welcomePanel.addEventListener('mouseleave', () => {
+                if (welcomePanelVisible) {
+                    startAutoMinimizeTimer();
+                }
+            });
+            
+            // Event listener para toggle mobile dos filtros
+            document.getElementById('mobile-toggle').addEventListener('click', toggleMobileFilters);
+
             // Event listeners para filtros de perfil
             document.getElementById('filters-profile').addEventListener('click', (e) => {
                 const button = e.target.closest('button');
@@ -1224,6 +1576,9 @@
             document.addEventListener('keydown', (e) => { 
                 if (e.key === "Escape" && modalOverlay.classList.contains('active')) closeModal(); 
             });
+            
+            // Inicializar timer de auto-minimização
+            startAutoMinimizeTimer();
             
             // Inicializar
             loadDossiers();
