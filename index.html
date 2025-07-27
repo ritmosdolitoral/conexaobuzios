@@ -4,208 +4,245 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conexão Búzios - Seu Concierge Virtual</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="description" content="Descubra as melhores oportunidades em Búzios com nosso concierge virtual inteligente">
+    <meta name="theme-color" content="#0077B6">
+    
+    <!-- Preloads para performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://unpkg.com">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Scripts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'system-ui', 'sans-serif'],
+                        'poppins': ['Poppins', 'system-ui', 'sans-serif']
+                    },
+                    colors: {
+                        'buzios': {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0077B6',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 25s infinite linear',
+                        'pulse-glow': 'pulse-glow 3s infinite',
+                        'fade-in-up': 'fade-in-up 0.6s ease-out forwards',
+                        'slide-up': 'slide-up 0.4s ease-out forwards',
+                        'shimmer': 'shimmer 2s infinite',
+                        'bounce-soft': 'bounce-soft 1.4s infinite ease-in-out',
+                        'typing-blink': 'typing-blink 1s step-end infinite'
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #020617 100%);
-            overflow: hidden; 
+        :root {
+            --gradient-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 30%, #0f172a 70%, #020617 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --shadow-glow: 0 0 40px rgba(59, 130, 246, 0.15);
+            --text-glow: 0 0 20px rgba(59, 130, 246, 0.3);
         }
+
+        * { box-sizing: border-box; }
         
-        /* Estilos do Portal de IA */
-        #ai-intro-portal {
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--gradient-bg);
+            background-attachment: fixed;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* === PORTAL STYLES === */
+        .portal-container {
             background: radial-gradient(ellipse at center, #1e3a8a 0%, #1e1b4b 40%, #020617 80%);
-            transition: opacity 0.8s ease-in-out;
             position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
-        #ai-intro-portal::before {
-            content: '';
+
+        .portal-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             background: 
-                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.04) 0%, transparent 50%);
             pointer-events: none;
         }
-        
+
         .particle {
             position: absolute;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.08);
-            animation: float 25s infinite linear;
+            background: rgba(255, 255, 255, 0.06);
             filter: blur(0.5px);
+            animation: float 25s infinite linear;
+            will-change: transform;
         }
-        
-        .particle:nth-child(3n) {
-            background: rgba(59, 130, 246, 0.1);
-        }
-        
-        .particle:nth-child(5n) {
-            background: rgba(139, 92, 246, 0.08);
-        }
-        
+
+        .particle:nth-child(3n) { background: rgba(59, 130, 246, 0.08); }
+        .particle:nth-child(5n) { background: rgba(139, 92, 246, 0.06); }
+        .particle:nth-child(7n) { background: rgba(16, 185, 129, 0.04); }
+
         @keyframes float {
             0% { 
-                transform: translateY(0) translateX(0) rotate(0deg); 
+                transform: translateY(100vh) translateX(-10vw) rotate(0deg); 
                 opacity: 0; 
             }
-            10% {
-                opacity: 0.3;
-            }
-            90% {
-                opacity: 0.1;
-            }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.1; }
             100% { 
-                transform: translateY(-100vh) translateX(30vw) rotate(360deg); 
+                transform: translateY(-10vh) translateX(30vw) rotate(360deg); 
                 opacity: 0; 
             }
         }
-        
-        .text-glow {
-            text-shadow: 
-                0 0 10px rgba(59, 130, 246, 0.4), 
-                0 0 20px rgba(59, 130, 246, 0.3),
-                0 0 40px rgba(59, 130, 246, 0.2);
-            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+
+        .portal-title {
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 50%, #cbd5e1 100%);
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
+            text-shadow: var(--text-glow);
+            letter-spacing: -0.02em;
+            font-weight: 700;
         }
-        
-        .cursor { 
-            animation: blink 1s step-end infinite;
+
+        .typing-cursor {
             color: #3b82f6;
+            animation: typing-blink 1s step-end infinite;
         }
-        
-        @keyframes blink { 
-            50% { opacity: 0; } 
+
+        @keyframes typing-blink {
+            50% { opacity: 0; }
         }
-        
-        /* Animação de pulso aprimorada para os botões do portal */
-        @keyframes pulse-light {
-            0%, 100% {
-                transform: scale(1);
-                box-shadow: 
-                    0 0 0 0 rgba(255, 255, 255, 0.15),
-                    0 4px 20px rgba(0, 0, 0, 0.1);
-            }
-            50% {
-                transform: scale(1.02);
-                box-shadow: 
-                    0 0 20px 8px rgba(255, 255, 255, 0.08),
-                    0 8px 25px rgba(0, 0, 0, 0.15);
-            }
-        }
-        
-        .portal-action-button {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
+
+        .portal-button {
+            background: linear-gradient(135deg, var(--glass-bg) 0%, rgba(255, 255, 255, 0.04) 100%);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: pulse-light 3s infinite cubic-bezier(0.4, 0, 0.6, 1);
             position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
-        
-        .portal-action-button::before {
+
+        .portal-button::before {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: left 0.6s;
-        }
-        
-        .portal-action-button:hover::before {
-            left: 100%;
-        }
-        
-        .portal-action-button:hover {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.12) 100%);
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 
-                0 0 30px 10px rgba(255, 255, 255, 0.1),
-                0 12px 35px rgba(0, 0, 0, 0.2);
-            animation-play-state: paused;
-            border-color: rgba(255, 255, 255, 0.3);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+            transition: left 0.6s ease;
         }
 
-        /* Estilos da Assinatura Animada */
-        #animated-signature {
-            opacity: 0;
-            transition: opacity 0.6s ease-in;
+        .portal-button:hover::before {
+            left: 100%;
         }
-        
-        #animated-signature.visible {
+
+        .portal-button:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 
+                0 0 30px rgba(255, 255, 255, 0.08),
+                0 12px 40px rgba(0, 0, 0, 0.15);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .signature {
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .signature.visible {
             opacity: 1;
         }
-        
-        #animated-signature.visible .sig-part {
+
+        .signature.visible .sig-part {
             display: inline-block;
             opacity: 0;
             transform: translateY(20px);
-            animation: fadeInUp 1s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: fade-in-up 1s ease-out forwards;
         }
-        
-        #animated-signature.visible .sig-part-2 {
+
+        .signature.visible .sig-part:nth-child(2) {
             animation-delay: 0.5s;
         }
-        
-        @keyframes fadeInUp {
+
+        @keyframes fade-in-up {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        /* Estilos do Chat Container */
-        .bg-buzios-mar { 
-            background: linear-gradient(135deg, #0077B6 0%, #0096c7 100%);
+        /* === CHAT STYLES === */
+        .chat-app {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
         }
-        
-        #app-container {
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-        }
-        
+
         .chat-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(24px);
             box-shadow: 
-                0 25px 50px -12px rgba(0, 0, 0, 0.15),
-                0 0 0 1px rgba(255, 255, 255, 0.3);
+                0 32px 64px -12px rgba(0, 0, 0, 0.12),
+                0 0 0 1px rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
-        
-        /* Header aprimorado */
-        header {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%);
-            border-bottom: 1px solid rgba(0, 119, 182, 0.1);
-            backdrop-filter: blur(10px);
+
+        .chat-header {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 119, 182, 0.08);
         }
-        
-        .avatar-container {
-            background: linear-gradient(135deg, #0077B6 0%, #0096c7 100%);
+
+        .avatar {
+            background: linear-gradient(135deg, #0077B6 0%, #0ea5e9 100%);
             box-shadow: 
-                0 4px 15px rgba(0, 119, 182, 0.3),
+                0 4px 20px rgba(0, 119, 182, 0.25),
                 inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
-        
-        .status-indicator {
-            box-shadow: 0 0 0 2px white, 0 0 8px rgba(34, 197, 94, 0.4);
-            animation: pulse-status 2s infinite;
+
+        .status-dot {
+            box-shadow: 
+                0 0 0 2px white, 
+                0 0 8px rgba(34, 197, 94, 0.4);
+            animation: pulse-glow 2s infinite;
         }
-        
-        @keyframes pulse-status {
+
+        @keyframes pulse-glow {
             0%, 100% { 
                 transform: scale(1); 
                 opacity: 1; 
@@ -215,119 +252,139 @@
                 opacity: 0.8; 
             }
         }
-        
-        /* Estilos das bolhas de chat aprimorados */
-        .chat-bubble { 
-            max-width: 85%; 
-            padding: 16px 20px; 
-            border-radius: 24px; 
-            margin-bottom: 12px; 
-            opacity: 0; 
-            transform: translateY(30px); 
-            animation: pop-in 0.6s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+
+        .chat-window {
+            background: transparent;
+        }
+
+        .chat-window::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-window::-webkit-scrollbar-track {
+            background: rgba(241, 245, 249, 0.4);
+            border-radius: 3px;
+        }
+
+        .chat-window::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, rgba(0, 119, 182, 0.3) 0%, rgba(14, 165, 233, 0.3) 100%);
+            border-radius: 3px;
+            transition: background 0.2s ease;
+        }
+
+        .chat-window::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, rgba(0, 119, 182, 0.5) 0%, rgba(14, 165, 233, 0.5) 100%);
+        }
+
+        .message-bubble {
+            max-width: 85%;
+            padding: 16px 20px;
+            border-radius: 24px;
+            margin-bottom: 12px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slide-up 0.5s ease-out forwards;
             line-height: 1.6;
             position: relative;
             word-wrap: break-word;
+            font-weight: 400;
+            letter-spacing: 0.01em;
         }
-        
-        .chat-bubble::before {
+
+        .message-bubble::before {
             content: '';
             position: absolute;
             width: 0;
             height: 0;
         }
-        
-        .chat-bubble.ai { 
+
+        .message-bubble.ai {
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            color: #374151; 
-            border-bottom-left-radius: 6px; 
-            align-self: flex-start; 
+            color: #374151;
+            border-bottom-left-radius: 8px;
+            align-self: flex-start;
             box-shadow: 
-                0 4px 20px rgba(0, 0, 0, 0.08),
-                0 1px 3px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(0, 119, 182, 0.1);
+                0 4px 20px rgba(0, 0, 0, 0.06),
+                0 1px 3px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 119, 182, 0.08);
         }
-        
-        .chat-bubble.ai::before {
+
+        .message-bubble.ai::before {
             bottom: 0;
             left: -8px;
-            border-left: 8px solid transparent;
-            border-right: 8px solid #ffffff;
-            border-top: 8px solid #ffffff;
-            border-bottom: 8px solid transparent;
+            border: 8px solid transparent;
+            border-right-color: #ffffff;
+            border-top-color: #ffffff;
         }
-        
-        .chat-bubble.user { 
-            background: linear-gradient(135deg, #0077B6 0%, #0096c7 100%);
-            color: white; 
-            border-bottom-right-radius: 6px; 
+
+        .message-bubble.user {
+            background: linear-gradient(135deg, #0077B6 0%, #0ea5e9 100%);
+            color: white;
+            border-bottom-right-radius: 8px;
             align-self: flex-end;
             box-shadow: 
-                0 4px 20px rgba(0, 119, 182, 0.25),
-                0 1px 3px rgba(0, 119, 182, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                0 4px 20px rgba(0, 119, 182, 0.2),
+                0 1px 3px rgba(0, 119, 182, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
         }
-        
-        .chat-bubble.user::before {
+
+        .message-bubble.user::before {
             bottom: 0;
             right: -8px;
-            border-left: 8px solid #0077B6;
-            border-right: 8px solid transparent;
-            border-top: 8px solid #0077B6;
-            border-bottom: 8px solid transparent;
+            border: 8px solid transparent;
+            border-left-color: #0077B6;
+            border-top-color: #0077B6;
         }
-        
-        /* Indicador de digitação aprimorado */
+
         .typing-indicator {
             background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-            border: 1px solid rgba(0, 119, 182, 0.1);
+            border: 1px solid rgba(0, 119, 182, 0.08);
         }
-        
-        .typing-indicator span { 
-            height: 10px; 
-            width: 10px; 
-            margin: 0 3px; 
+
+        .typing-dot {
+            height: 10px;
+            width: 10px;
+            margin: 0 3px;
             background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
-            border-radius: 50%; 
-            display: inline-block; 
-            animation: bounce 1.4s infinite ease-in-out both;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            animation: bounce-soft 1.4s infinite ease-in-out;
         }
-        
-        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        
-        @keyframes bounce { 
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce-soft {
             0%, 80%, 100% { 
                 transform: scale(0.8); 
-                opacity: 0.5; 
-            } 
+                opacity: 0.4; 
+            }
             40% { 
                 transform: scale(1.2); 
                 opacity: 1; 
-            } 
+            }
         }
-        
-        @keyframes pop-in { 
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            } 
+
+        @keyframes slide-up {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
-        /* Botões de opção aprimorados */
-        .option-button { 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+        .option-button {
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border: 1px solid rgba(0, 119, 182, 0.15);
+            border: 1px solid rgba(0, 119, 182, 0.12);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 
-                0 2px 8px rgba(0, 0, 0, 0.06),
-                0 1px 3px rgba(0, 0, 0, 0.1);
+                0 2px 8px rgba(0, 0, 0, 0.04),
+                0 1px 3px rgba(0, 0, 0, 0.08);
             position: relative;
             overflow: hidden;
         }
-        
+
         .option-button::before {
             content: '';
             position: absolute;
@@ -335,38 +392,37 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 119, 182, 0.05), transparent);
-            transition: left 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(0, 119, 182, 0.04), transparent);
+            transition: left 0.5s ease;
         }
-        
+
         .option-button:hover:not(:disabled)::before {
             left: 100%;
         }
-        
-        .option-button:hover:not(:disabled) { 
-            transform: translateY(-6px) scale(1.01);
+
+        .option-button:hover:not(:disabled) {
+            transform: translateY(-4px) scale(1.01);
             box-shadow: 
-                0 12px 25px rgba(0, 119, 182, 0.12),
-                0 8px 20px rgba(0, 0, 0, 0.08);
-            border-color: rgba(0, 119, 182, 0.3);
+                0 12px 28px rgba(0, 119, 182, 0.1),
+                0 8px 20px rgba(0, 0, 0, 0.06);
+            border-color: rgba(0, 119, 182, 0.2);
             background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
         }
-        
+
         .option-button:active {
-            transform: translateY(-2px) scale(0.98);
+            transform: translateY(-1px) scale(0.99);
         }
-        
-        /* Botões de ação aprimorados */
+
         .action-button {
-            background: linear-gradient(135deg, #0077B6 0%, #0096c7 100%);
+            background: linear-gradient(135deg, #0077B6 0%, #0ea5e9 100%);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 
-                0 4px 15px rgba(0, 119, 182, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                0 4px 16px rgba(0, 119, 182, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
             position: relative;
             overflow: hidden;
         }
-        
+
         .action-button::before {
             content: '';
             position: absolute;
@@ -374,175 +430,207 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transition: left 0.5s ease;
         }
-        
+
         .action-button:hover:not(:disabled)::before {
             left: 100%;
         }
-        
+
         .action-button:hover:not(:disabled) {
-            background: linear-gradient(135deg, #005f8f 0%, #007bb5 100%);
-            transform: translateY(-3px) scale(1.02);
+            background: linear-gradient(135deg, #005f8f 0%, #0284c7 100%);
+            transform: translateY(-2px) scale(1.02);
             box-shadow: 
-                0 8px 25px rgba(0, 119, 182, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+                0 8px 28px rgba(0, 119, 182, 0.35),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
-        
-        /* Campos de input aprimorados */
-        #text-input {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+        .input-field {
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border: 2px solid rgba(0, 119, 182, 0.2);
+            border: 2px solid rgba(0, 119, 182, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 
-                0 2px 8px rgba(0, 0, 0, 0.06),
-                inset 0 1px 2px rgba(0, 0, 0, 0.05);
+                0 2px 8px rgba(0, 0, 0, 0.04),
+                inset 0 1px 2px rgba(0, 0, 0, 0.02);
         }
-        
-        #text-input:focus {
+
+        .input-field:focus {
             border-color: #0077B6;
             box-shadow: 
-                0 0 0 4px rgba(0, 119, 182, 0.1),
-                0 4px 15px rgba(0, 119, 182, 0.15);
+                0 0 0 4px rgba(0, 119, 182, 0.08),
+                0 4px 16px rgba(0, 119, 182, 0.12);
             background: #ffffff;
             transform: scale(1.01);
+            outline: none;
         }
-        
-        /* Botões de controle aprimorados */
-        .control-button { 
+
+        .control-button {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 8px 12px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.5);
-            border: 1px solid rgba(0, 119, 182, 0.1);
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 119, 182, 0.08);
         }
-        
-        .control-button:hover:not(:disabled) { 
+
+        .control-button:hover:not(:disabled) {
             color: #0077B6;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.9);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 119, 182, 0.15);
+            box-shadow: 0 6px 16px rgba(0, 119, 182, 0.12);
         }
-        
-        /* Estados desabilitados aprimorados */
-        .option-button:disabled, 
-        .action-button:disabled, 
-        .control-button:disabled { 
-            cursor: not-allowed; 
-            opacity: 0.4; 
+
+        .input-area {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(0, 119, 182, 0.08);
+        }
+
+        .session-controls {
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.95) 0%, rgba(226, 232, 240, 0.95) 100%);
+            backdrop-filter: blur(8px);
+            border-top: 1px solid rgba(0, 119, 182, 0.08);
+        }
+
+        /* === UTILITIES === */
+        .animate-fade-in-up {
+            animation: fade-in-up 0.6s ease-out forwards;
+        }
+
+        .disabled-state {
+            cursor: not-allowed !important;
+            opacity: 0.4 !important;
             transform: none !important;
             box-shadow: none !important;
         }
-        
-        /* Footer aprimorado */
-        #input-area {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(0, 119, 182, 0.1);
-        }
-        
-        #session-controls {
-            background: linear-gradient(135deg, rgba(241, 245, 249, 0.9) 0%, rgba(226, 232, 240, 0.9) 100%);
-            backdrop-filter: blur(5px);
-            border-top: 1px solid rgba(0, 119, 182, 0.1);
-        }
-        
-        /* Scrollbar personalizada */
-        #chat-window::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        #chat-window::-webkit-scrollbar-track {
-            background: rgba(241, 245, 249, 0.5);
-            border-radius: 3px;
-        }
-        
-        #chat-window::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, rgba(0, 119, 182, 0.3) 0%, rgba(0, 150, 199, 0.3) 100%);
-            border-radius: 3px;
-        }
-        
-        #chat-window::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, rgba(0, 119, 182, 0.5) 0%, rgba(0, 150, 199, 0.5) 100%);
-        }
-        
-        /* Animações suaves para transições */
-        .animate-pop-in {
-            animation: pop-in 0.6s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        
-        /* Melhorias na tipografia */
-        h1 {
-            letter-spacing: -0.025em;
-        }
-        
-        .chat-bubble {
-            font-weight: 400;
-            letter-spacing: 0.01em;
-        }
-        
-        /* Efeitos de foco aprimorados */
-        button:focus-visible {
+
+        /* === FOCUS STYLES === */
+        *:focus-visible {
             outline: 2px solid #0077B6;
             outline-offset: 2px;
         }
-        
+
+        button:focus-visible,
         input:focus-visible {
+            outline: 2px solid #0077B6;
+            outline-offset: 2px;
+        }
+
+        .input-field:focus-visible {
             outline: none;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 640px) {
+            .portal-title {
+                font-size: 1.875rem;
+                line-height: 2.25rem;
+            }
+            
+            .message-bubble {
+                padding: 14px 16px;
+                border-radius: 20px;
+            }
+            
+            .chat-container {
+                border-radius: 16px;
+                margin: 8px;
+            }
+        }
+
+        /* === PERFORMANCE === */
+        .particle {
+            will-change: transform, opacity;
+        }
+
+        .portal-button,
+        .option-button,
+        .action-button {
+            will-change: transform;
+        }
+
+        .message-bubble {
+            will-change: opacity, transform;
         }
     </style>
 </head>
-<body class="antialiased text-gray-800">
 
-    <!-- Portal de IA (Camada de Introdução) -->
-    <div id="ai-intro-portal" class="h-screen w-full flex-col justify-center items-center text-center p-6 relative overflow-hidden flex">
+<body>
+    <!-- Portal de Entrada -->
+    <div id="ai-intro-portal" class="portal-container">
+        <div class="portal-overlay"></div>
         <div id="particle-container" class="absolute inset-0"></div>
-        <div class="z-10">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-4 text-glow">
-                <span id="intro-typing-text"></span><span class="cursor">|</span>
+        
+        <div class="z-20 text-center px-6 max-w-5xl">
+            <h1 class="portal-title text-4xl md:text-5xl lg:text-6xl mb-6">
+                <span id="intro-typing-text"></span><span class="typing-cursor">|</span>
             </h1>
-            <p class="text-lg md:text-xl text-blue-200/80 max-w-3xl mx-auto">
-                Você está falando com a <strong class="font-semibold text-white">IA do Conexão Búzios</strong>. Suas respostas me guiam até a proposta perfeita para você.
+            <p class="text-lg md:text-xl lg:text-2xl text-blue-200/90 max-w-4xl mx-auto leading-relaxed">
+                Você está falando com a <strong class="font-semibold text-white">IA do Conexão Búzios</strong>. 
+                Suas respostas me guiam até a proposta perfeita para você.
             </p>
         </div>
-        <div id="portal-actions" class="mt-8 z-10 w-full max-w-lg"></div>
         
-        <!-- Assinatura Animada (Inicialmente Oculta) -->
-        <div id="animated-signature" class="absolute bottom-5 w-full text-center text-xs text-white/50 font-light">
-            <span class="sig-part sig-part-1">
-                Um projeto <a href="https://www.instagram.com/conexao.buzios/" target="_blank" rel="noopener noreferrer" class="font-medium text-white/80 hover:text-white transition-colors">Conexão Búzios</a>
-            </span>
-            <span class="sig-part sig-part-2">
-                • Potencializado pela IA Gemini
-            </span>
+        <div id="portal-actions" class="mt-12 z-20 w-full max-w-2xl px-6"></div>
+        
+        <div id="animated-signature" class="signature absolute bottom-8 w-full text-center">
+            <div class="text-sm text-white/60 font-light space-y-1">
+                <div class="sig-part">
+                    Um projeto 
+                    <a href="https://www.instagram.com/conexao.buzios/" 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       class="font-medium text-white/80 hover:text-white transition-colors underline decoration-white/30 hover:decoration-white/60">
+                        Conexão Búzios
+                    </a>
+                </div>
+                <div class="sig-part">
+                    • Potencializado pela IA Gemini
+                </div>
+            </div>
         </div>
     </div>
     
-    <!-- Container do Chat (Carregado, mas escondido) -->
-    <div id="app-container" class="w-full h-screen flex-col items-center justify-center p-4 bg-gray-100 hidden">
-        <div class="chat-container w-full max-w-lg h-full max-h-[800px] flex flex-col rounded-2xl overflow-hidden border border-gray-200/50">
-            <header class="flex items-center justify-between p-4 border-b border-gray-200/80">
-                <div class="flex items-center space-x-3">
-                    <div class="avatar-container w-12 h-12 rounded-full flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3"/><circle cx="12" cy="10" r="3"/><circle cx="12" cy="12" r="10"/></svg>
+    <!-- Aplicação de Chat -->
+    <div id="app-container" class="chat-app hidden flex-col items-center justify-center p-4 min-h-screen">
+        <div class="chat-container w-full max-w-lg h-full max-h-[800px] flex flex-col">
+            <!-- Header -->
+            <header class="chat-header flex items-center justify-between p-6">
+                <div class="flex items-center space-x-4">
+                    <div class="avatar w-12 h-12 rounded-full flex items-center justify-center relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3"/>
+                            <circle cx="12" cy="10" r="3"/>
+                            <circle cx="12" cy="12" r="10"/>
+                        </svg>
                     </div>
                     <div>
-                        <h1 class="text-lg font-bold text-buzios-mar">Conexão Búzios</h1>
-                        <p class="text-sm text-gray-500 flex items-center"><span class="status-indicator h-2 w-2 bg-green-500 rounded-full mr-1.5"></span>Online</p>
+                        <h1 class="text-lg font-bold text-buzios-600">Conexão Búzios</h1>
+                        <p class="text-sm text-gray-500 flex items-center">
+                            <span class="status-dot h-2 w-2 bg-green-500 rounded-full mr-2"></span>
+                            Online
+                        </p>
                     </div>
                 </div>
             </header>
-            <main id="chat-window" class="flex-1 p-4 md:p-6 flex flex-col space-y-4 overflow-y-auto"></main>
-            <footer id="input-area" class="p-4 border-t border-gray-200/80"></footer>
-            <div id="session-controls" class="p-2 text-center border-t border-gray-200/80">
-                <p class="text-xs text-gray-500 mb-1">Você está conversando com a IA Gemini.</p>
-                <div class="flex justify-center items-center space-x-4">
-                    <button onclick="handleGoBack()" id="back-btn" class="control-button text-xs text-gray-600 font-medium flex items-center gap-1">
-                        <i data-lucide="arrow-left" class="w-3 h-3"></i> Voltar
+            
+            <!-- Chat Window -->
+            <main id="chat-window" class="chat-window flex-1 p-6 flex flex-col space-y-4 overflow-y-auto"></main>
+            
+            <!-- Input Area -->
+            <footer id="input-area" class="input-area p-6"></footer>
+            
+            <!-- Session Controls -->
+            <div id="session-controls" class="session-controls p-4 text-center">
+                <p class="text-xs text-gray-500 mb-3">Você está conversando com a IA Gemini.</p>
+                <div class="flex justify-center items-center space-x-6">
+                    <button onclick="handleGoBack()" id="back-btn" class="control-button text-xs text-gray-600 font-medium flex items-center gap-2">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> 
+                        Voltar
                     </button>
-                    <button onclick="handleRestart()" class="control-button text-xs text-gray-600 font-medium flex items-center gap-1">
-                        <i data-lucide="refresh-cw" class="w-3 h-3"></i> Reiniciar
+                    <button onclick="handleRestart()" class="control-button text-xs text-gray-600 font-medium flex items-center gap-2">
+                        <i data-lucide="refresh-cw" class="w-4 h-4"></i> 
+                        Reiniciar
                     </button>
                 </div>
             </div>
@@ -550,25 +638,28 @@
     </div>
     
     <script>
-        // --- ELEMENTOS DA DOM ---
-        const introPortal = document.getElementById('ai-intro-portal');
-        const appContainer = document.getElementById('app-container');
-        const portalActions = document.getElementById('portal-actions');
-        const typingTextEl = document.getElementById('intro-typing-text');
-        const chatWindow = document.getElementById('chat-window');
-        const inputArea = document.getElementById('input-area');
-        const backBtn = document.getElementById('back-btn');
-        const animatedSignature = document.getElementById('animated-signature');
-        lucide.createIcons();
+        // === CONFIGURAÇÃO E ELEMENTOS ===
+        const CONFIG = {
+            GOOGLE_APP_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwHC3bAoL_c5rscJV2xbwVi9KMedM3QHbWCZ3bo64w0DbiMGOtnahL9BynJ5ADao63I/exec",
+            SESSION_KEY: 'conexaoBuziosSession',
+            TYPING_SPEED: 65,
+            PHRASE_DELAY: 4000,
+            ANIMATION_DELAY: 1200
+        };
 
-        // --- CONFIGURAÇÕES ---
-        const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHC3bAoL_c5rscJV2xbwVi9KMedM3QHbWCZ3bo64w0DbiMGOtnahL9BynJ5ADao63I/exec";
-        const SESSION_KEY = 'conexaoBuziosSession';
+        const ELEMENTS = {
+            introPortal: document.getElementById('ai-intro-portal'),
+            appContainer: document.getElementById('app-container'),
+            portalActions: document.getElementById('portal-actions'),
+            typingTextEl: document.getElementById('intro-typing-text'),
+            chatWindow: document.getElementById('chat-window'),
+            inputArea: document.getElementById('input-area'),
+            backBtn: document.getElementById('back-btn'),
+            animatedSignature: document.getElementById('animated-signature')
+        };
 
-        // --- ESTADO DA APLICAÇÃO ---
-        let state = {};
-
-        const initialState = {
+        // === ESTADO DA APLICAÇÃO ===
+        const INITIAL_STATE = {
             history: [],
             chatLog: [],
             currentStepId: 'start',
@@ -576,47 +667,230 @@
             userData: {},
             userHistory: {}
         };
-        
-        // --- LÓGICA DO PORTAL ---
-        const portalPhrases = [
+
+        let state = {};
+        let phraseIndex = 0;
+        let typingTimeout;
+
+        // === FRASES DO PORTAL ===
+        const PORTAL_PHRASES = [
             "Olá! Vamos descobrir algo novo?",
             "Imagine se sua busca terminasse aqui...",
             "O que você realmente deseja encontrar?",
             "Estou analisando as possibilidades para você.",
             "Sinto que algo incrível está por vir."
         ];
-        let phraseIndex = 0;
-        let typingTimeout;
 
-        // --- FLUXO DE CONVERSA ---
+        // === FLUXO DE CONVERSA ===
         const conversationFlow = {
-            'start': { message: "Oi! Que bom te ver por aqui! ✨ Sou seu amigo em Búzios, pronto pra te mostrar os segredos da cidade. Para começar, me conta, qual dessas opções combina mais com você?", type: 'buttons', variable: 'perfil', options: [ { text: 'Sou Turista 🏖️', nextStep: 'turista_1' }, { text: 'Sou Morador 🏠', nextStep: 'morador_1' }, { text: 'Quero Divulgar 📢', nextStep: 'divulgador_1' } ] },
-            'turista_1': { message: "Maravilha! Búzios tem uma energia única. Me diz, como está sua viagem agora?", type: 'buttons', variable: 'etapa_1', options: [ { text: 'Já estou aqui curtindo ☀️', nextStep: 'turista_2' }, { text: 'Chego nos próximos dias 🧳', nextStep: 'turista_2' }, { text: 'Estou planejando pra breve 🗓️', nextStep: 'turista_2' }, { text: 'Só explorando ideias por enquanto 🗺️', nextStep: 'turista_2' } ] },
-            'turista_2': { message: "Legal! E quem são as pessoas especiais que vão viver essa aventura com você?", type: 'buttons', variable: 'etapa_2', options: [ { text: '👤 Sozinho(a), na minha própria vibe', nextStep: 'turista_3' }, { text: '❤️ Com meu amor', nextStep: 'turista_3' }, { text: '🍻 Com a galera', nextStep: 'turista_3' }, { text: '👨‍👩‍👧‍👦 Com a família', nextStep: 'turista_3' } ] },
-            'turista_3': { message: "Show! E o seu cantinho pra relaxar? Já tem um lugar ou quer uma ajuda pra encontrar algo com a sua cara?", type: 'buttons', variable: 'etapa_3', options: [ { text: 'Já tenho meu cantinho', nextStep: 'turista_4' }, { text: 'Estou procurando um lugar', nextStep: 'turista_4' }, { text: 'Vou ficar na casa de amigos/família', nextStep: 'turista_4' } ] },
-            'turista_4': { message: "Agora a melhor parte! Feche os olhos e imagine... O que você mais quer sentir aqui em Búzios? ❤️", type: 'buttons', variable: 'etapa_4', options: [ { text: '🗺️ Descobrir lugares secretos', nextStep: 'turista_5' }, { text: '🦞 Comer coisas incríveis', nextStep: 'turista_5' }, { text: '🌙 Curtir a noite e a música', nextStep: 'turista_5' }, { text: '🧘 Relaxar e esquecer do mundo', nextStep: 'turista_5' }, { text: '🤝 Conhecer gente nova', nextStep: 'turista_5' } ] },
-            'turista_5': { message: "Sabe, Búzios encanta tanto que muita gente sonha em ficar... Já passou pela sua cabeça ter um negócio seu por aqui?", type: 'buttons', variable: 'etapa_5', options: [ { text: 'Sim, com certeza!', nextStep: 'turista_6' }, { text: 'Talvez um dia, quem sabe...', nextStep: 'turista_6' }, { text: 'Não, só passeio mesmo', nextStep: 'turista_6' } ] },
-            'turista_6': { message: "Pra eu te dar as dicas certas: qual seu orçamento por dia para curtir a cidade?", type: 'buttons', variable: 'etapa_6', options: [ { text: '💸 Até R$100', nextStep: 'transicao_nome' }, { text: '💵 R$100 a R$300', nextStep: 'transicao_nome' }, { text: '💰 R$300 a R$600', nextStep: 'transicao_nome' }, { text: '💎 Acima de R$600', nextStep: 'transicao_nome' } ] },
-            'morador_1': { message: "E aí, vizinho! Que bom te encontrar. Há quanto tempo Búzios é a sua casa?", type: 'buttons', variable: 'etapa_1', options: [ { text: 'Cheguei há pouco (menos de 1 ano)', nextStep: 'morador_2' }, { text: 'Já sou da área (1 a 3 anos)', nextStep: 'morador_2' }, { text: 'Raiz! (mais de 3 anos)', nextStep: 'morador_2' }, { text: 'Vivo na ponte-aérea', nextStep: 'morador_2' } ] },
-            'morador_2': { message: "Maneiro! E no dia a dia, qual é a sua praia?", type: 'buttons', variable: 'etapa_2', options: [ { text: '🧘 Na paz, lendo um livro na areia', nextStep: 'morador_3' }, { text: '🍻 Gosto de um barzinho e música', nextStep: 'morador_3' }, { text: '👟 Trilha, surf e pé na areia', nextStep: 'morador_3' }, { text: '🎉 Onde tem gente, eu tô!', nextStep: 'morador_3' } ] },
-            'morador_3': { message: "Se você tivesse um superpoder pra melhorar uma coisa em Búzios, o que seria?", type: 'buttons', variable: 'etapa_3', options: [ { text: '🤝 Conectar com mais gente legal', nextStep: 'morador_4' }, { text: '🗓️ Saber de todos os eventos secretos', nextStep: 'morador_4' }, { text: '📢 Fazer meu trabalho bombar!', nextStep: 'morador_4' }, { text: '💎 Ter acesso a dicas e descontos exclusivos', nextStep: 'morador_4' } ] },
-            'morador_4': { message: "Muitos moradores têm talentos incríveis. Você tem algo que gostaria de mostrar pra mais gente?", type: 'buttons', variable: 'etapa_4', options: [ { text: 'Sim, ofereço um serviço', nextStep: 'transicao_nome' }, { text: 'Sim, tenho um imóvel', nextStep: 'transicao_nome' }, { text: 'Sim, vendo um produto', nextStep: 'transicao_nome' }, { text: 'Ainda não, mas tenho uma ideia', nextStep: 'transicao_nome' }, { text: 'Não, só quero curtir mesmo', nextStep: 'transicao_nome' } ] },
-            'divulgador_1': { message: "Vamos fazer sua ideia brilhar! ✨ O que você quer que todo mundo em Búzios conheça?", type: 'buttons', variable: 'etapa_1', options: [ { text: 'Um serviço que eu presto', nextStep: 'divulgador_2' }, { text: 'Um produto que eu vendo', nextStep: 'divulgador_2' }, { text: 'Um imóvel (aluguel/venda)', nextStep: 'divulgador_2' }, { text: 'Um evento ou outra coisa', nextStep: 'divulgador_2' } ] },
-            'divulgador_2': { message: "Legal! E pra quem a gente vai contar essa novidade? Quem vai amar o que você faz?", type: 'buttons', variable: 'etapa_2', options: [ { text: '✈️ Turistas que chegam na cidade', nextStep: 'divulgador_3' }, { text: '🏠 Moradores que já estão aqui', nextStep: 'divulgador_3' }, { text: '🌍 Todo mundo!', nextStep: 'divulgador_3' }, { text: '🤔 Ainda não sei, preciso de ajuda', nextStep: 'divulgador_3' } ] },
-            'divulgador_3': { message: "Todo projeto tem sua jornada. Em que momento o seu está agora?", type: 'buttons', variable: 'etapa_3', options: [ { text: '🌱 Nascendo agora', nextStep: 'divulgador_4' }, { text: '🚀 Dando os primeiros passos', nextStep: 'divulgador_4' }, { text: '💪 Já estou no jogo', nextStep: 'divulgador_4' }, { text: '📈 Quero dominar o mundo!', nextStep: 'divulgador_4' } ] },
-            'divulgador_4': { message: "Pra gente criar uma estratégia que funcione, quanto você pode investir por mês pra ver seu negócio crescer?", type: 'buttons', variable: 'etapa_4', options: [ { text: 'Até R$100', nextStep: 'transicao_nome' }, { text: 'R$100 a R$300', nextStep: 'transicao_nome' }, { text: 'R$300 a R$700', nextStep: 'transicao_nome' }, { text: 'Acima de R$700', nextStep: 'transicao_nome' }, { text: 'Prefiro conversar sobre isso', nextStep: 'transicao_nome' } ] },
-            'transicao_nome': { message: "Perfeito! Estou anotando tudo para criar algo com a sua cara. Antes de te mostrar...", type: 'transition', nextStep: 'ask_name' },
-            'ask_name': { message: "Como eu posso te chamar?", type: 'text', variable: 'nome', placeholder: 'Seu nome...', nextStep: 'ask_phone', validation: 'text' },
-            'ask_phone': { message: "E se eu encontrar aquela oportunidade única, em qual WhatsApp posso te mandar um alô? 📲", type: 'tel', variable: 'telefone', placeholder: 'Seu melhor WhatsApp...', nextStep: 'generate_proposal', validation: 'phone' },
-            'generate_proposal': { message: "Conectando os pontos... Estou criando algo realmente especial pra você. Só um instante! 🔮", type: 'loading', action: 'callBackendForProcessing' },
-            'final_message': { type: 'final' },
-            'error_state': { message: "Ops! Tive um probleminha aqui. Minha conexão com a criatividade falhou. 😅 Que tal tentarmos de novo?", type: 'buttons', options: [ { text: 'Tentar novamente', nextStep: 'generate_proposal' }, { text: 'Reiniciar conversa', action: 'handleRestart' } ] }
+            'start': { 
+                message: "Oi! Que bom te ver por aqui! ✨ Sou seu amigo em Búzios, pronto pra te mostrar os segredos da cidade. Para começar, me conta, qual dessas opções combina mais com você?", 
+                type: 'buttons', 
+                variable: 'perfil', 
+                options: [
+                    { text: 'Sou Turista 🏖️', nextStep: 'turista_1' },
+                    { text: 'Sou Morador 🏠', nextStep: 'morador_1' },
+                    { text: 'Quero Divulgar 📢', nextStep: 'divulgador_1' }
+                ]
+            },
+            'turista_1': { 
+                message: "Maravilha! Búzios tem uma energia única. Me diz, como está sua viagem agora?", 
+                type: 'buttons', 
+                variable: 'etapa_1', 
+                options: [
+                    { text: 'Já estou aqui curtindo ☀️', nextStep: 'turista_2' },
+                    { text: 'Chego nos próximos dias 🧳', nextStep: 'turista_2' },
+                    { text: 'Estou planejando pra breve 🗓️', nextStep: 'turista_2' },
+                    { text: 'Só explorando ideias por enquanto 🗺️', nextStep: 'turista_2' }
+                ]
+            },
+            'turista_2': { 
+                message: "Legal! E quem são as pessoas especiais que vão viver essa aventura com você?", 
+                type: 'buttons', 
+                variable: 'etapa_2', 
+                options: [
+                    { text: '👤 Sozinho(a), na minha própria vibe', nextStep: 'turista_3' },
+                    { text: '❤️ Com meu amor', nextStep: 'turista_3' },
+                    { text: '🍻 Com a galera', nextStep: 'turista_3' },
+                    { text: '👨‍👩‍👧‍👦 Com a família', nextStep: 'turista_3' }
+                ]
+            },
+            'turista_3': { 
+                message: "Show! E o seu cantinho pra relaxar? Já tem um lugar ou quer uma ajuda pra encontrar algo com a sua cara?", 
+                type: 'buttons', 
+                variable: 'etapa_3', 
+                options: [
+                    { text: 'Já tenho meu cantinho', nextStep: 'turista_4' },
+                    { text: 'Estou procurando um lugar', nextStep: 'turista_4' },
+                    { text: 'Vou ficar na casa de amigos/família', nextStep: 'turista_4' }
+                ]
+            },
+            'turista_4': { 
+                message: "Agora a melhor parte! Feche os olhos e imagine... O que você mais quer sentir aqui em Búzios? ❤️", 
+                type: 'buttons', 
+                variable: 'etapa_4', 
+                options: [
+                    { text: '🗺️ Descobrir lugares secretos', nextStep: 'turista_5' },
+                    { text: '🦞 Comer coisas incríveis', nextStep: 'turista_5' },
+                    { text: '🌙 Curtir a noite e a música', nextStep: 'turista_5' },
+                    { text: '🧘 Relaxar e esquecer do mundo', nextStep: 'turista_5' },
+                    { text: '🤝 Conhecer gente nova', nextStep: 'turista_5' }
+                ]
+            },
+            'turista_5': { 
+                message: "Sabe, Búzios encanta tanto que muita gente sonha em ficar... Já passou pela sua cabeça ter um negócio seu por aqui?", 
+                type: 'buttons', 
+                variable: 'etapa_5', 
+                options: [
+                    { text: 'Sim, com certeza!', nextStep: 'turista_6' },
+                    { text: 'Talvez um dia, quem sabe...', nextStep: 'turista_6' },
+                    { text: 'Não, só passeio mesmo', nextStep: 'turista_6' }
+                ]
+            },
+            'turista_6': { 
+                message: "Pra eu te dar as dicas certas: qual seu orçamento por dia para curtir a cidade?", 
+                type: 'buttons', 
+                variable: 'etapa_6', 
+                options: [
+                    { text: '💸 Até R$100', nextStep: 'transicao_nome' },
+                    { text: '💵 R$100 a R$300', nextStep: 'transicao_nome' },
+                    { text: '💰 R$300 a R$600', nextStep: 'transicao_nome' },
+                    { text: '💎 Acima de R$600', nextStep: 'transicao_nome' }
+                ]
+            },
+            'morador_1': { 
+                message: "E aí, vizinho! Que bom te encontrar. Há quanto tempo Búzios é a sua casa?", 
+                type: 'buttons', 
+                variable: 'etapa_1', 
+                options: [
+                    { text: 'Cheguei há pouco (menos de 1 ano)', nextStep: 'morador_2' },
+                    { text: 'Já sou da área (1 a 3 anos)', nextStep: 'morador_2' },
+                    { text: 'Raiz! (mais de 3 anos)', nextStep: 'morador_2' },
+                    { text: 'Vivo na ponte-aérea', nextStep: 'morador_2' }
+                ]
+            },
+            'morador_2': { 
+                message: "Maneiro! E no dia a dia, qual é a sua praia?", 
+                type: 'buttons', 
+                variable: 'etapa_2', 
+                options: [
+                    { text: '🧘 Na paz, lendo um livro na areia', nextStep: 'morador_3' },
+                    { text: '🍻 Gosto de um barzinho e música', nextStep: 'morador_3' },
+                    { text: '👟 Trilha, surf e pé na areia', nextStep: 'morador_3' },
+                    { text: '🎉 Onde tem gente, eu tô!', nextStep: 'morador_3' }
+                ]
+            },
+            'morador_3': { 
+                message: "Se você tivesse um superpoder pra melhorar uma coisa em Búzios, o que seria?", 
+                type: 'buttons', 
+                variable: 'etapa_3', 
+                options: [
+                    { text: '🤝 Conectar com mais gente legal', nextStep: 'morador_4' },
+                    { text: '🗓️ Saber de todos os eventos secretos', nextStep: 'morador_4' },
+                    { text: '📢 Fazer meu trabalho bombar!', nextStep: 'morador_4' },
+                    { text: '💎 Ter acesso a dicas e descontos exclusivos', nextStep: 'morador_4' }
+                ]
+            },
+            'morador_4': { 
+                message: "Muitos moradores têm talentos incríveis. Você tem algo que gostaria de mostrar pra mais gente?", 
+                type: 'buttons', 
+                variable: 'etapa_4', 
+                options: [
+                    { text: 'Sim, ofereço um serviço', nextStep: 'transicao_nome' },
+                    { text: 'Sim, tenho um imóvel', nextStep: 'transicao_nome' },
+                    { text: 'Sim, vendo um produto', nextStep: 'transicao_nome' },
+                    { text: 'Ainda não, mas tenho uma ideia', nextStep: 'transicao_nome' },
+                    { text: 'Não, só quero curtir mesmo', nextStep: 'transicao_nome' }
+                ]
+            },
+            'divulgador_1': { 
+                message: "Vamos fazer sua ideia brilhar! ✨ O que você quer que todo mundo em Búzios conheça?", 
+                type: 'buttons', 
+                variable: 'etapa_1', 
+                options: [
+                    { text: 'Um serviço que eu presto', nextStep: 'divulgador_2' },
+                    { text: 'Um produto que eu vendo', nextStep: 'divulgador_2' },
+                    { text: 'Um imóvel (aluguel/venda)', nextStep: 'divulgador_2' },
+                    { text: 'Um evento ou outra coisa', nextStep: 'divulgador_2' }
+                ]
+            },
+            'divulgador_2': { 
+                message: "Legal! E pra quem a gente vai contar essa novidade? Quem vai amar o que você faz?", 
+                type: 'buttons', 
+                variable: 'etapa_2', 
+                options: [
+                    { text: '✈️ Turistas que chegam na cidade', nextStep: 'divulgador_3' },
+                    { text: '🏠 Moradores que já estão aqui', nextStep: 'divulgador_3' },
+                    { text: '🌍 Todo mundo!', nextStep: 'divulgador_3' },
+                    { text: '🤔 Ainda não sei, preciso de ajuda', nextStep: 'divulgador_3' }
+                ]
+            },
+            'divulgador_3': { 
+                message: "Todo projeto tem sua jornada. Em que momento o seu está agora?", 
+                type: 'buttons', 
+                variable: 'etapa_3', 
+                options: [
+                    { text: '🌱 Nascendo agora', nextStep: 'divulgador_4' },
+                    { text: '🚀 Dando os primeiros passos', nextStep: 'divulgador_4' },
+                    { text: '💪 Já estou no jogo', nextStep: 'divulgador_4' },
+                    { text: '📈 Quero dominar o mundo!', nextStep: 'divulgador_4' }
+                ]
+            },
+            'divulgador_4': { 
+                message: "Pra gente criar uma estratégia que funcione, quanto você pode investir por mês pra ver seu negócio crescer?", 
+                type: 'buttons', 
+                variable: 'etapa_4', 
+                options: [
+                    { text: 'Até R$100', nextStep: 'transicao_nome' },
+                    { text: 'R$100 a R$300', nextStep: 'transicao_nome' },
+                    { text: 'R$300 a R$700', nextStep: 'transicao_nome' },
+                    { text: 'Acima de R$700', nextStep: 'transicao_nome' },
+                    { text: 'Prefiro conversar sobre isso', nextStep: 'transicao_nome' }
+                ]
+            },
+            'transicao_nome': { 
+                message: "Perfeito! Estou anotando tudo para criar algo com a sua cara. Antes de te mostrar...", 
+                type: 'transition', 
+                nextStep: 'ask_name' 
+            },
+            'ask_name': { 
+                message: "Como eu posso te chamar?", 
+                type: 'text', 
+                variable: 'nome', 
+                placeholder: 'Seu nome...', 
+                nextStep: 'ask_phone', 
+                validation: 'text' 
+            },
+            'ask_phone': { 
+                message: "E se eu encontrar aquela oportunidade única, em qual WhatsApp posso te mandar um alô? 📲", 
+                type: 'tel', 
+                variable: 'telefone', 
+                placeholder: 'Seu melhor WhatsApp...', 
+                nextStep: 'generate_proposal', 
+                validation: 'phone' 
+            },
+            'generate_proposal': { 
+                message: "Conectando os pontos... Estou criando algo realmente especial pra você. Só um instante! 🔮", 
+                type: 'loading', 
+                action: 'callBackendForProcessing' 
+            },
+            'final_message': { 
+                type: 'final' 
+            },
+            'error_state': { 
+                message: "Ops! Tive um probleminha aqui. Minha conexão com a criatividade falhou. 😅 Que tal tentarmos de novo?", 
+                type: 'buttons', 
+                options: [
+                    { text: 'Tentar novamente', nextStep: 'generate_proposal' },
+                    { text: 'Reiniciar conversa', action: 'handleRestart' }
+                ]
+            }
         };
 
-        // --- FUNÇÕES DE CONTROLE DE ESTADO ---
+        // === FUNÇÕES DE ESTADO ===
         function saveState() {
             try {
-                localStorage.setItem(SESSION_KEY, JSON.stringify(state));
+                localStorage.setItem(CONFIG.SESSION_KEY, JSON.stringify(state));
             } catch (e) {
                 console.warn("Não foi possível salvar a sessão:", e);
             }
@@ -624,7 +898,7 @@
 
         function restoreState() {
             try {
-                const savedState = localStorage.getItem(SESSION_KEY);
+                const savedState = localStorage.getItem(CONFIG.SESSION_KEY);
                 if (savedState) {
                     state = JSON.parse(savedState);
                     return true;
@@ -632,7 +906,7 @@
                 return false;
             } catch (e) {
                 console.warn("Não foi possível restaurar a sessão. Começando uma nova.", e);
-                localStorage.removeItem(SESSION_KEY);
+                localStorage.removeItem(CONFIG.SESSION_KEY);
                 return false;
             }
         }
@@ -643,89 +917,115 @@
         }
 
         function pushHistory() {
-            const currentStateSnapshot = JSON.parse(JSON.stringify(state)); // Deep copy
+            const currentStateSnapshot = JSON.parse(JSON.stringify(state));
             const newHistory = [...(state.history || []), currentStateSnapshot];
             setState({ history: newHistory });
         }
 
-        // --- FUNÇÕES DE UI E ANIMAÇÃO ---
+        // === FUNÇÕES DE ANIMAÇÃO ===
         function typeWriter(text, i = 0, onComplete) {
             clearTimeout(typingTimeout);
             if (i < text.length) {
-                typingTextEl.innerHTML = text.substring(0, i + 1);
-                typingTimeout = setTimeout(() => typeWriter(text, i + 1, onComplete), 65);
+                ELEMENTS.typingTextEl.textContent = text.substring(0, i + 1);
+                typingTimeout = setTimeout(() => typeWriter(text, i + 1, onComplete), CONFIG.TYPING_SPEED);
             } else if (onComplete) {
-                onComplete();
+                setTimeout(onComplete, 500);
             }
         }
 
         function cyclePhrases() {
-            typeWriter(portalPhrases[phraseIndex], 0, () => {
+            typeWriter(PORTAL_PHRASES[phraseIndex], 0, () => {
                 typingTimeout = setTimeout(() => {
-                    phraseIndex = (phraseIndex + 1) % portalPhrases.length;
+                    phraseIndex = (phraseIndex + 1) % PORTAL_PHRASES.length;
                     cyclePhrases();
-                }, 4000); // Wait 4 seconds before showing the next phrase
+                }, CONFIG.PHRASE_DELAY);
             });
         }
 
         function createParticles() {
             const container = document.getElementById('particle-container');
             if (container.children.length > 0) return;
-            for (let i = 0; i < 30; i++) {
+            
+            for (let i = 0; i < 35; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
-                const size = Math.random() * 5 + 1;
+                
+                const size = Math.random() * 4 + 1;
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
                 particle.style.left = `${Math.random() * 100}%`;
-                particle.style.top = `${Math.random() * 100}%`;
-                particle.style.animationDuration = `${Math.random() * 15 + 10}s`;
-                particle.style.animationDelay = `${Math.random() * 5}s`;
+                particle.style.top = `${Math.random() * 100 + 100}%`;
+                particle.style.animationDuration = `${Math.random() * 20 + 15}s`;
+                particle.style.animationDelay = `${Math.random() * 8}s`;
+                
                 container.appendChild(particle);
             }
         }
 
+        // === FUNÇÕES DE CHAT ===
         function showTypingIndicator(show) {
             const existing = document.getElementById('typing-indicator');
             if (existing) existing.remove();
+            
             if (show) {
-                chatWindow.insertAdjacentHTML('beforeend', `<div id="typing-indicator" class="chat-bubble ai typing-indicator"><span></span><span></span><span></span></div>`);
+                ELEMENTS.chatWindow.insertAdjacentHTML('beforeend', 
+                    `<div id="typing-indicator" class="message-bubble ai typing-indicator">
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                    </div>`
+                );
                 scrollToBottom();
             }
         }
 
         function addMessageToChat(text, sender, isRestored = false) {
-            const animationClass = isRestored ? '' : 'animate-pop-in';
+            const animationClass = isRestored ? '' : 'animate-fade-in-up';
             const sanitizedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
-            chatWindow.insertAdjacentHTML('beforeend', `<div class="chat-bubble ${sender} ${animationClass}">${sanitizedText}</div>`);
+            
+            ELEMENTS.chatWindow.insertAdjacentHTML('beforeend', 
+                `<div class="message-bubble ${sender} ${animationClass}">${sanitizedText}</div>`
+            );
+            
             if (!isRestored) {
                 setState({ chatLog: [...state.chatLog, { text, sender }] });
             }
+            
             scrollToBottom();
         }
-        
-        function scrollToBottom() { chatWindow.scrollTop = chatWindow.scrollHeight; }
+
+        function scrollToBottom() {
+            ELEMENTS.chatWindow.scrollTop = ELEMENTS.chatWindow.scrollHeight;
+        }
 
         function disableAllInputs(shouldDisable) {
             const elements = document.querySelectorAll('#portal-actions button, #input-area button, #input-area input');
-            elements.forEach(el => el.disabled = shouldDisable);
+            elements.forEach(el => {
+                el.disabled = shouldDisable;
+                if (shouldDisable) {
+                    el.classList.add('disabled-state');
+                } else {
+                    el.classList.remove('disabled-state');
+                }
+            });
             setState({ isWaitingForResponse: shouldDisable });
         }
 
-        // --- LÓGICA DA CONVERSA ---
+        // === LÓGICA PRINCIPAL ===
         function displayStep(stepId, context = {}) {
             const step = conversationFlow[stepId];
             if (!step) {
                 console.error(`Passo "${stepId}" não encontrado.`);
                 return;
             }
+            
             setState({ currentStepId: stepId });
             const isPortalStep = stepId === 'start';
-            const targetContainer = isPortalStep ? portalActions : inputArea;
+            const targetContainer = isPortalStep ? ELEMENTS.portalActions : ELEMENTS.inputArea;
             targetContainer.innerHTML = '';
-            
+
             if (isPortalStep) {
-                if(state.chatLog.length === 0) addMessageToChat(step.message, 'ai');
+                if (state.chatLog.length === 0) addMessageToChat(step.message, 'ai');
             } else {
                 showTypingIndicator(true);
             }
@@ -735,11 +1035,13 @@
                     showTypingIndicator(false);
                     if (step.message) addMessageToChat(step.message, 'ai');
                 }
+                
                 renderInputs(step, context, targetContainer);
+                
                 const isAutoStep = step.type === 'loading' || step.type === 'transition';
                 if (isAutoStep) {
                     if (typeof step.action === 'string') {
-                        window[step.action](); // Chama a função de backend
+                        window[step.action]();
                     } else if (typeof step.action === 'function') {
                         step.action();
                     } else {
@@ -748,57 +1050,88 @@
                 } else {
                     disableAllInputs(false);
                 }
+                
                 updateControls();
-            }, isPortalStep ? 100 : 1200);
+            }, isPortalStep ? 100 : CONFIG.ANIMATION_DELAY);
         }
 
         function renderInputs(step, context, container) {
             const isPortalStep = state.currentStepId === 'start';
+            
             switch (step.type) {
                 case 'buttons':
                     let finalHTML = '';
+                    
                     if (isPortalStep) {
-                        finalHTML += `<p class="text-white/70 text-sm mb-4 animate-pop-in">Para começar, escolha seu perfil abaixo:</p>`;
+                        finalHTML += `<p class="text-white/70 text-lg mb-6 animate-fade-in-up">Para começar, escolha seu perfil abaixo:</p>`;
                     }
-                    const wrapperClass = isPortalStep ? 'flex flex-col sm:flex-row gap-4' : '';
+                    
+                    const wrapperClass = isPortalStep ? 'flex flex-col gap-4' : 'space-y-3';
                     const buttonClass = isPortalStep 
-                        ? 'portal-action-button text-white font-semibold px-6 py-3 rounded-lg w-full sm:w-auto' 
-                        : 'option-button w-full text-left p-4 mb-2 bg-white rounded-xl border border-gray-200 hover:border-buzios-mar focus:outline-none focus:ring-2 focus:ring-buzios-mar/50';
-                    const buttonsHTML = step.options.map(opt => 
-                        `<button onclick="handleUserAction('button', {text: '${opt.text}', nextStep: '${opt.nextStep}', variable: '${step.variable}'})" class="${buttonClass}">
-                            <span>${opt.text}</span>
-                         </button>`
+                        ? 'portal-button text-white font-semibold px-8 py-4 rounded-xl text-lg' 
+                        : 'option-button w-full text-left p-4 rounded-xl border hover:border-buzios-600 focus:outline-none focus:ring-2 focus:ring-buzios-500/50';
+                    
+                    const buttonsHTML = step.options.map((opt, index) => 
+                        `<button onclick="handleUserAction('button', {text: '${opt.text}', nextStep: '${opt.nextStep}', variable: '${step.variable}'})" 
+                                 class="${buttonClass}" 
+                                 style="animation-delay: ${index * 100}ms">
+                            ${opt.text}
+                        </button>`
                     ).join('');
-                    finalHTML += `<div class="animate-pop-in ${wrapperClass}">${buttonsHTML}</div>`;
+                    
+                    finalHTML += `<div class="animate-fade-in-up ${wrapperClass}">${buttonsHTML}</div>`;
                     container.innerHTML = finalHTML;
                     break;
+                    
                 case 'text':
                 case 'tel':
-                    container.innerHTML = `<form onsubmit="handleUserAction('form', {event: event, nextStep: '${step.nextStep}', variable: '${step.variable}', validation: '${step.validation}'})" class="flex space-x-2 animate-pop-in"><input type="${step.type}" id="text-input" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-buzios-mar" placeholder="${step.placeholder}"><button type="submit" class="action-button bg-buzios-mar text-white font-bold px-5 py-3 rounded-lg hover:bg-buzios-mar/90">OK</button></form>`;
-                    document.getElementById('text-input').focus();
+                    container.innerHTML = `
+                        <form onsubmit="handleUserAction('form', {event: event, nextStep: '${step.nextStep}', variable: '${step.variable}', validation: '${step.validation}'})" 
+                              class="flex space-x-3 animate-fade-in-up">
+                            <input type="${step.type}" 
+                                   id="text-input" 
+                                   required 
+                                   class="input-field flex-1 px-4 py-3 rounded-xl" 
+                                   placeholder="${step.placeholder}">
+                            <button type="submit" 
+                                    class="action-button text-white font-bold px-6 py-3 rounded-xl">
+                                OK
+                            </button>
+                        </form>`;
+                    
+                    setTimeout(() => document.getElementById('text-input').focus(), 100);
                     break;
+                    
                 case 'final':
                     addMessageToChat(context.proposal, 'ai');
-                    container.innerHTML = `<div class="text-center animate-pop-in"><p class="text-sm text-gray-600 mb-2">Sua proposta foi gerada! O que deseja fazer agora?</p><button onclick="handleRestart()" class="action-button bg-buzios-mar text-white font-bold px-6 py-3 rounded-lg">🔁 Começar uma nova conversa</button></div>`;
+                    container.innerHTML = `
+                        <div class="text-center animate-fade-in-up space-y-4">
+                            <p class="text-sm text-gray-600">Sua proposta foi gerada! O que deseja fazer agora?</p>
+                            <button onclick="handleRestart()" 
+                                    class="action-button text-white font-bold px-8 py-3 rounded-xl">
+                                🔁 Começar uma nova conversa
+                            </button>
+                        </div>`;
                     break;
             }
+            
             if (!isPortalStep) scrollToBottom();
         }
 
         function handleUserAction(type, data) {
             if (state.isWaitingForResponse) return;
+            
             disableAllInputs(true);
             pushHistory();
 
             if (state.currentStepId === 'start' && type === 'button') {
-                // Aciona a animação da assinatura
-                animatedSignature.classList.add('visible');
-
-                introPortal.style.opacity = '0';
+                ELEMENTS.animatedSignature.classList.add('visible');
+                
+                ELEMENTS.introPortal.style.opacity = '0';
                 setTimeout(() => {
-                    introPortal.style.display = 'none';
-                    appContainer.classList.remove('hidden');
-                    appContainer.classList.add('flex');
+                    ELEMENTS.introPortal.style.display = 'none';
+                    ELEMENTS.appContainer.classList.remove('hidden');
+                    ELEMENTS.appContainer.classList.add('flex');
                 }, 800);
             }
 
@@ -810,6 +1143,7 @@
                 const input = document.getElementById('text-input');
                 const originalPlaceholder = input.placeholder;
                 value = input.value.trim();
+                
                 const validationType = data.validation;
                 let isValid = true;
                 let errorMessage = '';
@@ -824,7 +1158,7 @@
                 }
 
                 if (!isValid) {
-                    input.style.borderColor = '#FF6F61';
+                    input.style.borderColor = '#ef4444';
                     input.value = '';
                     input.placeholder = errorMessage;
                     setTimeout(() => {
@@ -835,8 +1169,9 @@
                     return;
                 }
             }
-            
+
             addMessageToChat(value, 'user');
+            
             if (data.variable) {
                 const cleanText = value.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').trim();
                 const lastQuestion = state.chatLog.filter(m => m.sender === 'ai').pop()?.text || 'N/A';
@@ -844,41 +1179,43 @@
                 const userHistory = { ...state.userHistory, [data.variable]: { question: lastQuestion, answer: cleanText } };
                 setState({ userData, userHistory });
             }
+            
             displayStep(data.nextStep);
         }
 
-        // --- CONTROLES DE SESSÃO ---
+        // === CONTROLES DE SESSÃO ===
         function handleRestart() {
-            localStorage.removeItem(SESSION_KEY);
-            init();
+            localStorage.removeItem(CONFIG.SESSION_KEY);
+            location.reload();
         }
-        
+
         function handleGoBack() {
-            if (state.history.length < 2) return; // Não pode voltar do primeiro passo
+            if (state.history.length < 2) return;
+            
             const previousState = state.history[state.history.length - 2];
-            
-            // Sincroniza o estado global com o estado anterior
             state = JSON.parse(JSON.stringify(previousState));
-            
-            // Remove o estado atual do histórico para não voltar para ele
             state.history.pop();
             saveState();
 
-            // Remonta a UI
             rebuildUIFromState();
             displayStep(state.currentStepId);
         }
-        
+
         function updateControls() {
-            backBtn.disabled = state.history.length < 2;
+            ELEMENTS.backBtn.disabled = state.history.length < 2;
+            if (state.history.length < 2) {
+                ELEMENTS.backBtn.classList.add('disabled-state');
+            } else {
+                ELEMENTS.backBtn.classList.remove('disabled-state');
+            }
         }
 
-        // --- INICIALIZAÇÃO E LÓGICA PRINCIPAL ---
         function rebuildUIFromState() {
-            chatWindow.innerHTML = '';
+            ELEMENTS.chatWindow.innerHTML = '';
             state.chatLog.forEach(msg => addMessageToChat(msg.text, msg.sender, true));
         }
 
+        // === BACKEND ===
         async function callBackendForProcessing() {
             const userDataPayload = {
                 nome: state.userData.nome,
@@ -886,14 +1223,18 @@
                 perfil: state.userData.perfil,
                 historico: Object.values(state.userHistory || {})
             };
+            
             console.log("Enviando para processamento:", userDataPayload);
+            
             try {
-                const response = await fetch(GOOGLE_APP_SCRIPT_URL, {
+                const response = await fetch(CONFIG.GOOGLE_APP_SCRIPT_URL, {
                     method: 'POST',
                     body: JSON.stringify({ action: 'processAndSaveDossier', data: userDataPayload }),
                     mode: 'cors',
                 });
+                
                 if (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+                
                 const result = await response.json();
                 if (result.success) {
                     displayStep('final_message', { proposal: result.data.proposta_personalizada });
@@ -906,30 +1247,44 @@
             }
         }
 
+        // === INICIALIZAÇÃO ===
         function init() {
             if (restoreState() && state.currentStepId !== 'start') {
-                introPortal.style.display = 'none';
-                appContainer.classList.remove('hidden');
-                appContainer.classList.add('flex');
-                animatedSignature.classList.add('visible'); // Garante que a assinatura seja visível se a sessão for restaurada
+                ELEMENTS.introPortal.style.display = 'none';
+                ELEMENTS.appContainer.classList.remove('hidden');
+                ELEMENTS.appContainer.classList.add('flex');
+                ELEMENTS.animatedSignature.classList.add('visible');
                 rebuildUIFromState();
                 displayStep(state.currentStepId);
             } else {
-                state = JSON.parse(JSON.stringify(initialState)); // Deep copy
+                state = JSON.parse(JSON.stringify(INITIAL_STATE));
                 saveState();
-                chatWindow.innerHTML = '';
-                appContainer.classList.add('hidden');
-                appContainer.classList.remove('flex');
-                introPortal.style.display = 'flex';
-                introPortal.style.opacity = '1';
-                animatedSignature.classList.remove('visible'); // Garante que a assinatura comece invisível
+                ELEMENTS.chatWindow.innerHTML = '';
+                ELEMENTS.appContainer.classList.add('hidden');
+                ELEMENTS.appContainer.classList.remove('flex');
+                ELEMENTS.introPortal.style.display = 'flex';
+                ELEMENTS.introPortal.style.opacity = '1';
+                ELEMENTS.animatedSignature.classList.remove('visible');
                 createParticles();
-                cyclePhrases(); // Inicia o ciclo de frases
+                cyclePhrases();
                 displayStep('start');
             }
         }
 
-        document.addEventListener('DOMContentLoaded', init);
+        // === EVENT LISTENERS ===
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            init();
+        });
+
+        // Performance optimization
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                clearTimeout(typingTimeout);
+            } else if (!document.hidden && ELEMENTS.introPortal.style.display !== 'none') {
+                cyclePhrases();
+            }
+        });
     </script>
 </body>
 </html>
