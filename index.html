@@ -82,19 +82,202 @@
 
         /* Estilos do Chat */
         .bg-buzios-mar { background-color: #0077B6; }
-        .chat-bubble { max-width: 85%; padding: 12px 18px; border-radius: 20px; margin-bottom: 8px; opacity: 0; transform: translateY(20px); animation: pop-in 0.5s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94); line-height: 1.6; }
-        .chat-bubble.ai { background-color: #FFFFFF; color: #374151; border-bottom-left-radius: 4px; align-self: flex-start; box-shadow: 0 4px 15px rgba(0,0,0,0.07); }
-        .chat-bubble.user { background-color: #0077B6; color: white; border-bottom-right-radius: 4px; align-self: flex-end; }
+        
+        /* Chat com sombra de profundidade e espaçamento generoso */
+        .chat-bubble { 
+            max-width: 85%; 
+            padding: 16px 22px; 
+            border-radius: 24px; 
+            margin-bottom: 12px; 
+            margin-left: 16px;
+            margin-right: 16px;
+            opacity: 0; 
+            transform: translateY(20px); 
+            animation: pop-in 0.5s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+            line-height: 1.7; 
+            font-size: 16px;
+            letter-spacing: 0.01em;
+        }
+        
+        .chat-bubble.ai { 
+            background-color: #FFFFFF; 
+            color: #374151; 
+            border-bottom-left-radius: 8px; 
+            align-self: flex-start; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+        
+        .chat-bubble.user { 
+            background-color: #0077B6; 
+            color: white; 
+            border-bottom-right-radius: 8px; 
+            align-self: flex-end; 
+            box-shadow: 0 6px 20px rgba(0, 119, 182, 0.15);
+        }
+        
+        /* Mensagem especial da IA */
+        .chat-bubble.ai.welcome-message {
+            background: linear-gradient(135deg, #f8faff 0%, #ffffff 100%);
+            border: 2px solid #e0e7ff;
+            box-shadow: 0 12px 30px rgba(139, 92, 246, 0.1), 0 4px 12px rgba(0,0,0,0.05);
+            position: relative;
+            padding-left: 60px;
+        }
+        
+        .chat-bubble.ai.welcome-message::before {
+            content: "💡";
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+        }
+        
         .typing-indicator span { height: 8px; width: 8px; margin: 0 2px; background-color: #9ca3af; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; }
         .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
         .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
         @keyframes pop-in { to { opacity: 1; transform: translateY(0); } }
-        .option-button { transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; }
-        .option-button:hover:not(:disabled) { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0, 119, 182, 0.15); }
+        
+        .option-button { 
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; 
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .option-button:hover:not(:disabled) { 
+            transform: translateY(-4px); 
+            box-shadow: 0 12px 25px rgba(0, 119, 182, 0.12);
+        }
         .option-button:disabled, .action-button:disabled, .control-button:disabled { cursor: not-allowed; opacity: 0.5; }
         .control-button { transition: color 0.2s; }
         .control-button:hover:not(:disabled) { color: #0077B6; }
+        .control-button:disabled { opacity: 0.3; }
+        .control-button:not(:disabled) { 
+            background: rgba(0, 119, 182, 0.05);
+            border-radius: 8px;
+            padding: 4px 8px;
+        }
+        
+        /* Área de confirmação compacta */
+        .confirmation-area {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #bae6fd;
+            border-radius: 16px;
+            padding: 16px;
+            margin: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .confirmation-area .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        
+        .confirmation-area .close-btn:hover {
+            background: rgba(0,0,0,0.05);
+            color: #374151;
+        }
+        
+        .instagram-button {
+            background: linear-gradient(135deg, #0095f6 0%, #0081d6 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 149, 246, 0.3);
+        }
+        
+        .instagram-button:hover {
+            background: linear-gradient(135deg, #0081d6 0%, #0066b3 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 149, 246, 0.4);
+        }
+        
+        /* Resumo visual no topo */
+        .status-bar {
+            background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%);
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        /* Responsividade melhorada */
+        @media (max-width: 768px) {
+            #app-container {
+                padding: 8px;
+            }
+            
+            .chat-bubble {
+                max-width: 92%;
+                margin-left: 8px;
+                margin-right: 8px;
+                padding: 14px 18px;
+                font-size: 15px;
+            }
+            
+            .confirmation-area {
+                margin: 12px 8px;
+                padding: 14px;
+            }
+            
+            .instagram-button {
+                padding: 14px 16px;
+                font-size: 15px;
+            }
+            
+            .status-bar {
+                padding: 10px 12px;
+                font-size: 13px;
+                flex-direction: column;
+                gap: 4px;
+            }
+            
+            .option-button {
+                padding: 16px 14px;
+                font-size: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            #app-container {
+                padding: 4px;
+            }
+            
+            .chat-bubble {
+                max-width: 95%;
+                margin-left: 4px;
+                margin-right: 4px;
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+            
+            .status-bar {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body class="antialiased text-gray-800">
@@ -124,8 +307,18 @@
     </div>
     
     <!-- Container do Chat (Carregado, mas escondido) -->
-    <div id="app-container" class="w-full h-screen flex-col items-center justify-center p-4 bg-gray-100 hidden">
+    <div id="app-container" class="w-full h-screen flex-col items-center justify-center p-6 bg-gray-100 hidden">
         <div class="w-full max-w-lg h-full max-h-[800px] flex flex-col bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl shadow-gray-300/40 overflow-hidden border border-gray-200/50">
+            <!-- Resumo visual no topo -->
+            <div class="status-bar">
+                <span>🤖</span>
+                <span>Você está conversando com a IA da Conexão Búzios</span>
+                <span>•</span>
+                <span>Atendimento 24h</span>
+                <span>•</span>
+                <span>Respostas Personalizadas</span>
+            </div>
+            
             <header class="flex items-center justify-between p-4 border-b border-gray-200/80 bg-white/50">
                 <div class="flex items-center space-x-3">
                     <div class="w-12 h-12 rounded-full bg-buzios-mar flex items-center justify-center">
@@ -298,14 +491,26 @@
             }
         }
 
-        function addMessageToChat(text, sender, isRestored = false) {
+        function addMessageToChat(text, sender, isRestored = false, isWelcomeMessage = false) {
             const animationClass = isRestored ? '' : 'animate-pop-in';
+            const welcomeClass = isWelcomeMessage ? 'welcome-message' : '';
             const sanitizedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
-            chatWindow.insertAdjacentHTML('beforeend', `<div class="chat-bubble ${sender} ${animationClass}">${sanitizedText}</div>`);
+            chatWindow.insertAdjacentHTML('beforeend', `<div class="chat-bubble ${sender} ${animationClass} ${welcomeClass}">${sanitizedText}</div>`);
             if (!isRestored) {
-                setState({ chatLog: [...state.chatLog, { text, sender }] });
+                setState({ chatLog: [...state.chatLog, { text, sender, isWelcomeMessage }] });
             }
             scrollToBottom();
+        }
+        
+        function closeConfirmationArea() {
+            const confirmationArea = document.getElementById('confirmation-area');
+            if (confirmationArea) {
+                confirmationArea.style.opacity = '0';
+                confirmationArea.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    confirmationArea.remove();
+                }, 300);
+            }
         }
         
         function scrollToBottom() { chatWindow.scrollTop = chatWindow.scrollHeight; }
@@ -329,7 +534,7 @@
             targetContainer.innerHTML = '';
             
             if (isPortalStep) {
-                if(state.chatLog.length === 0) addMessageToChat(step.message, 'ai');
+                if(state.chatLog.length === 0) addMessageToChat(step.message, 'ai', false, true);
             } else {
                 showTypingIndicator(true);
             }
@@ -364,9 +569,9 @@
                     if (isPortalStep) {
                         finalHTML += `<p class="text-white/70 text-sm mb-4 animate-pop-in">Para começar, escolha seu perfil abaixo:</p>`;
                     }
-                    const wrapperClass = isPortalStep ? 'flex flex-col sm:flex-row gap-4' : '';
+                    const wrapperClass = isPortalStep ? 'flex flex-col sm:flex-row gap-4 max-w-md mx-auto' : '';
                     const buttonClass = isPortalStep 
-                        ? 'portal-action-button text-white font-semibold px-6 py-3 rounded-lg w-full sm:w-auto' 
+                        ? 'portal-action-button text-white font-semibold px-8 py-4 rounded-lg w-full sm:w-auto text-center' 
                         : 'option-button w-full text-left p-4 mb-2 bg-white rounded-xl border border-gray-200 hover:border-buzios-mar focus:outline-none focus:ring-2 focus:ring-buzios-mar/50';
                     const buttonsHTML = step.options.map(opt => 
                         `<button onclick="handleUserAction('button', {text: '${opt.text}', nextStep: '${opt.nextStep}', variable: '${step.variable}'})" class="${buttonClass}">
@@ -383,7 +588,28 @@
                     break;
                 case 'final':
                     addMessageToChat(context.proposal, 'ai');
-                    container.innerHTML = `<div class="text-center animate-pop-in"><p class="text-sm text-gray-600 mb-2">Sua proposta foi gerada! O que deseja fazer agora?</p><button onclick="handleRestart()" class="action-button bg-buzios-mar text-white font-bold px-6 py-3 rounded-lg">🔁 Começar uma nova conversa</button></div>`;
+                    container.innerHTML = `
+                        <div id="confirmation-area" class="confirmation-area animate-pop-in">
+                            <button onclick="closeConfirmationArea()" class="close-btn">
+                                <i data-lucide="x" class="w-4 h-4"></i>
+                            </button>
+                            <div class="text-center mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-2">✨ Proposta Gerada com Sucesso!</h3>
+                                <p class="text-sm text-gray-600">Sua proposta personalizada está pronta!</p>
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                                <a href="https://www.instagram.com/conexao.buzios/" target="_blank" rel="noopener noreferrer" class="instagram-button flex-1 sm:flex-none">
+                                    <span>📲</span>
+                                    <span>Falar Agora pelo Instagram</span>
+                                </a>
+                                <button onclick="handleRestart()" class="action-button bg-buzios-mar text-white font-bold px-6 py-3 rounded-lg hover:bg-buzios-mar/90 transition-all flex-1 sm:flex-none">
+                                    <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>
+                                    Reiniciar
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    lucide.createIcons();
                     break;
             }
             if (!isPortalStep) scrollToBottom();
@@ -480,7 +706,7 @@
         // --- INICIALIZAÇÃO E LÓGICA PRINCIPAL ---
         function rebuildUIFromState() {
             chatWindow.innerHTML = '';
-            state.chatLog.forEach(msg => addMessageToChat(msg.text, msg.sender, true));
+            state.chatLog.forEach(msg => addMessageToChat(msg.text, msg.sender, true, msg.isWelcomeMessage));
         }
 
         async function callBackendForProcessing() {
