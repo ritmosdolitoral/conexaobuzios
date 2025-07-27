@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conexão Búzios - Seu Concierge Virtual</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e293b 100%);
+            overflow: hidden; 
+        }
+        
+        /* Estilos do Portal de IA */
+        #ai-intro-portal {
+            background: radial-gradient(ellipse at bottom, #1e3a8a 0%, #020617 70%);
+            transition: opacity 0.8s ease-in-out;
+            position: relative;
+        }
+
+        /* Efeito de ondas animadas no fundo */
+        .wave {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            animation: wave 8s ease-in-out infinite;
+        }
+        
+        .wave:nth-child(2) {
+            animation-delay: -2s;
+            animation-duration: 12s;
+        }
+        
+        .wave:nth-child(3) {
+            animation-delay: -4s;
+            animation-duration: 16s;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: translateX(-100%) skewX(15deg); }
+            50% { transform: translateX(100%) skewX(15deg); }
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            animation: float 25s infinite linear;
+            filter: blur(1px);
+        }
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.15; }
+            100% { transform: translateY(-100vh) translateX(20vw) rotate(360deg); opacity: 0; }
+        }
+        
+        .text-glow {
+            text-shadow: 0 0 8px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .cursor { 
+            animation: blink 1s step-end infinite; 
+            color: #3b82f6;
+        }
+        @keyframes blink { 50% { color: transparent; } }
+        
+        /* Animação de pulso melhorada para os botões */
+        @keyframes pulse-light {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 25px 8px rgba(59, 130, 246, 0.15);
+            }
+        }
+        
+        .portal-action-button {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(147, 197, 253, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: pulse-light 3s infinite cubic-bezier(0.4, 0, 0.6, 1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .portal-action-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+        
+        .portal-action-button:hover::before {
+            left: 100%;
+        }
+        
+        .portal-action-button:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(147, 197, 253, 0.2));
+            transform: translateY(-3px) scale(1.02);
+            animation-play-state: paused;
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Estilos da Assinatura Animada */
+        #animated-signature {
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+        #animated-signature.visible {
+            opacity: 1;
+        }
+        #animated-signature.visible .sig-part {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(15px);
+            animation: fadeInUp 0.8s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        #animated-signature.visible .sig-part-2 {
+            animation-delay: 0.4s;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Estilos do Chat melhorados */
+        .bg-buzios-mar { 
+            background: linear-gradient(135deg, #0077B6, #00b4d8); 
+        }
+        
+        .chat-bubble { 
+            max-width: 85%; 
+            padding: 14px 20px; 
+            border-radius: 24px; 
+            margin-bottom: 12px; 
+            opacity: 0; 
+            transform: translateY(20px); 
+            animation: pop-in 0.6s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+            line-height: 1.6;
+            position: relative;
+        }
+        
+        .chat-bubble.ai { 
+            background: linear-gradient(135deg, #ffffff, #f8fafc); 
+            color: #374151; 
+            border-bottom-left-radius: 8px; 
+            align-self: flex-start; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .chat-bubble.user { 
+            background: linear-gradient(135deg, #0077B6, #0096c7); 
+            color: white; 
+            border-bottom-right-radius: 8px; 
+            align-self: flex-end;
+            box-shadow: 0 4px 20px rgba(0, 119, 182, 0.3);
+        }
+        
+        .typing-indicator { 
+            background: #f1f5f9 !important;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .typing-indicator span { 
+            height: 10px; 
+            width: 10px; 
+            margin: 0 3px; 
+            background-color: #64748b; 
+            border-radius: 50%; 
+            display: inline-block; 
+            animation: bounce 1.4s infinite ease-in-out both; 
+        }
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes bounce { 
+            0%, 80%, 100% { transform: scale(0); } 
+            40% { transform: scale(1.0); } 
+        }
+        
+        @keyframes pop-in { 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        .option-button { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 119, 182, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .option-button:hover:not(:disabled)::before {
+            left: 100%;
+        }
+        
+        .option-button:hover:not(:disabled) { 
+            transform: translateY(-4px) scale(1.02); 
+            box-shadow: 0 12px 25px rgba(0, 119, 182, 0.2);
+            border-color: #0077B6;
+        }
+        
+        .option-button:disabled, .action-button:disabled, .control-button:disabled { 
+            cursor: not-allowed; 
+            opacity: 0.5; 
+        }
+        
+        .control-button { 
+            transition: all 0.2s;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+        .control-button:hover:not(:disabled) { 
+            color: #0077B6; 
+            background-color: rgba(0, 119, 182, 0.1);
+        }
+
+        /* Melhorias no container principal */
+        #app-container {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        }
+
+        /* Efeito glassmorphism no chat */
+        .chat-container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Animações de entrada melhoradas */
+        .animate-slide-up {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Efeito de digitação mais realista */
+        .typing-effect {
+            border-right: 2px solid #3b82f6;
+            animation: typing 3.5s steps(40, end), blink-cursor 1s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-cursor {
+            from, to { border-color: transparent; }
+            50% { border-color: #3b82f6; }
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+    <!-- Portal de IA (Camada de Introdução) -->
+    <div id="ai-intro-portal" class="h-screen w-full flex-col justify-center items-center text-center p-6 relative overflow-hidden flex">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div id="particle-container" class="absolute inset-0"></div>
+        
+        <!-- Logo/Brand area -->
+        <div class="z-10 mb-8">
+            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center shadow-2xl">
+                <i data-lucide="compass" class="w-10 h-10 text-white"></i>
+            </div>
+        </div>
+        
+        <div class="z-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-6 text-glow">
+                <span id="intro-typing-text"></span><span class="cursor">|</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-blue-200/90 max-w-4xl mx-auto leading-relaxed">
+                Você está falando com a <strong class="font-semibold text-white">IA do Conexão Búzios</strong>. 
+                <br class="hidden sm:block">
+                Suas respostas me guiam até a proposta perfeita para você.
+            </p>
+        </div>
+        <div id="portal-actions" class="mt-12 z-10 w-full max-w-2xl"></div>
+        
+        <!-- Assinatura Animada (Inicialmente Oculta) -->
+        <div id="animated-signature" class="absolute bottom-8 w-full text-center text-sm text-white/60 font-light">
+            <span class="sig-part sig-part-1">
+                Um projeto <a href="https://www.instagram.com/conexao.buzios/" target="_blank" rel="noopener noreferrer" class="font-medium text-white/80 hover:text-white transition-colors duration-300 hover:underline">Conexão Búzios</a>
+            </span>
+            <span class="sig-part sig-part-2">
+                • Potencializado pela IA Gemini ✨
+            </span>
+        </div>
+    </div>
+    
+    <!-- Container do Chat (Carregado, mas escondido) -->
+    <div id="app-container" class="w-full h-screen flex-col items-center justify-center p-4 hidden">
+        <div class="w-full max-w-lg h-full max-h-[800px] flex flex-col chat-container rounded-3xl shadow-2xl overflow-hidden animate-slide-up">
+            <header class="flex items-center justify-between p-6 border-b border-gray-200/50 bg-white/70">
+                <div class="flex items-center space-x-4">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center shadow-lg">
+                        <i data-lucide="compass" class="h-8 w-8 text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">Conexão Búzios</h1>
+                        <p class="text-sm text-gray-500 flex items-center">
+                            <span class="h-2 w-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                            IA Online
+                        </p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-xs text-gray-400">Seu Concierge</div>
+                    <div class="text-xs text-gray-400">Pessoal em Búzios</div>
+                </div>
+            </header>
+            <main id="chat-window" class="flex-1 p-6 flex flex-col space-y-4 overflow-y-auto bg-gradient-to-b from-gray-50/50 to-white/30"></main>
+            <footer id="input-area" class="p-4 bg-white/70 border-t border-gray-200/50"></footer>
+            <div id="session-controls" class="p-3 text-center bg-gray-100/70 border-t border-gray-200/50">
+                <p class="text-xs text-gray-500 mb-2">Você está conversando com a IA Gemini.</p>
+                <div class="flex justify-center items-center space-x-6">
+                    <button onclick="handleGoBack()" id="back-btn" class="control-button text-xs text-gray-600 font-medium flex items-center gap-2">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar
+                    </button>
+                    <button onclick="handleRestart()" class="control-button text-xs text-gray-600 font-medium flex items-center gap-2">
+                        <i data-lucide="refresh-cw" class="w-4 h-4"></i> Reiniciar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // --- ELEMENTOS DA DOM ---
+        const introPortal = document.getElementById('ai-intro-portal');
+        const appContainer = document.getElementById('app-container');
+        const portalActions = document.getElementById('portal-actions');
+        const typingTextEl = document.getElementById('intro-typing-text');
+        const chatWindow = document.getElementById('chat-window');
+        const inputArea = document.getElementById('input-area');
+        const backBtn = document.getElementById('back-btn');
+        const animatedSignature = document.getElementById('animated-signature');
+        lucide.createIcons();
+
+        // --- CONFIGURAÇÕES ---
+        const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHC3bAoL_c5rscJV2xbwVi9KMedM3QHbWCZ3bo64w0DbiMGOtnahL9BynJ5ADao63I/exec";
+        const SESSION_KEY = 'conexaoBuziosSession';
+
+        // --- ESTADO DA APLICAÇÃO ---
+        let state = {};
+
+        const initialState = {
+            history: [],
+            chatLog: [],
+            currentStepId: 'start',
+            isWaitingForResponse: false,
+            userData: {},
+            userHistory: {}
+        };
+        
+        // --- LÓGICA DO PORTAL ---
+        const portalPhrases = [
+            "🌟 Olá! Vamos descobrir algo novo?",
+            "✨ Imagine se sua busca terminasse aqui...",
+            "🔮 O que você realmente deseja encontrar?",
+            "🧠 Estou analisando as possibilidades para você.",
+            "💫 Sinto que algo incrível está por vir.",
+            "🏖️ Búzios tem segredos esperando por você...",
+            "🗝️ Cada resposta sua me aproxima da solução perfeita."
+        ];
+        let phraseIndex = 0;
+        let typingTimeout;
+        let particleInterval;
+
+        // --- FLUXO DE CONVERSA ---
+        const conversationFlow = {
+            'start': { message: "Oi! Que bom te ver por aqui! ✨ Sou seu amigo em Búzios, pronto pra te mostrar os segredos da cidade. Para começar, me conta, qual dessas opções combina mais com você?", type: 'buttons', variable: 'perfil', options: [ { text: 'Sou Turista 🏖️', nextStep: 'turista_1' }, { text: 'Sou Morador 🏠', nextStep: 'morador_1' }, { text: 'Quero Divulgar 📢', nextStep: 'divulgador_1' } ] },
+            'turista_1': { message: "Maravilha! Búzios tem uma energia única. Me diz, como está sua viagem agora?", type: 'buttons', variable: 'etapa_1', options: [ { text: 'Já estou aqui curtindo ☀️', nextStep: 'turista_2' }, { text: 'Chego nos próximos dias 🧳', nextStep: 'turista_2' }, { text: 'Estou planejando pra breve 🗓️', nextStep: 'turista_2' }, { text: 'Só explorando ideias por enquanto 🗺️', nextStep: 'turista_2' } ] },
+            'turista_2': { message: "Legal! E quem são as pessoas especiais que vão viver essa aventura com você?", type: 'buttons', variable: 'etapa_2', options: [ { text: '👤 Sozinho(a), na minha própria vibe', nextStep: 'turista_3' }, { text: '❤️ Com meu amor', nextStep: 'turista_3' }, { text: '🍻 Com a galera', nextStep: 'turista_3' }, { text: '👨‍👩‍👧‍👦 Com a família', nextStep: 'turista_3' } ] },
+            'turista_3': { message: "Show! E o seu cantinho pra relaxar? Já tem um lugar ou quer uma ajuda pra encontrar algo com a sua cara?", type: 'buttons', variable: 'etapa_3', options: [ { text: 'Já tenho meu cantinho', nextStep: 'turista_4' }, { text: 'Estou procurando um lugar', nextStep: 'turista_4' }, { text: 'Vou ficar na casa de amigos/família', nextStep: 'turista_4' } ] },
+            'turista_4': { message: "Agora a melhor parte! Feche os olhos e imagine... O que você mais quer sentir aqui em Búzios? ❤️", type: 'buttons', variable: 'etapa_4', options: [ { text: '🗺️ Descobrir lugares secretos', nextStep: 'turista_5' }, { text: '🦞 Comer coisas incríveis', nextStep: 'turista_5' }, { text: '🌙 Curtir a noite e a música', nextStep: 'turista_5' }, { text: '🧘 Relaxar e esquecer do mundo', nextStep: 'turista_5' }, { text: '🤝 Conhecer gente nova', nextStep: 'turista_5' } ] },
+            'turista_5': { message: "Sabe, Búzios encanta tanto que muita gente sonha em ficar... Já passou pela sua cabeça ter um negócio seu por aqui?", type: 'buttons', variable: 'etapa_5', options: [ { text: 'Sim, com certeza!', nextStep: 'turista_6' }, { text: 'Talvez um dia, quem sabe...', nextStep: 'turista_6' }, { text: 'Não, só passeio mesmo', nextStep: 'turista_6' } ] },
+            'turista_6': { message: "Pra eu te dar as dicas certas: qual seu orçamento por dia para curtir a cidade?", type: 'buttons', variable: 'etapa_6', options: [ { text: '💸 Até R$100', nextStep: 'transicao_nome' }, { text: '💵 R$100 a R$300', nextStep: 'transicao_nome' }, { text: '💰 R$300 a R$600', nextStep: 'transicao_nome' }, { text: '💎 Acima de R$600', nextStep: 'transicao_nome' } ] },
+            'morador_1': { message: "E aí, vizinho! Que bom te encontrar. Há quanto tempo Búzios é a sua casa?", type: 'buttons', variable: 'etapa_1', options: [ { text: 'Cheguei há pouco (menos de 1 ano)', nextStep: 'morador_2' }, { text: 'Já sou da área (1 a 3 anos)', nextStep: 'morador_2' }, { text: 'Raiz! (mais de 3 anos)', nextStep: 'morador_2' }, { text: 'Vivo na ponte-aérea', nextStep: 'morador_2' } ] },
+            'morador_2': { message: "Maneiro! E no dia a dia, qual é a sua praia?", type: 'buttons', variable: 'etapa_2', options: [ { text: '🧘 Na paz, lendo um livro na areia', nextStep: 'morador_3' }, { text: '🍻 Gosto de um barzinho e música', nextStep: 'morador_3' }, { text: '👟 Trilha, surf e pé na areia', nextStep: 'morador_3' }, { text: '🎉 Onde tem gente, eu tô!', nextStep: 'morador_3' } ] },
+            'morador_3': { message: "Se você tivesse um superpoder pra melhorar uma coisa em Búzios, o que seria?", type: 'buttons', variable: 'etapa_3', options: [ { text: '🤝 Conectar com mais gente legal', nextStep: 'morador_4' }, { text: '🗓️ Saber de todos os eventos secretos', nextStep: 'morador_4' }, { text: '📢 Fazer meu trabalho bombar!', nextStep: 'morador_4' }, { text: '💎 Ter acesso a dicas e descontos exclusivos', nextStep: 'morador_4' } ] },
+            'morador_4': { message: "Muitos moradores têm talentos incríveis. Você tem algo que gostaria de mostrar pra mais gente?", type: 'buttons', variable: 'etapa_4', options: [ { text: 'Sim, ofereço um serviço', nextStep: 'transicao_nome' }, { text: 'Sim, tenho um imóvel', nextStep: 'transicao_nome' }, { text: 'Sim, vendo um produto', nextStep: 'transicao_nome' }, { text: 'Ainda não, mas tenho uma ideia', nextStep: 'transicao_nome' }, { text: 'Não, só quero curtir mesmo', nextStep: 'transicao_nome' } ] },
+            'divulgador_1': { message: "Vamos fazer sua ideia brilhar! ✨ O que você quer que todo mundo em Búzios conheça?", type: 'buttons', variable: 'etapa_1', options: [ { text: 'Um serviço que eu presto', nextStep: 'divulgador_2' }, { text: 'Um produto que eu vendo', nextStep: 'divulgador_2' }, { text: 'Um imóvel (aluguel/venda)', nextStep: 'divulgador_2' }, { text: 'Um evento ou outra coisa', nextStep: 'divulgador_2' } ] },
+            'divulgador_2': { message: "Legal! E pra quem a gente vai contar essa novidade? Quem vai amar o que você faz?", type: 'buttons', variable: 'etapa_2', options: [ { text: '✈️ Turistas que chegam na cidade', nextStep: 'divulgador_3' }, { text: '🏠 Moradores que já estão aqui', nextStep: 'divulgador_3' }, { text: '🌍 Todo mundo!', nextStep: 'divulgador_3' }, { text: '🤔 Ainda não sei, preciso de ajuda', nextStep: 'divulgador_3' } ] },
+            'divulgador_3': { message: "Todo projeto tem sua jornada. Em que momento o seu está agora?", type: 'buttons', variable: 'etapa_3', options: [ { text: '🌱 Nascendo agora', nextStep: 'divulgador_4' }, { text: '🚀 Dando os primeiros passos', nextStep: 'divulgador_4' }, { text: '💪 Já estou no jogo', nextStep: 'divulgador_4' }, { text: '📈 Quero dominar o mundo!', nextStep: 'divulgador_4' } ] },
+            'divulgador_4': { message: "Pra gente criar uma estratégia que funcione, quanto você pode investir por mês pra ver seu negócio crescer?", type: 'buttons', variable: 'etapa_4', options: [ { text: 'Até R$100', nextStep: 'transicao_nome' }, { text: 'R$100 a R$300', nextStep: 'transicao_nome' }, { text: 'R$300 a R$700', nextStep: 'transicao_nome' }, { text: 'Acima de R$700', nextStep: 'transicao_nome' }, { text: 'Prefiro conversar sobre isso', nextStep: 'transicao_nome' } ] },
+            'transicao_nome': { message: "Perfeito! Estou anotando tudo para criar algo com a sua cara. Antes de te mostrar...", type: 'transition', nextStep: 'ask_name' },
+            'ask_name': { message: "Como eu posso te chamar?", type: 'text', variable: 'nome', placeholder: 'Seu nome...', nextStep: 'ask_phone', validation: 'text' },
+            'ask_phone': { message: "E se eu encontrar aquela oportunidade única, em qual WhatsApp posso te mandar um alô? 📲", type: 'tel', variable: 'telefone', placeholder: 'Seu melhor WhatsApp...', nextStep: 'generate_proposal', validation: 'phone' },
+            'generate_proposal': { message: "Conectando os pontos... Estou criando algo realmente especial pra você. Só um instante! 🔮", type: 'loading', action: 'callBackendForProcessing' },
+            'final_message': { type: 'final' },
+            'error_state': { message: "Ops! Tive um probleminha aqui. Minha conexão com a criatividade falhou. 😅 Que tal tentarmos de novo?", type: 'buttons', options: [ { text: 'Tentar novamente', nextStep: 'generate_proposal' }, { text: 'Reiniciar conversa', action: 'handleRestart' } ] }
+        };
+
+        // --- FUNÇÕES DE CONTROLE DE ESTADO ---
+        function saveState() {
+            try {
+                localStorage.setItem(SESSION_KEY, JSON.stringify(state));
+            } catch (e) {
+                console.warn("Não foi possível salvar a sessão:", e);
+            }
+        }
+
+        function restoreState() {
+            try {
+                const savedState = localStorage.getItem(SESSION_KEY);
+                if (savedState) {
+                    state = JSON.parse(savedState);
+                    return true;
+                }
+                return false;
+            } catch (e) {
+                console.warn("Não foi possível restaurar a sessão. Começando uma nova.", e);
+                localStorage.removeItem(SESSION_KEY);
+                return false;
+            }
+        }
+
+        function setState(newState) {
+            state = { ...state, ...newState };
+            saveState();
+        }
+
+        function pushHistory() {
+            const currentStateSnapshot = JSON.parse(JSON.stringify(state)); // Deep copy
+            const newHistory = [...(state.history || []), currentStateSnapshot];
+            setState({ history: newHistory });
+        }
+
+        // --- FUNÇÕES DE UI E ANIMAÇÃO ---
+        function typeWriter(text, i = 0, onComplete) {
+            clearTimeout(typingTimeout);
+            if (i < text.length) {
+                typingTextEl.innerHTML = text.substring(0, i + 1);
+                typingTimeout = setTimeout(() => typeWriter(text, i + 1, onComplete), 65);
+            } else if (onComplete) {
+                onComplete();
+            }
+        }
+
+        function cyclePhrases() {
+            typeWriter(portalPhrases[phraseIndex], 0, () => {
+                typingTimeout = setTimeout(() => {
+                    phraseIndex = (phraseIndex + 1) % portalPhrases.length;
+                    cyclePhrases();
+                }, 4000); // Wait 4 seconds before showing the next phrase
+            });
+        }
+
+        function createParticles() {
+            const container = document.getElementById('particle-container');
+            if (container.children.length > 0) return;
+            
+            // Criar partículas iniciais
+            for (let i = 0; i < 30; i++) {
+                createSingleParticle(container);
+            }
+            
+            // Criar novas partículas periodicamente
+            particleInterval = setInterval(() => {
+                if (container.children.length < 50) {
+                    createSingleParticle(container);
+                }
+                // Remove partículas antigas
+                const particles = container.children;
+                if (particles.length > 60) {
+                    container.removeChild(particles[0]);
+                }
+            }, 2000);
+        }
+
+        function createSingleParticle(container) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            const size = Math.random() * 6 + 2;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+            particle.style.animationDuration = `${Math.random() * 20 + 15}s`;
+            particle.style.animationDelay = `${Math.random() * 3}s`;
+            
+            // Adicionar cores variadas
+            const colors = [
+                'rgba(59, 130, 246, 0.2)',
+                'rgba(147, 197, 253, 0.15)',
+                'rgba(219, 234, 254, 0.1)',
+                'rgba(255, 255, 255, 0.15)'
+            ];
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            
+            container.appendChild(particle);
+        }
+
+        function showTypingIndicator(show) {
+            const existing = document.getElementById('typing-indicator');
+            if (existing) existing.remove();
+            if (show) {
+                chatWindow.insertAdjacentHTML('beforeend', `<div id="typing-indicator" class="chat-bubble ai typing-indicator"><span></span><span></span><span></span></div>`);
+                scrollToBottom();
+            }
+        }
+
+        function addMessageToChat(text, sender, isRestored = false) {
+            const animationClass = isRestored ? '' : 'animate-pop-in';
+            const sanitizedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
+            chatWindow.insertAdjacentHTML('beforeend', `<div class="chat-bubble ${sender} ${animationClass}">${sanitizedText}</div>`);
+            if (!isRestored) {
+                setState({ chatLog: [...state.chatLog, { text, sender }] });
+            }
+            scrollToBottom();
+        }
+        
+        function scrollToBottom() { chatWindow.scrollTop = chatWindow.scrollHeight; }
+
+        function disableAllInputs(shouldDisable) {
+            const elements = document.querySelectorAll('#portal-actions button, #input-area button, #input-area input');
+            elements.forEach(el => el.disabled = shouldDisable);
+            setState({ isWaitingForResponse: shouldDisable });
+        }
+
+        // --- LÓGICA DA CONVERSA ---
+        function displayStep(stepId, context = {}) {
+            const step = conversationFlow[stepId];
+            if (!step) {
+                console.error(`Passo "${stepId}" não encontrado.`);
+                return;
+            }
+            setState({ currentStepId: stepId });
+            const isPortalStep = stepId === 'start';
+            const targetContainer = isPortalStep ? portalActions : inputArea;
+            targetContainer.innerHTML = '';
+            
+            if (isPortalStep) {
+                if(state.chatLog.length === 0) addMessageToChat(step.message, 'ai');
+            } else {
+                showTypingIndicator(true);
+            }
+
+            setTimeout(() => {
+                if (!isPortalStep) {
+                    showTypingIndicator(false);
+                    if (step.message) addMessageToChat(step.message, 'ai');
+                }
+                renderInputs(step, context, targetContainer);
+                const isAutoStep = step.type === 'loading' || step.type === 'transition';
+                if (isAutoStep) {
+                    if (typeof step.action === 'string') {
+                        window[step.action](); // Chama a função de backend
+                    } else if (typeof step.action === 'function') {
+                        step.action();
+                    } else {
+                        displayStep(step.nextStep);
+                    }
+                } else {
+                    disableAllInputs(false);
+                }
+                updateControls();
+            }, isPortalStep ? 100 : 1200);
+        }
+
+        function renderInputs(step, context, container) {
+            const isPortalStep = state.currentStepId === 'start';
+            switch (step.type) {
+                case 'buttons':
+                    let finalHTML = '';
+                    if (isPortalStep) {
+                        finalHTML += `<p class="text-white/80 text-lg mb-6 animate-pop-in">🎯 Para começar, escolha seu perfil abaixo:</p>`;
+                    }
+                    const wrapperClass = isPortalStep ? 'grid grid-cols-1 sm:grid-cols-3 gap-4' : 'space-y-3';
+                    const buttonClass = isPortalStep 
+                        ? 'portal-action-button text-white font-semibold px-8 py-4 rounded-2xl w-full text-center text-lg' 
+                        : 'option-button w-full text-left p-5 mb-3 bg-white rounded-2xl border border-gray-200 hover:border-buzios-mar focus:outline-none focus:ring-2 focus:ring-buzios-mar/50 shadow-sm';
+                    const buttonsHTML = step.options.map((opt, index) => {
+                        const delay = isPortalStep ? `style="animation-delay: ${index * 150}ms"` : '';
+                        return `<button onclick="handleUserAction('button', {text: '${opt.text}', nextStep: '${opt.nextStep}', variable: '${step.variable}'})" class="${buttonClass} animate-pop-in" ${delay}>
+                            <span class="block text-center">${opt.text}</span>
+                         </button>`;
+                    }).join('');
+                    finalHTML += `<div class="${wrapperClass}">${buttonsHTML}</div>`;
+                    container.innerHTML = finalHTML;
+                    break;
+                case 'text':
+                case 'tel':
+                    container.innerHTML = `<form onsubmit="handleUserAction('form', {event: event, nextStep: '${step.nextStep}', variable: '${step.variable}', validation: '${step.validation}'})" class="flex space-x-3 animate-pop-in">
+                        <input type="${step.type}" id="text-input" required class="flex-1 px-5 py-4 rounded-2xl border-2 border-gray-300 focus:outline-none focus:border-buzios-mar focus:ring-4 focus:ring-buzios-mar/20 transition-all duration-300 text-lg" placeholder="${step.placeholder}">
+                        <button type="submit" class="action-button bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold px-8 py-4 rounded-2xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </button>
+                    </form>`;
+                    setTimeout(() => {
+                        document.getElementById('text-input').focus();
+                        lucide.createIcons();
+                    }, 100);
+                    break;
+                case 'final':
+                    addMessageToChat(context.proposal, 'ai');
+                    container.innerHTML = `<div class="text-center animate-pop-in space-y-4">
+                        <div class="bg-green-100 border border-green-300 rounded-2xl p-4">
+                            <p class="text-green-800 font-semibold mb-2">✅ Sua proposta personalizada foi criada!</p>
+                            <p class="text-green-700 text-sm">Nossa IA analisou suas respostas e gerou uma experiência única para você.</p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                            <button onclick="copyProposal()" class="action-button bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold px-6 py-3 rounded-2xl hover:from-green-600 hover:to-emerald-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                                📋 Copiar Proposta
+                            </button>
+                            <button onclick="handleRestart()" class="action-button bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold px-6 py-3 rounded-2xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                                🔁 Nova Conversa
+                            </button>
+                        </div>
+                    </div>`;
+                    break;
+            }
+            if (!isPortalStep) scrollToBottom();
+        }
+
+        function handleUserAction(type, data) {
+            if (state.isWaitingForResponse) return;
+            disableAllInputs(true);
+            pushHistory();
+
+            if (state.currentStepId === 'start' && type === 'button') {
+                // Aciona a animação da assinatura
+                animatedSignature.classList.add('visible');
+
+                introPortal.style.opacity = '0';
+                setTimeout(() => {
+                    introPortal.style.display = 'none';
+                    appContainer.classList.remove('hidden');
+                    appContainer.classList.add('flex');
+                }, 800);
+            }
+
+            let value;
+            if (type === 'button') {
+                value = data.text;
+            } else if (type === 'form') {
+                data.event.preventDefault();
+                const input = document.getElementById('text-input');
+                const originalPlaceholder = input.placeholder;
+                value = input.value.trim();
+                const validationType = data.validation;
+                let isValid = true;
+                let errorMessage = '';
+
+                if (validationType === 'text' && value.length < 2) {
+                    isValid = false;
+                    errorMessage = 'Por favor, insira um nome válido.';
+                }
+                if (validationType === 'phone' && value.replace(/\D/g, '').length < 9) {
+                    isValid = false;
+                    errorMessage = 'Por favor, insira um telefone válido.';
+                }
+
+                if (!isValid) {
+                    input.style.borderColor = '#FF6F61';
+                    input.value = '';
+                    input.placeholder = errorMessage;
+                    setTimeout(() => {
+                        input.style.borderColor = '';
+                        input.placeholder = originalPlaceholder;
+                    }, 2500);
+                    disableAllInputs(false);
+                    return;
+                }
+            }
+            
+            addMessageToChat(value, 'user');
+            if (data.variable) {
+                const cleanText = value.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').trim();
+                const lastQuestion = state.chatLog.filter(m => m.sender === 'ai').pop()?.text || 'N/A';
+                const userData = { ...state.userData, [data.variable]: cleanText };
+                const userHistory = { ...state.userHistory, [data.variable]: { question: lastQuestion, answer: cleanText } };
+                setState({ userData, userHistory });
+            }
+            displayStep(data.nextStep);
+        }
+
+        // --- CONTROLES DE SESSÃO ---
+        function copyProposal() {
+            const lastAIMessage = state.chatLog.filter(msg => msg.sender === 'ai').pop();
+            if (lastAIMessage) {
+                navigator.clipboard.writeText(lastAIMessage.text).then(() => {
+                    // Feedback visual
+                    const button = event.target;
+                    const originalText = button.innerHTML;
+                    button.innerHTML = '✅ Copiado!';
+                    button.disabled = true;
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                    }, 2000);
+                }).catch(() => {
+                    alert('Não foi possível copiar. Tente selecionar o texto manualmente.');
+                });
+            }
+        }
+
+        function handleRestart() {
+            // Adicionar efeito de confirmação
+            if (confirm('Deseja realmente iniciar uma nova conversa? Todas as informações atuais serão perdidas.')) {
+                // Limpar intervalos
+                if (particleInterval) {
+                    clearInterval(particleInterval);
+                }
+                if (typingTimeout) {
+                    clearTimeout(typingTimeout);
+                }
+                
+                localStorage.removeItem(SESSION_KEY);
+                
+                // Animação de saída suave
+                appContainer.style.opacity = '0';
+                setTimeout(() => {
+                    init();
+                }, 300);
+            }
+        }
+        
+        function handleGoBack() {
+            if (state.history.length < 2) return; // Não pode voltar do primeiro passo
+            const previousState = state.history[state.history.length - 2];
+            
+            // Sincroniza o estado global com o estado anterior
+            state = JSON.parse(JSON.stringify(previousState));
+            
+            // Remove o estado atual do histórico para não voltar para ele
+            state.history.pop();
+            saveState();
+
+            // Remonta a UI
+            rebuildUIFromState();
+            displayStep(state.currentStepId);
+        }
+        
+        function updateControls() {
+            backBtn.disabled = state.history.length < 2;
+        }
+
+        // --- INICIALIZAÇÃO E LÓGICA PRINCIPAL ---
+        function rebuildUIFromState() {
+            chatWindow.innerHTML = '';
+            state.chatLog.forEach(msg => addMessageToChat(msg.text, msg.sender, true));
+        }
+
+        async function callBackendForProcessing() {
+            const userDataPayload = {
+                nome: state.userData.nome,
+                telefone: state.userData.telefone,
+                perfil: state.userData.perfil,
+                historico: Object.values(state.userHistory || {})
+            };
+            console.log("Enviando para processamento:", userDataPayload);
+            try {
+                const response = await fetch(GOOGLE_APP_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'processAndSaveDossier', data: userDataPayload }),
+                    mode: 'cors',
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+                const result = await response.json();
+                if (result.success) {
+                    displayStep('final_message', { proposal: result.data.proposta_personalizada });
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                console.error("Falha na comunicação com o backend:", error);
+                displayStep('error_state');
+            }
+        }
+
+        function init() {
+            if (restoreState() && state.currentStepId !== 'start') {
+                introPortal.style.display = 'none';
+                appContainer.classList.remove('hidden');
+                appContainer.classList.add('flex');
+                animatedSignature.classList.add('visible'); // Garante que a assinatura seja visível se a sessão for restaurada
+                rebuildUIFromState();
+                displayStep(state.currentStepId);
+            } else {
+                state = JSON.parse(JSON.stringify(initialState)); // Deep copy
+                saveState();
+                chatWindow.innerHTML = '';
+                appContainer.classList.add('hidden');
+                appContainer.classList.remove('flex');
+                introPortal.style.display = 'flex';
+                introPortal.style.opacity = '1';
+                animatedSignature.classList.remove('visible'); // Garante que a assinatura comece invisível
+                createParticles();
+                cyclePhrases(); // Inicia o ciclo de frases
+                displayStep('start');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Oportunidades - Conexão Búzios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --color-bg: #0f0f23;
+            --color-surface: #1a1a2e;
+            --color-glass: rgba(30, 41, 59, 0.6);
+            --color-border: rgba(59, 130, 246, 0.2);
+            --color-text-primary: #e2e8f0;
+            --color-text-secondary: #94a3b8;
+            --color-brand: #3b82f6;
+            --color-brand-light: #60a5fa;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, var(--color-bg) 0%, #16213e 50%, #0f172a 100%);
+            color: var(--color-text-primary);
+            min-height: 100vh;
+        }
+        
+        /* Efeito de ondas no fundo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(147, 197, 253, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 80%, rgba(96, 165, 250, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .glass-effect { 
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-glow { 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-glow::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            transition: left 0.6s;
+        }
+        
+        .card-glow:hover::before {
+            left: 100%;
+        }
+        
+        .card-glow:hover { 
+            border-color: var(--color-brand);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15), 0 0 0 1px rgba(59, 130, 246, 0.1);
+        }
+        
+        .status-tag { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            padding: 0.4rem 0.8rem; 
+            border-radius: 12px; 
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .modal-overlay { 
+            opacity: 0; 
+            visibility: hidden; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(0px);
+        }
+        
+        .modal-overlay.active { 
+            opacity: 1; 
+            visibility: visible;
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-content { 
+            transform: scale(0.9) translateY(40px); 
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .modal-overlay.active .modal-content { 
+            transform: scale(1) translateY(0); 
+        }
+        
+        .spinner { 
+            border-top-color: var(--color-brand); 
+            animation: spin 1s linear infinite; 
+        }
+        
+        @keyframes spin { 
+            to { transform: rotate(360deg); } 
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-pulse-slow {
+            animation: pulse-slow 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        #modal-body::-webkit-scrollbar { width: 8px; }
+        #modal-body::-webkit-scrollbar-track { background: #1e293b; border-radius: 4px; }
+        #modal-body::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        #modal-body::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        
+        .btn-disabled {
+            background-color: #475569;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        /* Filtros melhorados */
+        .filter-btn-profile, .filter-btn-status {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .filter-btn-profile::before, .filter-btn-status::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .filter-btn-profile:hover::before, .filter-btn-status:hover::before {
+            left: 100%;
+        }
+        
+        /* Avatar gradients */
+        .avatar-gradient-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .avatar-gradient-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .avatar-gradient-3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .avatar-gradient-4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .avatar-gradient-5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        
+        /* Efeitos de entrada escalonados */
+        .stagger-animation {
+            animation: slideUpStagger 0.6s ease-out both;
+        }
+        
+        @keyframes slideUpStagger {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Header melhorado */
+        .header-glow {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 197, 253, 0.05) 100%);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            backdrop-filter: blur(20px);
+        }
+        
+        /* Melhorias nos botões de ação */
+        .action-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+        
+        .action-btn:hover::before {
+            left: 100%;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto max-w-screen-2xl p-4 sm:p-6 lg:p-8">
+        <!-- CABEÇALHO MELHORADO -->
+        <header class="text-center mb-12 header-glow rounded-3xl p-8 animate-fade-in">
+            <div class="flex items-center justify-center mb-6">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center shadow-2xl mr-4">
+                    <i data-lucide="compass" class="w-8 h-8 text-white"></i>
+                </div>
+                <div class="text-left">
+                    <h1 class="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent">
+                        Vitrine de Oportunidades
+                    </h1>
+                    <p class="text-lg text-blue-400 mt-2 flex items-center">
+                        <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+                        Leads Qualificados em Tempo Real | Conexão Búzios
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Estatísticas rápidas -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <div class="glass-effect rounded-2xl p-4">
+                    <div class="text-2xl font-bold text-blue-400" id="total-leads">0</div>
+                    <div class="text-sm text-slate-400">Total de Leads</div>
+                </div>
+                <div class="glass-effect rounded-2xl p-4">
+                    <div class="text-2xl font-bold text-green-400" id="new-leads">0</div>
+                    <div class="text-sm text-slate-400">Novos Hoje</div>
+                </div>
+                <div class="glass-effect rounded-2xl p-4">
+                    <div class="text-2xl font-bold text-purple-400" id="conversion-rate">0%</div>
+                    <div class="text-sm text-slate-400">Taxa de Conversão</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Bloco de Apresentação e Orientação MELHORADO -->
+        <section class="mb-8 glass-effect rounded-3xl p-8 animate-fade-in border-l-4 border-blue-500">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                    <i data-lucide="lightbulb" class="w-6 h-6 text-white"></i>
+                </div>
+                O que é este painel?
+            </h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="space-y-4 text-slate-300 leading-relaxed">
+                    <p class="text-lg">Este é um painel inteligente que apresenta <strong class="font-semibold text-blue-400">leads reais e qualificados</strong>, capturados pelo projeto Conexão Búzios.</p>
+                    <p>É ideal para <strong class="font-semibold text-blue-400">profissionais de vendas, turismo, serviços, divulgadores e investidores</strong> interessados no ecossistema de Búzios.</p>
+                </div>
+                <div class="space-y-4 text-slate-300 leading-relaxed">
+                    <p>Aqui você encontra perfis de leads, seus interesses, histórico de respostas, propostas personalizadas por IA e contato direto via WhatsApp.</p>
+                    <p class="text-sm text-slate-400 italic bg-slate-800/50 p-4 rounded-xl border-l-4 border-blue-500">
+                        💡 <strong>Valor real:</strong> Economiza seu tempo, organiza os contatos e conecta você apenas com quem tem intenção real. É o seu funil de vendas inteligente, funcionando 24 horas por dia.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FILTROS E CONTROLES MELHORADOS -->
+        <div class="glass-effect rounded-2xl p-6 mb-8 sticky top-4 z-10 animate-fade-in">
+            <div class="flex flex-col lg:flex-row justify-between items-center gap-6">
+                <div class="flex flex-wrap items-center gap-6">
+                    <!-- Filtros de Perfil -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-sm font-medium text-slate-400 mr-2">Perfil:</span>
+                        <div id="filters-profile" class="flex flex-wrap gap-2">
+                            <button data-filter="all" class="filter-btn-profile bg-blue-500/30 text-white px-4 py-2 rounded-full text-sm font-medium transition-all">
+                                Todos
+                            </button>
+                            <button data-filter="Turista" class="filter-btn-profile bg-transparent text-slate-400 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
+                                <i data-lucide="sun-moon" class="w-4 h-4"></i> Turistas
+                            </button>
+                            <button data-filter="Morador" class="filter-btn-profile bg-transparent text-slate-400 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
+                                <i data-lucide="home" class="w-4 h-4"></i> Moradores
+                            </button>
+                            <button data-filter="Divulgador" class="filter-btn-profile bg-transparent text-slate-400 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
+                                <i data-lucide="megaphone" class="w-4 h-4"></i> Parceiros
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="w-px h-8 bg-slate-600"></div>
+                    
+                    <!-- Filtros de Status -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-sm font-medium text-slate-400 mr-2">Status:</span>
+                        <div id="filters-status" class="flex flex-wrap gap-2">
+                            <button data-status-filter="all" class="filter-btn-status bg-blue-500/30 text-white px-4 py-2 rounded-full text-sm font-medium">
+                                Todos
+                            </button>
+                            <button data-status-filter="Novo" class="filter-btn-status bg-transparent text-slate-400 px-4 py-2 rounded-full text-sm font-medium">
+                                Novos
+                            </button>
+                            <button data-status-filter="Em Contato" class="filter-btn-status bg-transparent text-slate-400 px-4 py-2 rounded-full text-sm font-medium">
+                                Em Contato
+                            </button>
+                            <button data-status-filter="Proposta" class="filter-btn-status bg-transparent text-slate-400 px-4 py-2 rounded-full text-sm font-medium">
+                                Proposta
+                            </button>
+                            <button data-status-filter="Negociação" class="filter-btn-status bg-transparent text-slate-400 px-4 py-2 rounded-full text-sm font-medium">
+                                Negociação
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <span id="dossier-count" class="text-sm font-medium text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full" aria-live="polite">0 Oportunidades</span>
+                    <button id="refresh-btn" class="action-btn p-3 rounded-full bg-blue-500/20 hover:bg-blue-500/30 transition-all" aria-label="Atualizar dossiês">
+                        <i data-lucide="refresh-cw" class="w-5 h-5 text-blue-400"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRID DE LEADS MELHORADO -->
+        <main id="dossier-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6"></main>
+        
+        <!-- ESTADOS DA UI MELHORADOS -->
+        <div id="status-container" aria-live="assertive">
+            <div id="loading-state" class="text-center py-20 hidden">
+                <div class="flex flex-col items-center">
+                    <div class="spinner h-16 w-16 rounded-full border-4 border-slate-700 mx-auto mb-6"></div>
+                    <p class="text-xl font-semibold text-white">Buscando oportunidades...</p>
+                    <p class="text-sm text-slate-400 mt-2 animate-pulse-slow">Conectando com a IA para análise de leads</p>
+                </div>
+            </div>
+            <div id="error-state" class="text-center py-20 glass-effect rounded-2xl hidden">
+                <div class="text-6xl mb-4">⚠️</div>
+                <p class="text-red-400 text-2xl font-bold mb-2">Falha na Conexão</p>
+                <p class="text-slate-400 mb-4">Não foi possível carregar os leads. Verifique sua conexão e tente novamente.</p>
+                <button onclick="loadDossiers()" class="action-btn bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-full font-semibold">
+                    Tentar Novamente
+                </button>
+            </div>
+            <div id="empty-state" class="text-center py-20 glass-effect rounded-2xl hidden">
+                <div class="text-6xl mb-4">🔍</div>
+                <p class="text-xl font-bold text-white mb-2">Nenhuma oportunidade encontrada</p>
+                <p class="text-slate-400 mb-4">Ajuste os filtros ou aguarde novos leads entrarem.</p>
+                <button onclick="loadDossiers()" class="action-btn bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-full font-semibold">
+                    Recarregar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE DETALHES DO LEAD MELHORADO -->
+    <div id="modal-overlay" class="modal-overlay fixed inset-0 bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div id="modal-content" class="modal-content glass-effect w-full max-w-7xl rounded-3xl shadow-2xl flex flex-col max-h-[95vh] border border-blue-500/20">
+            <!-- PAINEL 1: Cabeçalho e Ações Imediatas (Fixo) -->
+            <header id="modal-header" class="p-6 flex justify-between items-center border-b border-slate-700/50 flex-shrink-0 bg-gradient-to-r from-slate-800/50 to-slate-700/50"></header>
+            
+            <!-- Corpo do Modal (Rolável) -->
+            <div id="modal-body" class="p-8 overflow-y-auto" tabindex="-1"></div>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHC3bAoL_c5rscJV2xbwVi9KMedM3QHbWCZ3bo64w0DbiMGOtnahL9BynJ5ADao63I/exec";
+        
+        // Elementos da DOM
+        const grid = document.getElementById('dossier-grid');
+        const loadingState = document.getElementById('loading-state');
+        const errorState = document.getElementById('error-state');
+        const emptyState = document.getElementById('empty-state');
+        const dossierCountEl = document.getElementById('dossier-count');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const modalHeader = document.getElementById('modal-header');
+        const modalBody = document.getElementById('modal-body');
+        
+        // Estado da Aplicação
+        let allDossiers = [];
+        let currentProfileFilter = 'all';
+        let currentStatusFilter = 'all';
+        let lastFocusedElement = null;
+
+        // --- DADOS MOCKADOS E CONFIGURAÇÕES (para demonstração) ---
+        const leadStatuses = ['Novo', 'Em Contato', 'Proposta', 'Negociação'];
+        const leadPotentials = {
+            'Alto': { icon: 'gem', color: 'text-cyan-400', text: 'Potencial Alto' },
+            'Médio': { icon: 'trending-up', color: 'text-amber-400', text: 'Potencial Médio' },
+            'Baixo': { icon: 'trending-down', color: 'text-slate-500', text: 'Potencial Baixo' }
+        };
+        const statusStyling = {
+            'Novo': { class: 'bg-blue-500/20 text-blue-400', icon: 'sparkle' },
+            'Em Contato': { class: 'bg-yellow-500/20 text-yellow-400', icon: 'phone-forwarded' },
+            'Proposta': { class: 'bg-green-500/20 text-green-400', icon: 'file-check-2' },
+            'Negociação': { class: 'bg-purple-500/20 text-purple-400', icon: 'handshake' }
+        };
+        const profileIcons = { 'Turista': 'sun-moon', 'Morador': 'home', 'Divulgador': 'megaphone', 'N/A': 'help-circle' };
+        
+        // --- FUNÇÕES UTILITÁRIAS ---
+        const sanitizeHTML = (str) => { const temp = document.createElement('div'); temp.textContent = str || ''; return temp.innerHTML; };
+        const formatRelativeTime = (isoString) => {
+            try {
+                const date = new Date(isoString);
+                const formatter = new Intl.RelativeTimeFormat('pt-BR', { numeric: 'auto' });
+                const diffSeconds = (date.getTime() - Date.now()) / 1000;
+                const diffDays = Math.round(diffSeconds / 86400);
+                if (Math.abs(diffDays) > 1) return formatter.format(diffDays, 'day');
+                const diffHours = Math.round(diffSeconds / 3600);
+                if (Math.abs(diffHours) > 1) return formatter.format(diffHours, 'hour');
+                const diffMinutes = Math.round(diffSeconds / 60);
+                return formatter.format(diffMinutes, 'minute');
+            } catch (e) { return isoString || 'Data indisponível'; }
+        };
+        const getInitials = (name) => {
+            if (!name || typeof name !== 'string' || name.trim().length === 0) return '?';
+            const parts = name.trim().split(' ').filter(Boolean);
+            if (parts.length > 1) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+            if (parts.length === 1 && parts[0].length > 1) return parts[0].substring(0, 2).toUpperCase();
+            return name[0].toUpperCase();
+        };
+
+        // --- LÓGICA PRINCIPAL DA APLICAÇÃO ---
+        const renderDossiers = () => {
+            grid.innerHTML = '';
+            emptyState.classList.add('hidden');
+            
+            const profileFiltered = currentProfileFilter === 'all' ? allDossiers : allDossiers.filter(d => d && d.profile === currentProfileFilter);
+            const filteredDossiers = currentStatusFilter === 'all' ? profileFiltered : profileFiltered.filter(d => d && d.status === currentStatusFilter);
+            
+            // Atualizar estatísticas
+            updateStats(filteredDossiers);
+            
+            dossierCountEl.textContent = `${filteredDossiers.length} Oportunidades`;
+            if (filteredDossiers.length === 0) { 
+                emptyState.classList.remove('hidden'); 
+                return; 
+            }
+
+            filteredDossiers.forEach((dossier, index) => {
+                const card = document.createElement('button');
+                card.className = 'card-glow glass-effect rounded-2xl p-6 text-left flex flex-col gap-4 stagger-animation';
+                card.style.animationDelay = `${index * 100}ms`;
+                card.dataset.id = dossier.id;
+                
+                const initials = getInitials(dossier.name);
+                const statusInfo = statusStyling[dossier.status] || {};
+                const potentialInfo = leadPotentials[dossier.potential] || {};
+                const profileIcon = profileIcons[dossier.profile] || 'help-circle';
+                const avatarGradient = getAvatarGradient(dossier.name);
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="w-14 h-14 rounded-full ${avatarGradient} flex items-center justify-center text-white font-bold text-lg shadow-lg">${initials}</div>
+                        <div class="flex flex-col items-end gap-2">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="${profileIcon}" class="w-4 h-4 text-slate-400"></i>
+                                <span class="text-xs text-slate-400 font-medium">${dossier.profile}</span>
+                            </div>
+                            <span class="status-tag ${statusInfo.class}">
+                                <i data-lucide="${statusInfo.icon}" class="w-3 h-3"></i>
+                                ${dossier.status}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex-grow">
+                        <h3 class="text-lg font-semibold text-white mb-2 truncate">${sanitizeHTML(dossier.name || 'Lead Anônimo')}</h3>
+                        <p class="text-sm text-slate-400 line-clamp-2 leading-relaxed">${sanitizeHTML(dossier.interest || 'Nenhum interesse principal informado')}</p>
+                    </div>
+                    <div class="flex justify-between items-center pt-4 border-t border-slate-700/50">
+                        <span class="text-xs text-slate-500">${formatRelativeTime(dossier.timestamp)}</span>
+                        <div class="flex items-center gap-1.5 text-xs font-medium ${potentialInfo.color}">
+                            <i data-lucide="${potentialInfo.icon}" class="w-4 h-4"></i>
+                            ${dossier.potential}
+                        </div>
+                    </div>
+                    <div class="absolute inset-0 rounded-2xl border-2 border-transparent hover:border-blue-400/30 transition-all duration-300 pointer-events-none"></div>`;
+                
+                card.addEventListener('click', () => openModal(dossier));
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        };
+
+        function getAvatarGradient(name) {
+            const gradients = [
+                'avatar-gradient-1', 'avatar-gradient-2', 'avatar-gradient-3', 
+                'avatar-gradient-4', 'avatar-gradient-5'
+            ];
+            const hash = name ? name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) : 0;
+            return gradients[hash % gradients.length];
+        }
+
+        function updateStats(dossiers) {
+            const totalLeads = document.getElementById('total-leads');
+            const newLeads = document.getElementById('new-leads');
+            const conversionRate = document.getElementById('conversion-rate');
+            
+            const today = new Date().toDateString();
+            const newLeadsToday = dossiers.filter(d => {
+                const leadDate = new Date(d.timestamp).toDateString();
+                return leadDate === today;
+            }).length;
+            
+            const proposalLeads = dossiers.filter(d => 
+                d.status === 'Proposta' || d.status === 'Negociação'
+            ).length;
+            
+            const rate = dossiers.length > 0 ? Math.round((proposalLeads / dossiers.length) * 100) : 0;
+            
+            // Animação dos números
+            animateNumber(totalLeads, parseInt(totalLeads.textContent) || 0, dossiers.length);
+            animateNumber(newLeads, parseInt(newLeads.textContent) || 0, newLeadsToday);
+            animateNumber(conversionRate, parseInt(conversionRate.textContent) || 0, rate, '%');
+        }
+
+        function animateNumber(element, from, to, suffix = '') {
+            const duration = 1000;
+            const steps = 30;
+            const increment = (to - from) / steps;
+            let current = from;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= to) || (increment < 0 && current <= to)) {
+                    current = to;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(current) + suffix;
+            }, duration / steps);
+        }
+        
+        async function fetchFromAPI(payload) {
+            try {
+                const response = await fetch(GOOGLE_APP_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload), redirect: 'follow' });
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                const result = await response.json();
+                if (result.success === false) throw new Error(`API Error: ${result.error}`);
+                return result.data;
+            } catch (error) { console.error('Fetch API Error:', error); throw error; }
+        }
+
+        const loadDossiers = async () => {
+            loadingState.classList.remove('hidden');
+            errorState.classList.add('hidden');
+            grid.innerHTML = '';
+            try {
+                const dossiersFromApi = await fetchFromAPI({ action: 'listDossies' });
+                // Simula status e potencial, pois não vêm do backend
+                allDossiers = dossiersFromApi.map(d => ({
+                    ...d,
+                    status: leadStatuses[Math.floor(Math.random() * leadStatuses.length)],
+                    potential: Object.keys(leadPotentials)[Math.floor(Math.random() * Object.keys(leadPotentials).length)]
+                }));
+                renderDossiers();
+            } catch (error) { errorState.classList.remove('hidden'); }
+            finally { loadingState.classList.add('hidden'); }
+        };
+
+        const openModal = async (dossier) => {
+            lastFocusedElement = document.activeElement;
+            modalOverlay.classList.add('active');
+            modalHeader.innerHTML = ''; 
+            modalBody.innerHTML = '<div class="flex justify-center items-center h-full"><div class="spinner h-8 w-8 rounded-full border-4 border-slate-700"></div><p class="ml-4">Analisando dossiê completo...</p></div>';
+            
+            try {
+                const data = await fetchFromAPI({ action: 'getDossierContent', id: dossier.id });
+                const leadDetails = parseDossierContent(data.content, dossier);
+                renderModalContent(leadDetails);
+            } catch (error) { modalBody.innerHTML = '<p class="text-red-400 text-center">Não foi possível carregar os detalhes deste lead.</p>'; }
+        };
+        
+        function parseDossierContent(content, baseDossier) {
+            const getMatch = (regex, flags = 'm') => (content.match(new RegExp(regex, flags)) || [])[1]?.trim() || '';
+            const getList = (regex) => {
+                const section = getMatch(regex);
+                return section ? section.split('\n').map(item => item.replace(/^[•\s*-]+/, '').trim()).filter(Boolean) : [];
+            };
+
+            const getTable = (regex) => {
+                const tableContent = getMatch(regex);
+                if (!tableContent) return [];
+                return tableContent.split('\n').map(line => {
+                    const parts = line.split('\t'); 
+                    if (parts.length < 2) return null;
+                    return { 
+                        question: parts[0]?.replace('❓','').trim() || '', 
+                        answer: parts[1]?.trim() || ''
+                    };
+                }).filter(row => row && row.question && row.answer);
+            };
+
+            return { 
+                ...baseDossier, 
+                resumo: getMatch(/^Resumo do Perfil\n([\s\S]*?)(?=\n\n|$)/), 
+                respostas: getTable(/HISTÓRICO DE INTERAÇÕES \(FUNIL COMPLETO\)\s*\n([\s\S]*?)(?=\n\s*💡 PROPOSTA PERSONALIZADA \(IA\)|$)/), 
+                necessidades: getList(/Necessidades Reveladas\s*\n([\s\S]*?)(?=\n\n💡|$)/), 
+                proposta: getMatch(/💡 PROPOSTA PERSONALIZADA \(IA\)\s*\n([\s\S]*?)(?=\n\nStatus do Lead:|$)/),
+                objecoes: ["Pode ser sensível a preço devido ao orçamento informado.", "Busca por experiências autênticas, pode rejeitar opções muito turísticas."]
+            };
+        }
+
+        function renderModalContent(details) {
+            const telefone = (details.respostas.find(r => r.question.toLowerCase().includes('whatsapp')) || {}).answer;
+            const statusInfo = statusStyling[details.status] || {};
+            const potentialInfo = leadPotentials[details.potential] || {};
+            const avatarGradient = getAvatarGradient(details.name);
+
+            const hasPhone = telefone && telefone.replace(/\D/g, '').length > 8;
+            const whatsappBtnHTML = hasPhone
+                ? `<a href="https://wa.me/55${telefone.replace(/\D/g, '')}" target="_blank" class="action-btn bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 font-bold py-3 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg">
+                     <i data-lucide="message-circle" class="w-5 h-5"></i>Conversar no WhatsApp
+                   </a>`
+                : `<button disabled class="btn-disabled font-bold py-3 px-6 rounded-2xl flex items-center justify-center gap-2">
+                     <i data-lucide="phone-off" class="w-5 h-5"></i>WhatsApp não informado
+                   </button>`;
+
+            // --- PAINEL 1: Cabeçalho e Ações Imediatas ---
+            modalHeader.innerHTML = `
+                <div class="flex items-center gap-6">
+                    <div class="w-16 h-16 rounded-full ${avatarGradient} flex items-center justify-center text-white font-bold text-xl flex-shrink-0 shadow-xl border-2 border-white/20">${getInitials(details.name)}</div>
+                    <div class="flex-grow">
+                        <h2 id="modal-title" class="text-2xl font-bold text-white mb-2">${sanitizeHTML(details.name)}</h2>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <span class="status-tag ${statusInfo.class}">
+                                <i data-lucide="${statusInfo.icon}" class="w-4 h-4"></i>
+                                ${details.status}
+                            </span>
+                            <span class="status-tag ${potentialInfo.color} bg-opacity-20">
+                                <i data-lucide="${potentialInfo.icon}" class="w-4 h-4"></i>
+                                ${details.potential} Potencial
+                            </span>
+                            <span class="status-tag bg-slate-700/50 text-slate-300">
+                                <i data-lucide="${profileIcons[details.profile] || 'user'}" class="w-4 h-4"></i>
+                                ${details.profile}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 flex-wrap">
+                    ${whatsappBtnHTML}
+                    <button id="copy-proposal-btn" class="action-btn bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600 font-bold py-3 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg">
+                        <i data-lucide="copy" class="w-5 h-5"></i>Copiar Proposta
+                    </button>
+                    <div class="relative">
+                        <select onchange="updateLeadStatus('${details.id}', this.value)" class="action-btn bg-slate-700 text-white hover:bg-slate-600 font-bold py-3 pl-4 pr-10 rounded-2xl appearance-none cursor-pointer border border-slate-600">
+                            ${leadStatuses.map(s => `<option value="${s}" ${s === details.status ? 'selected' : ''}>${s}</option>`).join('')}
+                        </select>
+                        <i data-lucide="chevron-down" class="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                    </div>
+                    <button id="close-modal-btn" class="action-btn p-3 rounded-full bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 hover:text-white transition-all" aria-label="Fechar modal">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>`;
+            
+            // --- PAINEL 2, 3, 4 e 5: Corpo do Modal ---
+            const necessidadesHTML = details.necessidades.length > 0 ? details.necessidades.map((need, i) => `
+                <li class="flex items-start gap-4 p-4 bg-gradient-to-r from-blue-50/5 to-purple-50/5 rounded-xl border border-blue-500/10">
+                    <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-blue-400 font-bold text-sm">${i + 1}</span>
+                    </div>
+                    <span class="text-slate-200 leading-relaxed">${sanitizeHTML(need)}</span>
+                </li>`).join('') : '<li class="text-slate-400 text-center py-8">Nenhuma necessidade específica foi revelada pela IA.</li>';
+            
+            const objecoesHTML = details.objecoes.length > 0 ? details.objecoes.map((obj, i) => `
+                <li class="flex items-start gap-4 p-4 bg-gradient-to-r from-amber-50/5 to-red-50/5 rounded-xl border border-amber-500/10">
+                    <div class="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i>
+                    </div>
+                    <span class="text-slate-200 leading-relaxed">${sanitizeHTML(obj)}</span>
+                </li>`).join('') : '<li class="text-slate-400 text-center py-8">Nenhuma objeção provável identificada.</li>';
+            
+            const respostasHTML = details.respostas.length > 0 ? details.respostas.map((resp, i) => `
+                <div class="p-4 bg-gradient-to-r from-slate-800/50 to-slate-700/30 rounded-xl border border-slate-600/30 transition-all hover:border-slate-500/50">
+                    <dt class="text-xs text-slate-400 font-medium mb-2 flex items-center gap-2">
+                        <span class="w-5 h-5 rounded-full bg-slate-600/50 flex items-center justify-center text-xs">${i + 1}</span>
+                        ${sanitizeHTML(resp.question)}
+                    </dt>
+                    <dd class="text-slate-200 leading-relaxed pl-7">${sanitizeHTML(resp.answer)}</dd>
+                </div>`).join('') : '<div class="text-slate-400 text-center py-8">Sem respostas registradas.</div>';
+
+            modalBody.innerHTML = `
+                <div class="grid grid-cols-1 xl:grid-cols-5 gap-8">
+                    <!-- Coluna Principal (3/5) -->
+                    <div class="xl:col-span-3 space-y-8">
+                        <!-- PAINEL 2: Análise Comercial -->
+                        <div class="glass-effect p-6 rounded-2xl border border-blue-500/20 animate-fade-in">
+                            <h3 class="flex items-center gap-3 text-lg font-semibold text-white mb-6">
+                                <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                                    <i data-lucide="brain" class="w-5 h-5 text-blue-400"></i>
+                                </div>
+                                Resumo do Perfil (IA)
+                            </h3>
+                            <div class="bg-gradient-to-r from-blue-50/5 to-cyan-50/5 p-6 rounded-xl border border-blue-500/10">
+                                <p class="text-slate-300 leading-relaxed text-base">${sanitizeHTML(details.resumo) || '<span class="text-slate-400">Resumo não disponível.</span>'}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="glass-effect p-6 rounded-2xl border border-purple-500/20 animate-fade-in">
+                            <h3 class="flex items-center gap-3 text-lg font-semibold text-white mb-6">
+                                <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+                                    <i data-lucide="target" class="w-5 h-5 text-purple-400"></i>
+                                </div>
+                                Necessidades Identificadas
+                            </h3>
+                            <ul class="space-y-4">${necessidadesHTML}</ul>
+                        </div>
+                        
+                        <div class="glass-effect p-6 rounded-2xl border border-amber-500/20 animate-fade-in">
+                            <h3 class="flex items-center gap-3 text-lg font-semibold text-white mb-6">
+                                <div class="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
+                                    <i data-lucide="shield-alert" class="w-5 h-5 text-amber-400"></i>
+                                </div>
+                                Possíveis Objeções
+                            </h3>
+                            <ul class="space-y-4">${objecoesHTML}</ul>
+                        </div>
+                        
+                        <!-- PAINEL 3: Proposta -->
+                        <div class="bg-gradient-to-br from-emerald-900/30 to-blue-900/30 p-8 rounded-2xl border border-emerald-500/30 animate-fade-in">
+                            <h3 class="flex items-center gap-3 text-xl font-semibold text-white mb-6">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center">
+                                    <i data-lucide="sparkles" class="w-6 h-6 text-white"></i>
+                                </div>
+                                Proposta Personalizada (IA)
+                            </h3>
+                            <div class="bg-white/5 p-6 rounded-xl border border-white/10 backdrop-blur-sm">
+                                <div class="text-slate-200 leading-relaxed whitespace-pre-line">${sanitizeHTML(details.proposta)}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Coluna Direita (2/5) -->
+                    <div class="xl:col-span-2 space-y-8">
+                        <!-- PAINEL 4: Histórico -->
+                        <div class="glass-effect p-6 rounded-2xl border border-slate-500/20 animate-fade-in">
+                            <h3 class="flex items-center gap-3 text-lg font-semibold text-white mb-6">
+                                <div class="w-10 h-10 rounded-full bg-slate-500/20 flex items-center justify-center">
+                                    <i data-lucide="message-square-text" class="w-5 h-5 text-slate-400"></i>
+                                </div>
+                                Histórico da Conversa
+                            </h3>
+                            <div class="space-y-4 max-h-96 overflow-y-auto">${respostasHTML}</div>
+                        </div>
+                        
+                        <!-- PAINEL 5: Metadados -->
+                        <div class="glass-effect p-6 rounded-2xl border border-cyan-500/20 animate-fade-in">
+                            <h3 class="flex items-center gap-3 text-lg font-semibold text-white mb-6">
+                                <div class="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center">
+                                    <i data-lucide="info" class="w-5 h-5 text-cyan-400"></i>
+                                </div>
+                                Informações do Lead
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-600/30">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-slate-400 text-sm">WhatsApp</span>
+                                        <span class="text-slate-200 font-mono text-sm">${telefone ? sanitizeHTML(telefone) : 'Não informado'}</span>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-600/30">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-slate-400 text-sm">Data de Captura</span>
+                                        <span class="text-slate-200 text-sm">${new Date(details.timestamp).toLocaleDateString('pt-BR')}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-slate-400 text-sm">Horário</span>
+                                        <span class="text-slate-200 text-sm">${new Date(details.timestamp).toLocaleTimeString('pt-BR')}</span>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-600/30">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-slate-400 text-sm">Dossiê Completo</span>
+                                        <a href="${details.url}" target="_blank" class="text-blue-400 hover:text-blue-300 text-sm font-medium hover:underline">
+                                            Ver Documento →
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+            // Anexar event listener de forma segura
+            const copyBtn = document.getElementById('copy-proposal-btn');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    copyToClipboard(details.proposta, copyBtn);
+                });
+            }
+            document.getElementById('close-modal-btn').addEventListener('click', closeModal);
+            lucide.createIcons();
+        }
+        
+        function copyToClipboard(text, buttonElement) {
+            if (!text || text === 'undefined') return;
+
+            const textToCopy = text;
+            const textArea = document.createElement("textarea");
+            textArea.value = textToCopy;
+            
+            textArea.style.position = "fixed";
+            textArea.style.top = "-9999px";
+            textArea.style.left = "-9999px";
+            
+            document.body.appendChild(textArea);
+            textArea.select();
+            textArea.setSelectionRange(0, 99999);
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    const originalContent = buttonElement.innerHTML;
+                    buttonElement.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> Copiado!`;
+                    buttonElement.disabled = true;
+                    lucide.createIcons();
+                    setTimeout(() => { 
+                        buttonElement.innerHTML = originalContent;
+                        buttonElement.disabled = false;
+                        lucide.createIcons();
+                    }, 2000);
+                }
+            } catch (err) {
+                console.error('Falha ao copiar:', err);
+            }
+
+            document.body.removeChild(textArea);
+        }
+
+        function updateLeadStatus(leadId, newStatus) {
+            // Ação de exemplo. O ideal é chamar o backend para persistir a mudança.
+            console.log(`Lead ${leadId} status alterado para: ${newStatus}`);
+            const lead = allDossiers.find(d => d.id === leadId);
+            if (lead) {
+                lead.status = newStatus;
+                renderDossiers(); // Re-renderiza para refletir a mudança no card
+            }
+        }
+
+        const closeModal = () => { modalOverlay.classList.remove('active'); if (lastFocusedElement) lastFocusedElement.focus(); };
+
+        // --- INICIALIZAÇÃO E EVENT LISTENERS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('filters-profile').addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (button) {
+                    document.querySelectorAll('.filter-btn-profile').forEach(btn => { btn.classList.remove('bg-blue-500/20', 'text-white'); btn.classList.add('bg-transparent', 'text-slate-400'); });
+                    button.classList.add('bg-blue-500/20', 'text-white');
+                    currentProfileFilter = button.dataset.filter;
+                    renderDossiers();
+                }
+            });
+            document.getElementById('filters-status').addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (button) {
+                    document.querySelectorAll('.filter-btn-status').forEach(btn => { btn.classList.remove('bg-blue-500/20', 'text-white'); btn.classList.add('bg-transparent', 'text-slate-400'); });
+                    button.classList.add('bg-blue-500/20', 'text-white');
+                    currentStatusFilter = button.dataset.statusFilter;
+                    renderDossiers();
+                }
+            });
+
+            document.getElementById('refresh-btn').addEventListener('click', loadDossiers);
+            modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === "Escape" && modalOverlay.classList.contains('active')) closeModal(); });
+            
+            loadDossiers();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
