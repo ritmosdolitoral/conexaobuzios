@@ -673,6 +673,53 @@
             overflow: hidden;
         }
 
+        .card-phone {
+            font-size: 0.8rem;
+            color: var(--color-turquoise);
+            font-weight: 600;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-family: 'Courier New', monospace;
+            opacity: 0.9;
+        }
+
+        .phone-indicator {
+            background: rgba(23, 162, 184, 0.2);
+            border: 1px solid var(--color-turquoise);
+            border-radius: 12px;
+            padding: 0.25rem;
+            color: var(--color-turquoise);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        /* === CHAT HISTORY CONTAINER === */
+        .chat-history-container {
+            scrollbar-width: thin;
+            scrollbar-color: var(--color-border) transparent;
+        }
+
+        .chat-history-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-history-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-history-container::-webkit-scrollbar-thumb {
+            background: var(--color-border);
+            border-radius: 3px;
+        }
+
+        .chat-history-container::-webkit-scrollbar-thumb:hover {
+            background: var(--color-border-hover);
+        }
+
         /* === FOOTER DO CARD === */
         .card-footer {
             display: flex;
@@ -1492,6 +1539,10 @@
                 if (dossier.potential === 'Alto') potentialClass = 'potential-alto';
                 else if (dossier.potential === 'Médio') potentialClass = 'potential-medio';
 
+                // Verificar se tem telefone
+                const hasPhone = dossier.telefone && dossier.telefone !== 'N/A' && dossier.telefone.replace(/\D/g, '').length > 8;
+                const phoneDisplay = hasPhone ? dossier.telefone : '';
+
                 card.innerHTML = `
                     <div class="card-header">
                         <div class="card-avatar">${initials}</div>
@@ -1501,11 +1552,13 @@
                                 <i data-lucide="${statusInfo.icon || 'circle'}" class="w-3 h-3"></i>
                                 ${dossier.status}
                             </span>
+                            ${hasPhone ? `<span class="phone-indicator" title="WhatsApp: ${phoneDisplay}"><i data-lucide="smartphone" class="w-3 h-3"></i></span>` : ''}
                         </div>
                     </div>
                     <div class="card-content">
                         <h3 class="card-title">${sanitizeHTML(dossier.name || 'Lead Anônimo')}</h3>
                         <p class="card-description">${sanitizeHTML(dossier.interest || 'Nenhum interesse principal informado')}</p>
+                        ${hasPhone ? `<p class="card-phone"><i data-lucide="smartphone" class="w-4 h-4"></i>${phoneDisplay}</p>` : ''}
                     </div>
                     <div class="card-footer">
                         <span class="card-time">${formatRelativeTime(dossier.timestamp)}</span>
@@ -1555,9 +1608,30 @@
             
             try {
                 const data = await fetchFromAPI({ action: 'getDossierContent', id: dossier.id });
-                const leadDetails = parseDossierContent(data.content, dossier);
+                
+                // data.content agora pode ser um objeto com conteudoOriginal, telefone e chatCompleto
+                let content, telefone = 'N/A', chatCompleto = 'N/A';
+                
+                if (typeof data.content === 'object') {
+                    content = data.content.conteudoOriginal;
+                    telefone = data.content.telefone;
+                    chatCompleto = data.content.chatCompleto;
+                } else {
+                    content = data.content;
+                    // Fallback para dados já presentes no dossier (do listDossies)
+                    telefone = dossier.telefone || 'N/A';
+                    chatCompleto = dossier.chatCompleto || 'N/A';
+                }
+                
+                const leadDetails = parseDossierContent(content, dossier);
+                leadDetails.telefone = telefone;
+                leadDetails.chatCompleto = chatCompleto;
+                
                 renderModalContent(leadDetails);
-            } catch (error) { modalBody.innerHTML = '<p class="text-red-400 text-center">Não foi possível carregar os detalhes deste lead.</p>'; }
+            } catch (error) { 
+                console.error('Erro ao carregar modal:', error);
+                modalBody.innerHTML = '<p class="text-red-400 text-center">Não foi possível carregar os detalhes deste lead.</p>'; 
+            }
         };
         
         function parseDossierContent(content, baseDossier) {
@@ -1653,6 +1727,35 @@
             const necessidadesHTML = details.necessidades.length > 0 ? details.necessidades.map(need => `<li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-green-leaf mt-1 flex-shrink-0" style="color: var(--color-green-leaf);"></i><span style="color: var(--color-sand-warm); font-weight: 500;">${sanitizeHTML(need)}</span></li>`).join('') : '<li style="color: var(--color-sand-warm);">Nenhuma necessidade específica foi revelada pela IA.</li>';
             const objecoesHTML = details.objecoes.length > 0 ? details.objecoes.map(obj => `<li class="flex items-start gap-3"><i data-lucide="shield-alert" class="w-5 h-5 mt-1 flex-shrink-0" style="color: var(--color-warning);"></i><span style="color: var(--color-sand-warm); font-weight: 500;">${sanitizeHTML(obj)}</span></li>`).join('') : '<li style="color: var(--color-sand-warm);">Nenhuma objeção provável identificada.</li>';
             const respostasHTML = details.respostas.length > 0 ? details.respostas.map((resp) => `<div class="py-3" style="border-bottom: 1px solid var(--color-border);"><dt class="text-xs font-medium" style="color: var(--color-text-muted);">${sanitizeHTML(resp.question)}</dt><dd class="text-base font-semibold mt-1" style="color: var(--color-white-warm);">— ${sanitizeHTML(resp.answer)}</dd></div>`).join('') : '<p style="color: var(--color-sand-warm);">Sem respostas registradas.</p>';
+            
+            // Renderizar chat completo
+            let chatCompletoHTML = '<p style="color: var(--color-sand-warm);">Chat não disponível.</p>';
+            if (details.chatCompleto && details.chatCompleto !== 'N/A') {
+                try {
+                    const chatData = typeof details.chatCompleto === 'string' ? JSON.parse(details.chatCompleto) : details.chatCompleto;
+                    if (Array.isArray(chatData) && chatData.length > 0) {
+                        chatCompletoHTML = chatData.map(msg => {
+                            if (msg && msg.text && msg.sender) {
+                                const isAI = msg.sender === 'ai';
+                                const icon = isAI ? 'bot' : 'user';
+                                const label = isAI ? 'IA' : 'Visitante';
+                                const color = isAI ? 'var(--color-turquoise)' : 'var(--color-green-leaf)';
+                                
+                                return `<div class="py-3" style="border-bottom: 1px solid var(--color-border);">
+                                    <dt class="text-xs font-medium flex items-center gap-2" style="color: ${color};">
+                                        <i data-lucide="${icon}" class="w-3 h-3"></i>${label}
+                                    </dt>
+                                    <dd class="text-sm mt-1" style="color: var(--color-sand-warm);">${sanitizeHTML(msg.text)}</dd>
+                                </div>`;
+                            }
+                            return '';
+                        }).join('');
+                    }
+                } catch (e) {
+                    console.error('Erro ao processar chat completo:', e);
+                    chatCompletoHTML = '<p style="color: var(--color-warning);">Erro ao carregar histórico da conversa.</p>';
+                }
+            }
 
             modalBody.innerHTML = `
                 <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
@@ -1702,6 +1805,16 @@
                                 Histórico de Interações
                             </h3>
                             <dl class="space-y-3">${respostasHTML}</dl>
+                        </div>
+                        <!-- PAINEL 4.5: Chat Completo -->
+                        <div class="glass-effect p-6 rounded-xl">
+                            <h3 class="flex items-center gap-3 text-lg font-bold mb-4" style="color: var(--color-white-warm);">
+                                <i data-lucide="messages-square" class="w-6 h-6" style="color: var(--color-turquoise);"></i>
+                                Conversa Completa com IA
+                            </h3>
+                            <div class="chat-history-container" style="max-height: 300px; overflow-y: auto; padding-right: 0.5rem;">
+                                <dl class="space-y-2">${chatCompletoHTML}</dl>
+                            </div>
                         </div>
                         <!-- PAINEL 5: Metadados -->
                         <div class="glass-effect p-6 rounded-xl">

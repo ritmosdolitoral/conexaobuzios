@@ -196,8 +196,8 @@ function criarDossieFormatado(dados) {
       dados.historico.forEach(item => {
           const row = tabelaRespostas.appendTableRow();
           // CORREÇÃO: Valida se 'item' e suas propriedades existem antes de usar
-          const pergunta = item && item.pergunta ? item.pergunta : "[Pergunta não registrada]";
-          const resposta = item && item.resposta ? item.resposta : "[Resposta não registrada]";
+          const pergunta = item && item.pergunta ? item.pergunta : item && item.question ? item.question : "[Pergunta não registrada]";
+          const resposta = item && item.resposta ? item.resposta : item && item.answer ? item.answer : "[Resposta não registrada]";
           
           row.appendTableCell(`❓ ${pergunta}`).setAttributes(estilos.label);
           // CORREÇÃO: Remove o "—" para manter o formato limpo
@@ -207,6 +207,25 @@ function criarDossieFormatado(dados) {
       tabelaRespostas.appendTableRow().appendTableCell("Nenhum histórico de interação foi registrado.").setAttributes(estilos.valor);
   }
   tabelaRespostas.setBorderWidth(0);
+
+  // --- SEÇÃO DE CHAT COMPLETO (NOVA) ---
+  if (dados.chatCompleto && dados.chatCompleto.length > 0) {
+    body.appendParagraph("\n💬 CONVERSA COMPLETA COM A IA").setAttributes(estilos.tituloSecao);
+    const tabelaChat = body.appendTable();
+    
+    dados.chatCompleto.forEach(mensagem => {
+      if (mensagem && mensagem.text && mensagem.sender) {
+        const row = tabelaChat.appendTableRow();
+        const remetente = mensagem.sender === 'ai' ? '🤖 IA' : '👤 Visitante';
+        const texto = mensagem.text;
+        
+        row.appendTableCell(remetente).setAttributes(estilos.label);
+        row.appendTableCell(texto).setAttributes(estilos.valor);
+      }
+    });
+    
+    tabelaChat.setBorderWidth(0);
+  }
 
   // --- SEÇÃO DA PROPOSTA ---
   body.appendParagraph("\n💡 PROPOSTA PERSONALIZADA (IA)").setAttributes(estilos.tituloSecao);
@@ -228,12 +247,16 @@ function criarDossieFormatado(dados) {
 
 function salvarResumoNaPlanilha(dados, urlDoDossie) {
   const planilha = SpreadsheetApp.getActiveSpreadsheet();
-  const cabecalhos = ["Timestamp", "Nome", "Contato", "Perfil", "Resumo da Oportunidade", "Necessidades Reveladas (IA)", "Link para o Dossiê"];
+  const cabecalhos = ["Timestamp", "Nome", "Contato", "Perfil", "Resumo da Oportunidade", "Necessidades Reveladas (IA)", "Link para o Dossiê", "Chat Completo"];
   const abaLeads = getOrCreateSheet(planilha, "Dashboard de Leads", cabecalhos);
   let resumo = (dados.historico && dados.historico.length > 0 && dados.historico[dados.historico.length - 1].resposta) ? dados.historico[dados.historico.length - 1].resposta : 'Não especificado';
   const linkFormatado = SpreadsheetApp.newRichTextValue().setText("Abrir Dossiê").setLinkUrl(urlDoDossie).build();
   const necessidadesString = (dados.necessidades_reveladas || []).join(' | ');
-  abaLeads.appendRow([new Date(), dados.nome || 'N/A', dados.telefone || 'N/A', dados.perfil ? dados.perfil.replace(/🏖️|🏠|📢/g, '').trim() : 'N/A', resumo, necessidadesString, linkFormatado]);
+  
+  // Formatar o chat completo para salvar na planilha
+  const chatCompletoString = dados.chatCompleto ? JSON.stringify(dados.chatCompleto) : 'Não disponível';
+  
+  abaLeads.appendRow([new Date(), dados.nome || 'N/A', dados.telefone || 'N/A', dados.perfil ? dados.perfil.replace(/🏖️|🏠|📢/g, '').trim() : 'N/A', resumo, necessidadesString, linkFormatado, chatCompletoString]);
 }
 
 // --- FUNÇÕES AUXILIARES ---
@@ -241,12 +264,55 @@ function listDossies() {
   const pasta = DriveApp.getFolderById(ID_DA_PASTA_DOSSIES);
   const arquivos = pasta.getFiles();
   const dossies = [];
+  
+  // Também buscar dados da planilha para ter informações mais completas
+  const planilha = SpreadsheetApp.getActiveSpreadsheet();
+  const abaLeads = planilha.getSheetByName("Dashboard de Leads");
+  let planilhaData = {};
+  
+  if (abaLeads) {
+    const dados = abaLeads.getDataRange().getValues();
+    const cabecalhos = dados[0];
+    const indiceNome = cabecalhos.indexOf("Nome");
+    const indiceContato = cabecalhos.indexOf("Contato");
+    const indiceChatCompleto = cabecalhos.indexOf("Chat Completo");
+    const indiceTimestamp = cabecalhos.indexOf("Timestamp");
+    
+    for (let i = 1; i < dados.length; i++) {
+      const linha = dados[i];
+      const nome = linha[indiceNome];
+      const contato = linha[indiceContato];
+      const chatCompleto = linha[indiceChatCompleto];
+      const timestamp = linha[indiceTimestamp];
+      
+      if (nome) {
+        planilhaData[nome] = {
+          telefone: contato,
+          chatCompleto: chatCompleto,
+          timestampPlanilha: timestamp
+        };
+      }
+    }
+  }
+  
   while (arquivos.hasNext()) {
     const arquivo = arquivos.next();
     const nomeArquivo = arquivo.getName();
     const match = nomeArquivo.match(/Dossiê:\s*(.*?)\s*\((.*?)\)\s*-\s*(.*)/);
     if (match) {
-      dossies.push({ id: arquivo.getId(), name: match[1].trim(), profile: match[2].trim(), timestamp: arquivo.getDateCreated().toISOString(), url: arquivo.getUrl(), interest: extractInterest(arquivo.getId()) });
+      const nome = match[1].trim();
+      const dadosAdicionais = planilhaData[nome] || {};
+      
+      dossies.push({ 
+        id: arquivo.getId(), 
+        name: nome, 
+        profile: match[2].trim(), 
+        timestamp: arquivo.getDateCreated().toISOString(), 
+        url: arquivo.getUrl(), 
+        interest: extractInterest(arquivo.getId()),
+        telefone: dadosAdicionais.telefone || 'N/A',
+        chatCompleto: dadosAdicionais.chatCompleto || 'N/A'
+      });
     }
   }
   dossies.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -255,7 +321,8 @@ function listDossies() {
 
 function extractInterest(fileId) {
     try {
-        const content = getDossierContent(fileId);
+        const dadosDossie = getDossierContent(fileId);
+        const content = typeof dadosDossie === 'object' ? dadosDossie.conteudoOriginal : dadosDossie;
         const regex = /Necessidades Reveladas\s*\n(.*?)\n/m;
         const match = content.match(regex);
         return (match && match[1]) ? match[1].replace(/[•\s*-]+/,'').trim() : 'Não especificado';
@@ -268,8 +335,45 @@ function extractInterest(fileId) {
 function getDossierContent(fileId) {
   try {
     const doc = DocumentApp.openById(fileId);
-    return doc.getBody().getText();
-  } catch (e) { throw new Error("Não foi possível abrir ou ler o dossiê: " + fileId); }
+    const conteudoCompleto = doc.getBody().getText();
+    
+    // Buscar dados adicionais na planilha usando o nome do arquivo
+    const nomeArquivo = DriveApp.getFileById(fileId).getName();
+    const match = nomeArquivo.match(/Dossiê:\s*(.*?)\s*\((.*?)\)\s*-\s*(.*)/);
+    
+    if (match) {
+      const nome = match[1].trim();
+      const planilha = SpreadsheetApp.getActiveSpreadsheet();
+      const abaLeads = planilha.getSheetByName("Dashboard de Leads");
+      
+      if (abaLeads) {
+        const dados = abaLeads.getDataRange().getValues();
+        const cabecalhos = dados[0];
+        const indiceNome = cabecalhos.indexOf("Nome");
+        const indiceContato = cabecalhos.indexOf("Contato");
+        const indiceChatCompleto = cabecalhos.indexOf("Chat Completo");
+        
+        for (let i = 1; i < dados.length; i++) {
+          const linha = dados[i];
+          if (linha[indiceNome] === nome) {
+            return {
+              conteudoOriginal: conteudoCompleto,
+              telefone: linha[indiceContato] || 'N/A',
+              chatCompleto: linha[indiceChatCompleto] || 'N/A'
+            };
+          }
+        }
+      }
+    }
+    
+    return {
+      conteudoOriginal: conteudoCompleto,
+      telefone: 'N/A',
+      chatCompleto: 'N/A'
+    };
+  } catch (e) { 
+    throw new Error("Não foi possível abrir ou ler o dossiê: " + fileId); 
+  }
 }
 
 function getOrCreateSheet(planilha, nomeAba, cabecalhos) {

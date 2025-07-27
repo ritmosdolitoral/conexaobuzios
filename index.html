@@ -488,7 +488,8 @@
                 nome: state.userData.nome,
                 telefone: state.userData.telefone,
                 perfil: state.userData.perfil,
-                historico: Object.values(state.userHistory || {})
+                historico: Object.values(state.userHistory || {}),
+                chatCompleto: state.chatLog || []
             };
             console.log("Enviando para processamento:", userDataPayload);
             try {
