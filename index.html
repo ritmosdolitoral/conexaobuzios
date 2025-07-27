@@ -274,37 +274,51 @@
         /* Estilos do Chat */
         .bg-buzios-mar { background-color: #0077B6; }
         
-        /* Chat com sombra de profundidade e espaçamento generoso */
+        /* Chat redesenhado - mais responsivo e intuitivo */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-height: 100%;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
         .chat-bubble { 
-            max-width: 90%; 
-            padding: 12px 16px; 
-            border-radius: 18px; 
-            margin-bottom: 8px; 
-            margin-left: 8px;
-            margin-right: 8px;
+            max-width: 85%; 
+            padding: 10px 14px; 
+            border-radius: 16px; 
             opacity: 0; 
             transform: translateY(20px); 
             animation: pop-in 0.5s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94); 
-            line-height: 1.5; 
-            font-size: 14px;
+            line-height: 1.4; 
+            font-size: 13px;
             letter-spacing: 0.01em;
+            word-wrap: break-word;
         }
         
         .chat-bubble.ai { 
             background-color: #FFFFFF; 
             color: #374151; 
-            border-bottom-left-radius: 8px; 
+            border-bottom-left-radius: 6px; 
             align-self: flex-start; 
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
-            border: 1px solid rgba(0,0,0,0.03);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            border: 1px solid rgba(0,0,0,0.05);
         }
         
         .chat-bubble.user { 
             background-color: #0077B6; 
             color: white; 
-            border-bottom-right-radius: 8px; 
+            border-bottom-right-radius: 6px; 
             align-self: flex-end; 
-            box-shadow: 0 6px 20px rgba(0, 119, 182, 0.15);
+            box-shadow: 0 4px 12px rgba(0, 119, 182, 0.12);
         }
         
         /* Mensagem especial da IA */
@@ -331,14 +345,45 @@
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
         @keyframes pop-in { to { opacity: 1; transform: translateY(0); } }
         
-        .option-button { 
-            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; 
-            border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        /* Botões redesenhados - mais compactos e intuitivos */
+        .chat-options {
+            padding: 12px;
+            background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%);
+            border-top: 1px solid #e2e8f0;
         }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 8px;
+            max-width: 100%;
+        }
+        
+        .option-button { 
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #374151;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            line-height: 1.3;
+            word-wrap: break-word;
+        }
+        
         .option-button:hover:not(:disabled) { 
-            transform: translateY(-4px); 
-            box-shadow: 0 12px 25px rgba(0, 119, 182, 0.12);
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(0, 119, 182, 0.15);
+            border-color: #0077B6;
+            background: #f8faff;
+        }
+        
+        .option-button:active {
+            transform: translateY(0);
         }
         .option-button:disabled, .action-button:disabled, .control-button:disabled { cursor: not-allowed; opacity: 0.5; }
         .control-button { transition: color 0.2s; }
@@ -354,9 +399,9 @@
         .confirmation-area {
             background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
             border: 1px solid #bae6fd;
-            border-radius: 16px;
-            padding: 16px;
-            margin: 16px;
+            border-radius: 12px;
+            padding: 12px;
+            margin: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             position: relative;
             transition: all 0.3s ease;
@@ -421,11 +466,28 @@
             }
             
             .chat-bubble {
-                max-width: 94%;
-                margin-left: 6px;
-                margin-right: 6px;
-                padding: 10px 14px;
-                font-size: 13px;
+                max-width: 92%;
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            
+            .chat-messages {
+                padding: 8px;
+                gap: 6px;
+            }
+            
+            .chat-options {
+                padding: 8px;
+            }
+            
+            .options-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 6px;
+            }
+            
+            .option-button {
+                padding: 8px 10px;
+                font-size: 11px;
             }
             
             .confirmation-area {
@@ -444,11 +506,6 @@
                 flex-direction: column;
                 gap: 3px;
             }
-            
-            .option-button {
-                padding: 12px 10px;
-                font-size: 13px;
-            }
         }
         
         @media (max-width: 480px) {
@@ -457,11 +514,28 @@
             }
             
             .chat-bubble {
-                max-width: 96%;
-                margin-left: 4px;
-                margin-right: 4px;
-                padding: 8px 12px;
-                font-size: 12px;
+                max-width: 94%;
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+            
+            .chat-messages {
+                padding: 6px;
+                gap: 4px;
+            }
+            
+            .chat-options {
+                padding: 6px;
+            }
+            
+            .options-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 4px;
+            }
+            
+            .option-button {
+                padding: 6px 8px;
+                font-size: 10px;
             }
             
             .status-bar {
@@ -545,8 +619,10 @@
                     </div>
                 </div>
             </header>
-            <main id="chat-window" class="flex-1 p-3 flex flex-col space-y-2 overflow-y-auto"></main>
-            <footer id="input-area" class="p-3 bg-white/60 border-t border-gray-200/80"></footer>
+            <main id="chat-window" class="chat-container">
+                <div id="chat-messages" class="chat-messages"></div>
+                <div id="input-area" class="chat-options"></div>
+            </main>
             <div id="session-controls" class="p-2 text-center bg-gray-100 border-t border-gray-200/80">
                 <p class="text-xs text-gray-500 mb-1">Você está conversando com a IA Gemini.</p>
                 <div class="flex justify-center items-center space-x-3">
@@ -568,6 +644,7 @@
         const portalActions = document.getElementById('portal-actions');
         const typingTextEl = document.getElementById('intro-typing-text');
         const chatWindow = document.getElementById('chat-window');
+        const chatMessages = document.getElementById('chat-messages');
         const inputArea = document.getElementById('input-area');
         const backBtn = document.getElementById('back-btn');
         const animatedSignature = document.getElementById('animated-signature');
@@ -701,7 +778,7 @@
             const existing = document.getElementById('typing-indicator');
             if (existing) existing.remove();
             if (show) {
-                chatWindow.insertAdjacentHTML('beforeend', `<div id="typing-indicator" class="chat-bubble ai typing-indicator"><span></span><span></span><span></span></div>`);
+                chatMessages.insertAdjacentHTML('beforeend', `<div id="typing-indicator" class="chat-bubble ai typing-indicator"><span></span><span></span><span></span></div>`);
                 scrollToBottom();
             }
         }
@@ -710,7 +787,7 @@
             const animationClass = isRestored ? '' : 'animate-pop-in';
             const welcomeClass = isWelcomeMessage ? 'welcome-message' : '';
             const sanitizedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
-            chatWindow.insertAdjacentHTML('beforeend', `<div class="chat-bubble ${sender} ${animationClass} ${welcomeClass}">${sanitizedText}</div>`);
+            chatMessages.insertAdjacentHTML('beforeend', `<div class="chat-bubble ${sender} ${animationClass} ${welcomeClass}">${sanitizedText}</div>`);
             if (!isRestored) {
                 setState({ chatLog: [...state.chatLog, { text, sender, isWelcomeMessage }] });
             }
@@ -728,7 +805,7 @@
             }
         }
         
-        function scrollToBottom() { chatWindow.scrollTop = chatWindow.scrollHeight; }
+        function scrollToBottom() { chatMessages.scrollTop = chatMessages.scrollHeight; }
 
         function disableAllInputs(shouldDisable) {
             const elements = document.querySelectorAll('#portal-actions button, #input-area button, #input-area input');
@@ -817,14 +894,12 @@
                         
                         finalHTML = `<div class="portal-options">${optionsHTML}</div>`;
                     } else {
-                        const wrapperClass = 'flex flex-col gap-2';
-                        const buttonClass = 'option-button w-full text-left p-3 mb-1 bg-white rounded-lg border border-gray-200 hover:border-buzios-mar focus:outline-none focus:ring-2 focus:ring-buzios-mar/50 text-sm';
                         const buttonsHTML = step.options.map(opt => 
-                            `<button onclick="handleUserAction('button', {text: '${opt.text}', nextStep: '${opt.nextStep}', variable: '${step.variable}'})" class="${buttonClass}">
-                                <span>${opt.text}</span>
+                            `<button onclick="handleUserAction('button', {text: '${opt.text}', nextStep: '${opt.nextStep}', variable: '${step.variable}'})" class="option-button">
+                                ${opt.text}
                              </button>`
                         ).join('');
-                        finalHTML = `<div class="animate-pop-in ${wrapperClass}">${buttonsHTML}</div>`;
+                        finalHTML = `<div class="options-grid animate-pop-in">${buttonsHTML}</div>`;
                     }
                     container.innerHTML = finalHTML;
                     break;
@@ -952,7 +1027,7 @@
 
         // --- INICIALIZAÇÃO E LÓGICA PRINCIPAL ---
         function rebuildUIFromState() {
-            chatWindow.innerHTML = '';
+            chatMessages.innerHTML = '';
             state.chatLog.forEach(msg => addMessageToChat(msg.text, msg.sender, true, msg.isWelcomeMessage));
         }
 
