@@ -181,7 +181,8 @@
 
             filteredDossiers.forEach((dossier, index) => {
                 const card = document.createElement('button');
-                card.className = 'card-glow glass-effect rounded-lg p-5 text-left flex flex-col gap-4';
+                // Adiciona classe "group" para permitir interações baseadas em hover/focus nos elementos internos
+                card.className = 'card-glow glass-effect rounded-lg p-5 text-left flex flex-col gap-4 group';
                 card.style.animationDelay = `${index * 50}ms`;
                 card.dataset.id = dossier.id;
                 
@@ -200,7 +201,8 @@
                     </div>
                     <div class="mt-2 flex-grow">
                         <h3 class="text-lg font-semibold text-white truncate">${sanitizeHTML(dossier.name || 'Lead Anônimo')}</h3>
-                        <p class="text-sm text-slate-400 h-10 overflow-hidden">${sanitizeHTML(dossier.interest || 'Nenhum interesse principal informado')}</p>
+                        <!-- Mantém o texto invisível até o cartão ser focado/hover para evitar poluição visual -->
+                        <p class="text-sm text-transparent group-hover:text-slate-400 group-focus:text-slate-400 h-10 overflow-hidden transition-colors duration-200">${sanitizeHTML(dossier.interest || 'Nenhum interesse principal informado')}</p>
                     </div>
                     <div class="text-xs text-slate-500 mt-auto pt-4 border-t border-slate-700 flex justify-between items-center">
                         <span>${formatRelativeTime(dossier.timestamp)}</span>
@@ -230,7 +232,8 @@
             errorState.classList.add('hidden');
             grid.innerHTML = '';
             try {
-                const dossiersFromApi = await fetchFromAPI({ action: 'listDossies' });
+                // Corrige o nome da ação enviado à API
+                const dossiersFromApi = await fetchFromAPI({ action: 'listDossiers' });
                 // Simula status e potencial, pois não vêm do backend
                 allDossiers = dossiersFromApi.map(d => ({
                     ...d,
@@ -325,7 +328,8 @@
             // --- PAINEL 2, 3, 4 e 5: Corpo do Modal ---
             const necessidadesHTML = details.necessidades.length > 0 ? details.necessidades.map(need => `<li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-blue-400 mt-1 flex-shrink-0"></i><span>${sanitizeHTML(need)}</span></li>`).join('') : '<li class="text-slate-400">Nenhuma necessidade específica foi revelada pela IA.</li>';
             const objecoesHTML = details.objecoes.length > 0 ? details.objecoes.map(obj => `<li class="flex items-start gap-3"><i data-lucide="shield-alert" class="w-5 h-5 text-yellow-400 mt-1 flex-shrink-0"></i><span>${sanitizeHTML(obj)}</span></li>`).join('') : '<li class="text-slate-400">Nenhuma objeção provável identificada.</li>';
-            const respostasHTML = details.respostas.length > 0 ? details.respostas.map((resp) => `<div class="py-3 not-last:border-b border-slate-700/50"><dt class="text-xs text-slate-400 font-medium">${sanitizeHTML(resp.question)}</dt><dd class="text-base text-slate-200">— ${sanitizeHTML(resp.answer)}</dd></div>`).join('') : '<p class="text-slate-400">Sem respostas registradas.</p>';
+            // Corrige variante Tailwind inválida "not-last" substituindo por utilitário padrão "last:border-none"
+            const respostasHTML = details.respostas.length > 0 ? details.respostas.map((resp) => `<div class="py-3 border-b last:border-none border-slate-700/50"><dt class="text-xs text-slate-400 font-medium">${sanitizeHTML(resp.question)}</dt><dd class="text-base text-slate-200">— ${sanitizeHTML(resp.answer)}</dd></div>`).join('') : '<p class="text-slate-400">Sem respostas registradas.</p>';
 
             modalBody.innerHTML = `
                 <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
