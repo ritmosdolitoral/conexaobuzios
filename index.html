@@ -714,20 +714,32 @@
                     document.getElementById('text-input').focus();
                     break;
                 case 'final':
-                    container.innerHTML = `<div class="text-center animate-fade-in bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border border-green-200">
-                        <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i data-lucide="check-circle" class="w-8 h-8 text-white"></i>
-                        </div>
-                        <h3 class="text-lg font-semibold text-slate-800 mb-2 font-playfair">Proposta Gerada com Sucesso!</h3>
-                        <p class="text-sm text-slate-600 mb-6 font-inter">Sua proposta personalizada está pronta. O que deseja fazer agora?</p>
-                        <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                            <button onclick="copyProposalFromChat()" class="action-button bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl font-inter flex items-center justify-center gap-2">
-                                <i data-lucide="copy" class="w-4 h-4"></i>
-                                Copiar Proposta
-                            </button>
-                            <button onclick="handleRestart()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-3 rounded-xl font-inter transition-all">
-                                🔄 Nova Conversa
-                            </button>
+                    container.innerHTML = `<div id="final-controls" class="relative text-center animate-fade-in bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border border-green-200 transition-all duration-300">
+                        <button onclick="toggleFinalControls()" class="absolute top-3 right-3 p-2 rounded-lg hover:bg-black/10 transition-all" aria-label="Ocultar controles">
+                            <i data-lucide="chevron-up" class="w-4 h-4 text-slate-600" id="toggle-icon"></i>
+                        </button>
+                        <div id="controls-content">
+                            <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i data-lucide="check-circle" class="w-8 h-8 text-white"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-slate-800 mb-2 font-playfair">Proposta Gerada com Sucesso!</h3>
+                            <p class="text-sm text-slate-600 mb-6 font-inter">Sua proposta personalizada está pronta. O que deseja fazer agora?</p>
+                            <div class="flex flex-col gap-3 justify-center max-w-md mx-auto">
+                                <a href="https://www.instagram.com/conexao.buzios/" target="_blank" rel="noopener noreferrer" class="action-button bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold rounded-xl font-inter flex items-center justify-center gap-2">
+                                    <i data-lucide="instagram" class="w-4 h-4"></i>
+                                    Falar com Concierge no Instagram
+                                </a>
+                                <div class="flex gap-2">
+                                    <button onclick="handleGoBack()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-4 py-2.5 rounded-xl font-inter transition-all flex items-center justify-center gap-2">
+                                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                                        Voltar
+                                    </button>
+                                    <button onclick="handleRestart()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-4 py-2.5 rounded-xl font-inter transition-all flex items-center justify-center gap-2">
+                                        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                                        Reiniciar
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>`;
                     lucide.createIcons();
@@ -806,24 +818,27 @@
             init();
         }
 
-        function copyProposalFromChat() {
-            const proposalElement = document.querySelector('.proposal-content');
-            if (proposalElement) {
-                const proposalText = proposalElement.textContent;
-                navigator.clipboard.writeText(proposalText).then(() => {
-                    const button = event.target.closest('button');
-                    const originalHTML = button.innerHTML;
-                    button.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Copiado!';
-                    button.disabled = true;
-                    lucide.createIcons();
-                    setTimeout(() => {
-                        button.innerHTML = originalHTML;
-                        button.disabled = false;
-                        lucide.createIcons();
-                    }, 2000);
-                }).catch(() => {
-                    alert('Erro ao copiar. Tente selecionar o texto manualmente.');
-                });
+        function toggleFinalControls() {
+            const controlsContent = document.getElementById('controls-content');
+            const toggleIcon = document.getElementById('toggle-icon');
+            const finalControls = document.getElementById('final-controls');
+            
+            if (controlsContent && toggleIcon && finalControls) {
+                const isHidden = controlsContent.style.display === 'none';
+                
+                if (isHidden) {
+                    controlsContent.style.display = 'block';
+                    toggleIcon.setAttribute('data-lucide', 'chevron-up');
+                    finalControls.classList.remove('pb-2');
+                    finalControls.classList.add('p-6');
+                } else {
+                    controlsContent.style.display = 'none';
+                    toggleIcon.setAttribute('data-lucide', 'chevron-down');
+                    finalControls.classList.remove('p-6');
+                    finalControls.classList.add('pb-2', 'pt-2');
+                }
+                
+                lucide.createIcons();
             }
         }
         
