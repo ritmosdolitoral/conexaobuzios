@@ -33,27 +33,218 @@
         .cursor { animation: blink 1s step-end infinite; }
         @keyframes blink { 50% { color: transparent; } }
         
-        /* Animação de pulso para os botões */
-        @keyframes pulse-light {
-            0%, 100% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2);
+        /* Portal redesenhado - mais intuitivo e responsivo */
+        .portal-container {
+            background: radial-gradient(ellipse at bottom, #1e3a8a 0%, #020617 70%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .portal-content {
+            text-align: center;
+            max-width: 600px;
+            z-index: 10;
+            position: relative;
+        }
+        
+        .portal-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+            opacity: 0;
+            animation: fadeInUp 1s forwards 0.5s;
+        }
+        
+        .portal-subtitle {
+            opacity: 0;
+            animation: fadeInUp 1s forwards 0.8s;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
-            50% {
-                transform: scale(1.02);
-                box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.1);
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
-        .portal-action-button {
-            background-color: rgba(255, 255, 255, 0.1);
+        
+        .portal-subtitle {
+            font-size: clamp(1rem, 3vw, 1.25rem);
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 3rem;
+            line-height: 1.6;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .portal-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .portal-option {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: background-color 0.3s, transform 0.3s;
-            animation: pulse-light 2.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
+            border-radius: 20px;
+            padding: 2rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.6, 1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideInUp 0.6s forwards;
         }
-        .portal-action-button:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-            animation-play-state: paused; /* Pausa a animação no hover para melhor interação */
+        
+        .portal-option:nth-child(1) { animation-delay: 0.1s; }
+        .portal-option:nth-child(2) { animation-delay: 0.2s; }
+        .portal-option:nth-child(3) { animation-delay: 0.3s; }
+        
+        @keyframes slideInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .portal-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s;
+        }
+        
+        .portal-option:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .portal-option:hover::before {
+            left: 100%;
+        }
+        
+        .portal-option:focus {
+            outline: 2px solid rgba(255, 255, 255, 0.5);
+            outline-offset: 2px;
+        }
+        
+        .portal-option-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .portal-option-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .portal-option-description {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+        
+        .portal-signature {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .portal-signature a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .portal-signature a:hover {
+            color: white;
+        }
+        
+        /* Responsividade do portal */
+        @media (max-width: 768px) {
+            .portal-container {
+                padding: 1rem;
+            }
+            
+            .portal-content {
+                max-width: 100%;
+            }
+            
+            .portal-options {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                max-width: 100%;
+            }
+            
+            .portal-option {
+                padding: 1.5rem 1rem;
+            }
+            
+            .portal-option-icon {
+                font-size: 2.5rem;
+            }
+            
+            .portal-option-title {
+                font-size: 1.1rem;
+            }
+            
+            .portal-option-description {
+                font-size: 0.85rem;
+            }
+            
+            .portal-signature {
+                bottom: 1rem;
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .portal-container {
+                padding: 0.5rem;
+            }
+            
+            .portal-option {
+                padding: 1.25rem 0.75rem;
+            }
+            
+            .portal-option-icon {
+                font-size: 2rem;
+            }
+            
+            .portal-option-title {
+                font-size: 1rem;
+            }
         }
 
         /* Estilos da Assinatura Animada */
@@ -283,22 +474,26 @@
 <body class="antialiased text-gray-800">
 
     <!-- Portal de IA (Camada de Introdução) -->
-    <div id="ai-intro-portal" class="h-screen w-full flex-col justify-center items-center text-center p-6 relative overflow-hidden flex">
+    <div id="ai-intro-portal" class="portal-container">
         <div id="particle-container" class="absolute inset-0"></div>
-        <div class="z-10">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-4 text-glow">
+        
+        <div class="portal-content">
+            <h1 class="portal-title">
                 <span id="intro-typing-text"></span><span class="cursor">|</span>
             </h1>
-            <p class="text-lg md:text-xl text-blue-200/80 max-w-3xl mx-auto">
-                Você está falando com a <strong class="font-semibold text-white">IA do Conexão Búzios</strong>. Suas respostas me guiam até a proposta perfeita para você.
+            <p class="portal-subtitle">
+                Você está falando com a <strong>IA do Conexão Búzios</strong>. Suas respostas me guiam até a proposta perfeita para você.
             </p>
+            
+            <div id="portal-actions" class="portal-options">
+                <!-- Os botões serão inseridos aqui via JavaScript -->
+            </div>
         </div>
-        <div id="portal-actions" class="mt-8 z-10 w-full max-w-lg"></div>
         
         <!-- Assinatura Animada (Inicialmente Oculta) -->
-        <div id="animated-signature" class="absolute bottom-5 w-full text-center text-xs text-white/50 font-light">
+        <div id="animated-signature" class="portal-signature">
             <span class="sig-part sig-part-1">
-                Um projeto <a href="https://www.instagram.com/conexao.buzios/" target="_blank" rel="noopener noreferrer" class="font-medium text-white/80 hover:text-white transition-colors">Conexão Búzios</a>
+                Um projeto <a href="https://www.instagram.com/conexao.buzios/" target="_blank" rel="noopener noreferrer">Conexão Búzios</a>
             </span>
             <span class="sig-part sig-part-2">
                 • Potencializado pela IA Gemini
@@ -567,18 +762,50 @@
                 case 'buttons':
                     let finalHTML = '';
                     if (isPortalStep) {
-                        finalHTML += `<p class="text-white/70 text-sm mb-4 animate-pop-in">Para começar, escolha seu perfil abaixo:</p>`;
+                        // Dados contextualizados para cada opção
+                        const portalOptions = [
+                            {
+                                icon: '🏖️',
+                                title: 'Sou Turista',
+                                description: 'Descobrir Búzios como visitante e encontrar experiências únicas',
+                                text: 'Sou Turista 🏖️',
+                                nextStep: 'turista_1'
+                            },
+                            {
+                                icon: '🏠',
+                                title: 'Sou Morador',
+                                description: 'Conectar com a comunidade local e descobrir oportunidades',
+                                text: 'Sou Morador 🏠',
+                                nextStep: 'morador_1'
+                            },
+                            {
+                                icon: '📢',
+                                title: 'Quero Divulgar',
+                                description: 'Promover meu negócio ou serviço na região de Búzios',
+                                text: 'Quero Divulgar 📢',
+                                nextStep: 'divulgador_1'
+                            }
+                        ];
+                        
+                        const optionsHTML = portalOptions.map(opt => 
+                            `<div onclick="handleUserAction('button', {text: '${opt.text}', nextStep: '${opt.nextStep}', variable: '${step.variable}'})" class="portal-option">
+                                <span class="portal-option-icon">${opt.icon}</span>
+                                <div class="portal-option-title">${opt.title}</div>
+                                <div class="portal-option-description">${opt.description}</div>
+                            </div>`
+                        ).join('');
+                        
+                        finalHTML = `<div class="portal-options">${optionsHTML}</div>`;
+                    } else {
+                        const wrapperClass = 'flex flex-col gap-3';
+                        const buttonClass = 'option-button w-full text-left p-4 mb-2 bg-white rounded-xl border border-gray-200 hover:border-buzios-mar focus:outline-none focus:ring-2 focus:ring-buzios-mar/50';
+                        const buttonsHTML = step.options.map(opt => 
+                            `<button onclick="handleUserAction('button', {text: '${opt.text}', nextStep: '${opt.nextStep}', variable: '${step.variable}'})" class="${buttonClass}">
+                                <span>${opt.text}</span>
+                             </button>`
+                        ).join('');
+                        finalHTML = `<div class="animate-pop-in ${wrapperClass}">${buttonsHTML}</div>`;
                     }
-                    const wrapperClass = isPortalStep ? 'flex flex-col sm:flex-row gap-4 max-w-md mx-auto' : '';
-                    const buttonClass = isPortalStep 
-                        ? 'portal-action-button text-white font-semibold px-8 py-4 rounded-lg w-full sm:w-auto text-center' 
-                        : 'option-button w-full text-left p-4 mb-2 bg-white rounded-xl border border-gray-200 hover:border-buzios-mar focus:outline-none focus:ring-2 focus:ring-buzios-mar/50';
-                    const buttonsHTML = step.options.map(opt => 
-                        `<button onclick="handleUserAction('button', {text: '${opt.text}', nextStep: '${opt.nextStep}', variable: '${step.variable}'})" class="${buttonClass}">
-                            <span>${opt.text}</span>
-                         </button>`
-                    ).join('');
-                    finalHTML += `<div class="animate-pop-in ${wrapperClass}">${buttonsHTML}</div>`;
                     container.innerHTML = finalHTML;
                     break;
                 case 'text':
