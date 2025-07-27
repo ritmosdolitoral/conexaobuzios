@@ -7,59 +7,185 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #020617; overflow: hidden; }
-        
-        /* Estilos do Portal de IA */
-        #ai-intro-portal {
-            background: radial-gradient(ellipse at bottom, #1e3a8a 0%, #020617 70%);
-            transition: opacity 0.8s ease-in-out;
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'playfair': ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        'buzios': {
+                            'deep': '#0B1426',
+                            'ocean': '#1E3A8A',
+                            'wave': '#3B82F6',
+                            'foam': '#60A5FA',
+                            'sand': '#F59E0B',
+                            'coral': '#F97316',
+                            'sunset': '#EC4899'
+                        }
+                    }
+                }
+            }
         }
+    </script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #0B1426 0%, #1E3A8A 25%, #0369A1 50%, #0284C7 75%, #0891B2 100%);
+            background-attachment: fixed;
+            overflow: hidden; 
+        }
+        
+        /* Elementos temáticos de Búzios */
+        .wave-pattern {
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+        }
+        
+        /* Estilos aprimorados do Portal de IA */
+        #ai-intro-portal {
+            background: linear-gradient(135deg, #0B1426 0%, #1E3A8A 25%, #0369A1 50%, #0284C7 75%, #0891B2 100%);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        #ai-intro-portal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse 80% 50% at 50% 120%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
+                        radial-gradient(ellipse 60% 80% at 50% -20%, rgba(14, 165, 233, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .floating-orbs {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(14, 165, 233, 0.2));
+            filter: blur(1px);
+            animation: float-orb 20s infinite linear;
+        }
+        
+        @keyframes float-orb {
+            0% { 
+                transform: translateY(100vh) translateX(0px) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(90vh) translateX(10px) scale(1);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(10vh) translateX(-10px) scale(1);
+            }
+            100% { 
+                transform: translateY(-10vh) translateX(0px) scale(0);
+                opacity: 0;
+            }
+        }
+        
         .particle {
             position: absolute;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.1);
             animation: float 25s infinite linear;
         }
-        @keyframes float {
-            0% { transform: translateY(0) translateX(0); opacity: 0.15; }
-            100% { transform: translateY(-100vh) translateX(20vw); opacity: 0; }
-        }
-        .text-glow {
-            text-shadow: 0 0 8px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
-        }
-        .cursor { animation: blink 1s step-end infinite; }
-        @keyframes blink { 50% { color: transparent; } }
         
-        /* Animação de pulso para os botões */
-        @keyframes pulse-light {
-            0%, 100% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2);
+        @keyframes float {
+            0% { 
+                transform: translateY(0) translateX(0) rotate(0deg); 
+                opacity: 0; 
             }
-            50% {
-                transform: scale(1.02);
-                box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.1);
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.2;
+            }
+            100% { 
+                transform: translateY(-100vh) translateX(50px) rotate(360deg); 
+                opacity: 0; 
             }
         }
+        
+        .text-glow {
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5), 
+                         0 0 40px rgba(59, 130, 246, 0.3),
+                         0 0 60px rgba(59, 130, 246, 0.2);
+            background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 50%, #b3e5fc 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .cursor { 
+            animation: blink 1.2s step-end infinite;
+            color: #60A5FA;
+        }
+        @keyframes blink { 
+            0%, 50% { opacity: 1; } 
+            51%, 100% { opacity: 0; } 
+        }
+        
+        /* Botões do portal aprimorados */
         .portal-action-button {
-            background-color: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
             border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: background-color 0.3s, transform 0.3s;
-            animation: pulse-light 2.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
+        
+        .portal-action-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .portal-action-button:hover::before {
+            left: 100%;
+        }
+        
         .portal-action-button:hover {
-            background-color: rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
             transform: translateY(-3px);
-            animation-play-state: paused; /* Pausa a animação no hover para melhor interação */
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.5);
         }
 
-        /* Estilos da Assinatura Animada */
+        /* Assinatura aprimorada */
         #animated-signature {
             opacity: 0;
-            transition: opacity 0.5s ease-in;
+            transition: opacity 0.6s ease-in;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 12px 24px;
+            margin: 0 auto;
+            width: fit-content;
         }
         #animated-signature.visible {
             opacity: 1;
@@ -68,10 +194,10 @@
             display: inline-block;
             opacity: 0;
             transform: translateY(15px);
-            animation: fadeInUp 0.8s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: fadeInUp 1s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         #animated-signature.visible .sig-part-2 {
-            animation-delay: 0.4s; /* Atraso para a segunda parte */
+            animation-delay: 0.5s;
         }
         @keyframes fadeInUp {
             to {
@@ -80,42 +206,196 @@
             }
         }
 
-        /* Estilos do Chat */
-        .bg-buzios-mar { background-color: #0077B6; }
-        .chat-bubble { max-width: 85%; padding: 12px 18px; border-radius: 20px; margin-bottom: 8px; opacity: 0; transform: translateY(20px); animation: pop-in 0.5s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94); line-height: 1.6; }
-        .chat-bubble.ai { background-color: #FFFFFF; color: #374151; border-bottom-left-radius: 4px; align-self: flex-start; box-shadow: 0 4px 15px rgba(0,0,0,0.07); }
-        .chat-bubble.user { background-color: #0077B6; color: white; border-bottom-right-radius: 4px; align-self: flex-end; }
-        .typing-indicator span { height: 8px; width: 8px; margin: 0 2px; background-color: #9ca3af; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; }
+        /* Chat aprimorado */
+        .bg-buzios-mar { 
+            background: linear-gradient(135deg, #0369A1 0%, #0284C7 100%);
+        }
+        
+        .chat-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .chat-bubble { 
+            max-width: 85%; 
+            padding: 16px 20px; 
+            border-radius: 24px; 
+            margin-bottom: 12px; 
+            opacity: 0; 
+            transform: translateY(20px); 
+            animation: pop-in 0.6s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        
+        .chat-bubble.ai { 
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: #1e293b; 
+            border-bottom-left-radius: 6px; 
+            align-self: flex-start; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08), 0 3px 10px rgba(0,0,0,0.06);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        
+        .chat-bubble.user { 
+            background: linear-gradient(135deg, #0369A1 0%, #0284C7 100%);
+            color: white; 
+            border-bottom-right-radius: 6px; 
+            align-self: flex-end;
+            box-shadow: 0 8px 25px rgba(3, 105, 161, 0.3);
+        }
+        
+        .typing-indicator span { 
+            height: 10px; 
+            width: 10px; 
+            margin: 0 2px; 
+            background: linear-gradient(135deg, #64748b, #94a3af);
+            border-radius: 50%; 
+            display: inline-block; 
+            animation: bounce 1.4s infinite ease-in-out both; 
+        }
+        
         .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
         .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
-        @keyframes pop-in { to { opacity: 1; transform: translateY(0); } }
-        .option-button { transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; }
-        .option-button:hover:not(:disabled) { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0, 119, 182, 0.15); }
-        .option-button:disabled, .action-button:disabled, .control-button:disabled { cursor: not-allowed; opacity: 0.5; }
-        .control-button { transition: color 0.2s; }
-        .control-button:hover:not(:disabled) { color: #0077B6; }
+        
+        @keyframes bounce { 
+            0%, 80%, 100% { transform: scale(0.8); } 
+            40% { transform: scale(1.2); } 
+        }
+        
+        @keyframes pop-in { 
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            } 
+        }
+        
+        .option-button { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+        
+        .option-button:hover:not(:disabled) { 
+            transform: translateY(-4px); 
+            box-shadow: 0 12px 25px rgba(3, 105, 161, 0.15);
+            border-color: #0369A1;
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+        }
+        
+        .action-button {
+            background: linear-gradient(135deg, #0369A1 0%, #0284C7 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(3, 105, 161, 0.3);
+        }
+        
+        .action-button:hover {
+            background: linear-gradient(135deg, #0284C7 0%, #0891B2 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(3, 105, 161, 0.4);
+        }
+        
+        .option-button:disabled, .action-button:disabled, .control-button:disabled { 
+            cursor: not-allowed; 
+            opacity: 0.5; 
+        }
+        
+        .control-button { 
+            transition: all 0.2s;
+            background: rgba(148, 163, 184, 0.1);
+            border-radius: 8px;
+            padding: 8px 12px;
+        }
+        
+        .control-button:hover:not(:disabled) { 
+            color: #0369A1;
+            background: rgba(3, 105, 161, 0.1);
+        }
+
+        /* Header do chat aprimorado */
+        .chat-header {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        /* Rodapé do chat aprimorado */
+        .chat-footer {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .session-controls {
+            background: linear-gradient(135deg, rgba(241, 245, 249, 0.8) 0%, rgba(226, 232, 240, 0.6) 100%);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        /* Animações de entrada */
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scrollbar personalizada */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(148, 163, 184, 0.1);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(3, 105, 161, 0.3);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(3, 105, 161, 0.5);
+        }
     </style>
 </head>
 <body class="antialiased text-gray-800">
 
     <!-- Portal de IA (Camada de Introdução) -->
-    <div id="ai-intro-portal" class="h-screen w-full flex-col justify-center items-center text-center p-6 relative overflow-hidden flex">
-        <div id="particle-container" class="absolute inset-0"></div>
-        <div class="z-10">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-4 text-glow">
-                <span id="intro-typing-text"></span><span class="cursor">|</span>
-            </h1>
-            <p class="text-lg md:text-xl text-blue-200/80 max-w-3xl mx-auto">
-                Você está falando com a <strong class="font-semibold text-white">IA do Conexão Búzios</strong>. Suas respostas me guiam até a proposta perfeita para você.
-            </p>
+    <div id="ai-intro-portal" class="h-screen w-full flex-col justify-center items-center text-center p-6 relative overflow-hidden flex wave-pattern">
+        <!-- Orbs flutuantes de fundo -->
+        <div class="floating-orbs">
+            <div class="orb" style="width: 120px; height: 120px; left: 10%; animation-delay: 0s; animation-duration: 25s;"></div>
+            <div class="orb" style="width: 80px; height: 80px; left: 70%; animation-delay: 3s; animation-duration: 20s;"></div>
+            <div class="orb" style="width: 60px; height: 60px; left: 30%; animation-delay: 6s; animation-duration: 30s;"></div>
+            <div class="orb" style="width: 100px; height: 100px; left: 85%; animation-delay: 9s; animation-duration: 22s;"></div>
+            <div class="orb" style="width: 40px; height: 40px; left: 50%; animation-delay: 12s; animation-duration: 28s;"></div>
         </div>
-        <div id="portal-actions" class="mt-8 z-10 w-full max-w-lg"></div>
+
+        <div id="particle-container" class="absolute inset-0"></div>
+        
+        <div class="z-10 max-w-4xl mx-auto">
+            <div class="mb-8 space-y-4">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-glow font-playfair mb-6">
+                    <span id="intro-typing-text"></span><span class="cursor">|</span>
+                </h1>
+                <p class="text-lg md:text-xl lg:text-2xl text-white/90 max-w-3xl mx-auto font-inter leading-relaxed">
+                    Você está falando com a <strong class="font-semibold text-blue-200 bg-white/10 px-2 py-1 rounded-lg backdrop-blur-sm">IA do Conexão Búzios</strong>. 
+                    <br class="hidden sm:block">
+                    Suas respostas me guiam até a proposta perfeita para você.
+                </p>
+            </div>
+        </div>
+        <div id="portal-actions" class="mt-12 z-10 w-full max-w-2xl animate-fade-in"></div>
         
         <!-- Assinatura Animada (Inicialmente Oculta) -->
-        <div id="animated-signature" class="absolute bottom-5 w-full text-center text-xs text-white/50 font-light">
+        <div id="animated-signature" class="absolute bottom-8 w-full text-center text-sm text-white/80 font-inter">
             <span class="sig-part sig-part-1">
-                Um projeto <a href="https://www.instagram.com/conexao.buzios/" target="_blank" rel="noopener noreferrer" class="font-medium text-white/80 hover:text-white transition-colors">Conexão Búzios</a>
+                Um projeto <a href="https://www.instagram.com/conexao.buzios/" target="_blank" rel="noopener noreferrer" class="font-semibold text-white hover:text-blue-200 transition-colors underline decoration-blue-300/50">Conexão Búzios</a>
             </span>
             <span class="sig-part sig-part-2">
                 • Potencializado pela IA Gemini
@@ -124,29 +404,35 @@
     </div>
     
     <!-- Container do Chat (Carregado, mas escondido) -->
-    <div id="app-container" class="w-full h-screen flex-col items-center justify-center p-4 bg-gray-100 hidden">
-        <div class="w-full max-w-lg h-full max-h-[800px] flex flex-col bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl shadow-gray-300/40 overflow-hidden border border-gray-200/50">
-            <header class="flex items-center justify-between p-4 border-b border-gray-200/80 bg-white/50">
-                <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 rounded-full bg-buzios-mar flex items-center justify-center">
+    <div id="app-container" class="w-full h-screen flex-col items-center justify-center p-4 bg-gradient-to-br from-slate-50 to-blue-50 hidden">
+        <div class="w-full max-w-lg h-full max-h-[800px] flex flex-col chat-container rounded-3xl shadow-2xl shadow-blue-900/20 overflow-hidden">
+            <header class="chat-header flex items-center justify-between p-6">
+                <div class="flex items-center space-x-4">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3"/><circle cx="12" cy="10" r="3"/><circle cx="12" cy="12" r="10"/></svg>
                     </div>
                     <div>
-                        <h1 class="text-lg font-bold text-buzios-mar">Conexão Búzios</h1>
-                        <p class="text-sm text-gray-500 flex items-center"><span class="h-2 w-2 bg-green-500 rounded-full mr-1.5"></span>Online</p>
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent font-playfair">Conexão Búzios</h1>
+                        <p class="text-sm text-slate-600 flex items-center font-inter">
+                            <span class="h-2.5 w-2.5 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                            Concierge Virtual Online
+                        </p>
                     </div>
                 </div>
             </header>
-            <main id="chat-window" class="flex-1 p-4 md:p-6 flex flex-col space-y-4 overflow-y-auto"></main>
-            <footer id="input-area" class="p-4 bg-white/60 border-t border-gray-200/80"></footer>
-            <div id="session-controls" class="p-2 text-center bg-gray-100 border-t border-gray-200/80">
-                <p class="text-xs text-gray-500 mb-1">Você está conversando com a IA Gemini.</p>
-                <div class="flex justify-center items-center space-x-4">
-                    <button onclick="handleGoBack()" id="back-btn" class="control-button text-xs text-gray-600 font-medium flex items-center gap-1">
-                        <i data-lucide="arrow-left" class="w-3 h-3"></i> Voltar
+            
+            <main id="chat-window" class="flex-1 p-6 flex flex-col space-y-4 overflow-y-auto custom-scrollbar"></main>
+            
+            <footer id="input-area" class="chat-footer p-6"></footer>
+            
+            <div id="session-controls" class="session-controls p-4 text-center">
+                <p class="text-xs text-slate-500 mb-2 font-inter">Você está conversando com a IA Gemini do Conexão Búzios.</p>
+                <div class="flex justify-center items-center space-x-6">
+                    <button onclick="handleGoBack()" id="back-btn" class="control-button text-xs text-slate-600 font-medium flex items-center gap-2 font-inter">
+                        <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Voltar
                     </button>
-                    <button onclick="handleRestart()" class="control-button text-xs text-gray-600 font-medium flex items-center gap-1">
-                        <i data-lucide="refresh-cw" class="w-3 h-3"></i> Reiniciar
+                    <button onclick="handleRestart()" class="control-button text-xs text-slate-600 font-medium flex items-center gap-2 font-inter">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Reiniciar
                     </button>
                 </div>
             </div>
@@ -183,11 +469,11 @@
         
         // --- LÓGICA DO PORTAL ---
         const portalPhrases = [
-            "Olá! Vamos descobrir algo novo?",
-            "Imagine se sua busca terminasse aqui...",
-            "O que você realmente deseja encontrar?",
-            "Estou analisando as possibilidades para você.",
-            "Sinto que algo incrível está por vir."
+            "Bem-vindo ao paraíso de Búzios! ✨",
+            "Descubra experiências únicas esperando por você...",
+            "Seu guia pessoal está aqui para te ajudar 🌊",
+            "Conectando você aos segredos de Búzios...",
+            "Vamos criar memórias inesquecíveis juntos! 🏖️"
         ];
         let phraseIndex = 0;
         let typingTimeout;
@@ -257,7 +543,7 @@
             clearTimeout(typingTimeout);
             if (i < text.length) {
                 typingTextEl.innerHTML = text.substring(0, i + 1);
-                typingTimeout = setTimeout(() => typeWriter(text, i + 1, onComplete), 65);
+                typingTimeout = setTimeout(() => typeWriter(text, i + 1, onComplete), 80);
             } else if (onComplete) {
                 onComplete();
             }
@@ -268,23 +554,23 @@
                 typingTimeout = setTimeout(() => {
                     phraseIndex = (phraseIndex + 1) % portalPhrases.length;
                     cyclePhrases();
-                }, 4000); // Wait 4 seconds before showing the next phrase
+                }, 4500);
             });
         }
 
         function createParticles() {
             const container = document.getElementById('particle-container');
             if (container.children.length > 0) return;
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 50; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
-                const size = Math.random() * 5 + 1;
+                const size = Math.random() * 4 + 2;
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
                 particle.style.left = `${Math.random() * 100}%`;
                 particle.style.top = `${Math.random() * 100}%`;
-                particle.style.animationDuration = `${Math.random() * 15 + 10}s`;
-                particle.style.animationDelay = `${Math.random() * 5}s`;
+                particle.style.animationDuration = `${Math.random() * 20 + 15}s`;
+                particle.style.animationDelay = `${Math.random() * 8}s`;
                 container.appendChild(particle);
             }
         }
@@ -353,7 +639,7 @@
                     disableAllInputs(false);
                 }
                 updateControls();
-            }, isPortalStep ? 100 : 1200);
+            }, isPortalStep ? 100 : 1400);
         }
 
         function renderInputs(step, context, container) {
@@ -362,28 +648,28 @@
                 case 'buttons':
                     let finalHTML = '';
                     if (isPortalStep) {
-                        finalHTML += `<p class="text-white/70 text-sm mb-4 animate-pop-in">Para começar, escolha seu perfil abaixo:</p>`;
+                        finalHTML += `<p class="text-white/80 text-base mb-6 animate-fade-in font-inter">Para começar nossa jornada, escolha seu perfil:</p>`;
                     }
                     const wrapperClass = isPortalStep ? 'flex flex-col sm:flex-row gap-4' : '';
                     const buttonClass = isPortalStep 
-                        ? 'portal-action-button text-white font-semibold px-6 py-3 rounded-lg w-full sm:w-auto' 
-                        : 'option-button w-full text-left p-4 mb-2 bg-white rounded-xl border border-gray-200 hover:border-buzios-mar focus:outline-none focus:ring-2 focus:ring-buzios-mar/50';
+                        ? 'portal-action-button text-white font-semibold px-8 py-4 rounded-2xl w-full sm:w-auto text-base transition-all duration-300 font-inter' 
+                        : 'option-button w-full text-left p-5 mb-3 rounded-2xl hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 font-inter';
                     const buttonsHTML = step.options.map(opt => 
                         `<button onclick="handleUserAction('button', {text: '${opt.text}', nextStep: '${opt.nextStep}', variable: '${step.variable}'})" class="${buttonClass}">
                             <span>${opt.text}</span>
                          </button>`
                     ).join('');
-                    finalHTML += `<div class="animate-pop-in ${wrapperClass}">${buttonsHTML}</div>`;
+                    finalHTML += `<div class="animate-fade-in ${wrapperClass}">${buttonsHTML}</div>`;
                     container.innerHTML = finalHTML;
                     break;
                 case 'text':
                 case 'tel':
-                    container.innerHTML = `<form onsubmit="handleUserAction('form', {event: event, nextStep: '${step.nextStep}', variable: '${step.variable}', validation: '${step.validation}'})" class="flex space-x-2 animate-pop-in"><input type="${step.type}" id="text-input" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-buzios-mar" placeholder="${step.placeholder}"><button type="submit" class="action-button bg-buzios-mar text-white font-bold px-5 py-3 rounded-lg hover:bg-buzios-mar/90">OK</button></form>`;
+                    container.innerHTML = `<form onsubmit="handleUserAction('form', {event: event, nextStep: '${step.nextStep}', variable: '${step.variable}', validation: '${step.validation}'})" class="flex space-x-3 animate-fade-in"><input type="${step.type}" id="text-input" required class="w-full px-5 py-4 rounded-2xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-inter" placeholder="${step.placeholder}"><button type="submit" class="action-button text-white font-bold px-6 py-4 rounded-2xl font-inter">Enviar</button></form>`;
                     document.getElementById('text-input').focus();
                     break;
                 case 'final':
                     addMessageToChat(context.proposal, 'ai');
-                    container.innerHTML = `<div class="text-center animate-pop-in"><p class="text-sm text-gray-600 mb-2">Sua proposta foi gerada! O que deseja fazer agora?</p><button onclick="handleRestart()" class="action-button bg-buzios-mar text-white font-bold px-6 py-3 rounded-lg">🔁 Começar uma nova conversa</button></div>`;
+                    container.innerHTML = `<div class="text-center animate-fade-in"><p class="text-sm text-slate-600 mb-4 font-inter">Sua proposta personalizada foi gerada! O que deseja fazer agora?</p><button onclick="handleRestart()" class="action-button text-white font-bold px-8 py-4 rounded-2xl font-inter">🔄 Começar nova conversa</button></div>`;
                     break;
             }
             if (!isPortalStep) scrollToBottom();
@@ -428,13 +714,15 @@
                 }
 
                 if (!isValid) {
-                    input.style.borderColor = '#FF6F61';
+                    input.style.borderColor = '#EF4444';
+                    input.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.1)';
                     input.value = '';
                     input.placeholder = errorMessage;
                     setTimeout(() => {
                         input.style.borderColor = '';
+                        input.style.boxShadow = '';
                         input.placeholder = originalPlaceholder;
-                    }, 2500);
+                    }, 3000);
                     disableAllInputs(false);
                     return;
                 }
