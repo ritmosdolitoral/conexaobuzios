@@ -13,31 +13,121 @@
         :root {
             --color-bg: #020617;
             --color-surface: #0f172a;
-            --color-glass: rgba(30, 41, 59, 0.5);
-            --color-border: rgba(255, 255, 255, 0.1);
+            --color-glass: rgba(30, 41, 59, 0.55);
+            --color-border: rgba(255, 255, 255, 0.10);
             --color-text-primary: #e2e8f0;
             --color-text-secondary: #94a3b8;
-            --color-brand: #2563eb;
+            --color-brand: #0077B6;
+            --color-accent: #00B4D8;
         }
-        body { font-family: 'Inter', sans-serif; background-color: var(--color-bg); color: var(--color-text-primary); }
-        .glass-effect { background: var(--color-glass); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid var(--color-border); }
-        .card-glow { transition: all 0.2s ease-in-out; }
-        .card-glow:hover { border-color: var(--color-brand); transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2), 0 8px 10px -6px rgba(0,0,0,0.2); }
-        .status-tag { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-        .modal-overlay { opacity: 0; visibility: hidden; transition: opacity 0.3s ease; }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-content { transform: scale(0.95) translateY(20px); transition: transform 0.3s ease; }
-        .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
-        .spinner { border-top-color: var(--color-brand); animation: spin 1s linear infinite; }
+        body {
+            font-family: 'Inter', 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a2540 0%, #0077B6 100%);
+            color: var(--color-text-primary);
+            min-height: 100vh;
+        }
+        .glass-effect {
+            background: var(--color-glass);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1.5px solid var(--color-border);
+            box-shadow: 0 4px 32px 0 rgba(0,119,182,0.08);
+        }
+        .card-glow {
+            transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
+            border: 1.5px solid var(--color-border);
+            background: linear-gradient(120deg, #0f172a 80%, #0077B6 100%);
+            box-shadow: 0 2px 16px 0 rgba(0,119,182,0.07);
+        }
+        .card-glow:hover {
+            border-color: var(--color-brand);
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 12px 32px -5px rgba(0,119,182,0.18), 0 8px 10px -6px rgba(0,0,0,0.18);
+            background: linear-gradient(120deg, #0077B6 60%, #00B4D8 100%);
+        }
+        .status-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.22rem 0.7rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            box-shadow: 0 1px 4px 0 rgba(0,119,182,0.07);
+        }
+        .modal-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            transform: scale(0.97) translateY(24px);
+            transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+        .spinner {
+            border-top-color: var(--color-brand);
+            animation: spin 1s linear infinite;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
         #modal-body::-webkit-scrollbar { width: 8px; }
         #modal-body::-webkit-scrollbar-track { background: #1e293b; }
         #modal-body::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
-        #modal-body::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        #modal-body::-webkit-scrollbar-thumb:hover { background: #00B4D8; }
         .btn-disabled {
             background-color: #475569;
             cursor: not-allowed;
             opacity: 0.6;
+        }
+        /* Filtros e controles */
+        .filter-btn-profile, .filter-btn-status {
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 6px 0 rgba(0,119,182,0.06);
+        }
+        .filter-btn-profile.bg-blue-500\/20, .filter-btn-status.bg-blue-500\/20 {
+            background: linear-gradient(90deg, #0077B6 0%, #00B4D8 100%) !important;
+            color: #fff !important;
+            box-shadow: 0 2px 12px 0 rgba(0,119,182,0.10);
+        }
+        .filter-btn-profile:hover, .filter-btn-status:hover {
+            background: #e0f7fa;
+            color: #0077B6;
+        }
+        /* Responsividade aprimorada */
+        @media (max-width: 1024px) {
+            #dossier-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+        }
+        @media (max-width: 640px) {
+            .container { padding: 1rem !important; }
+            #dossier-grid { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+            .modal-content { max-width: 98vw; }
+        }
+        @media (max-width: 400px) {
+            .modal-content { border-radius: 10px; }
+        }
+        /* Cabeçalho estilizado */
+        header.text-center.mb-8 {
+            background: linear-gradient(90deg, #0077B6 0%, #00B4D8 100%);
+            border-radius: 0 0 32px 32px;
+            box-shadow: 0 4px 32px 0 rgba(0,119,182,0.10);
+            padding: 2.5rem 1rem 2rem 1rem;
+            margin-bottom: 3rem !important;
+        }
+        header.text-center.mb-8 h1 {
+            color: #fff;
+            text-shadow: 0 2px 16px rgba(0,119,182,0.18);
+        }
+        header.text-center.mb-8 p {
+            color: #e0f7fa;
+            font-weight: 500;
         }
     </style>
 </head>
