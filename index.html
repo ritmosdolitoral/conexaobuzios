@@ -7,154 +7,549 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #020617; overflow: hidden; }
-        
-        /* Estilos do Portal de IA */
-        #ai-intro-portal {
-            background: radial-gradient(ellipse at bottom, #1e3a8a 0%, #020617 70%);
-            transition: opacity 0.8s ease-in-out;
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'buzios-deep': '#020617',
+                        'buzios-slate': '#1e293b',
+                        'buzios-blue': '#0077B6',
+                        'buzios-light': '#F1F5F9',
+                        'buzios-white': '#FFFFFF',
+                        'buzios-mint': '#10b981',
+                        'buzios-amber': '#f59e0b'
+                    },
+                    fontFamily: {
+                        'buzios': ['Poppins', 'sans-serif']
+                    },
+                    textShadow: {
+                        'glow': '0 0 8px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3)',
+                        'soft': '0 2px 4px rgba(0,0,0,0.3)'
+                    },
+                    dropShadow: {
+                        'glow': '0 0 8px rgba(59, 130, 246, 0.5)',
+                        'soft': '0 2px 4px rgba(0,0,0,0.3)'
+                    }
+                }
+            }
         }
+    </script>
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, #020617 0%, #1e293b 100%);
+            overflow-x: hidden;
+        }
+        
+        /* ========= VISIBILIDADE E CLAREZA ========= */
+        .text-shadow-glow {
+            text-shadow: 0 0 8px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .text-shadow-soft {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .backdrop-enhanced {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(30, 41, 59, 0.8);
+        }
+        
+        .container-safe {
+            max-width: 48rem;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        /* ========= PORTAL DE INTRODUÇÃO ========= */
+        #ai-intro-portal {
+            background: radial-gradient(ellipse at center, #1e3a8a 0%, #020617 70%);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Animação de partículas flutuantes */
         .particle {
             position: absolute;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.15);
             animation: float 25s infinite linear;
+            pointer-events: none;
         }
-        @keyframes float {
-            0% { transform: translateY(0) translateX(0); opacity: 0.15; }
-            100% { transform: translateY(-100vh) translateX(20vw); opacity: 0; }
-        }
-        .text-glow {
-            text-shadow: 0 0 8px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
-        }
-        .cursor { animation: blink 1s step-end infinite; }
-        @keyframes blink { 50% { color: transparent; } }
         
-        /* Animação de pulso para os botões */
-        @keyframes pulse-light {
+        @keyframes float {
+            0% { 
+                transform: translateY(100vh) translateX(-10vw) scale(0); 
+                opacity: 0; 
+            }
+            10% { 
+                opacity: 0.15; 
+                transform: translateY(90vh) translateX(0vw) scale(1); 
+            }
+            90% { 
+                opacity: 0.15; 
+                transform: translateY(10vh) translateX(10vw) scale(1); 
+            }
+            100% { 
+                transform: translateY(-10vh) translateX(20vw) scale(0); 
+                opacity: 0; 
+            }
+        }
+        
+        /* Animação de digitação */
+        .typing-cursor { 
+            animation: blink 1s step-end infinite; 
+        }
+        
+        @keyframes blink { 
+            50% { opacity: 0; } 
+        }
+        
+        /* Frase imersiva animada */
+        .immersive-phrase {
+            font-size: clamp(1.875rem, 5vw, 3rem);
+            line-height: 1.2;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 50%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        /* ========= BOTÕES E INTERAÇÕES ========= */
+        .btn-enhanced {
+            min-width: 140px;
+            min-height: 48px;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-enhanced:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+        
+        .btn-enhanced:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-enhanced:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        .btn-portal {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            animation: pulse-gentle 3s infinite;
+        }
+        
+        .btn-portal:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+        }
+        
+        @keyframes pulse-gentle {
             0%, 100% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.1);
             }
             50% {
-                transform: scale(1.02);
-                box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.1);
+                box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.05);
             }
         }
-        .portal-action-button {
-            background-color: rgba(255, 255, 255, 0.1);
+        
+        .btn-chat {
+            background: #ffffff;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .btn-chat:hover:not(:disabled) {
+            background: #f9fafb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 119, 182, 0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #0077B6 0%, #005a8a 100%);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #005a8a 0%, #004d73 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 119, 182, 0.3);
+        }
+        
+        /* ========= CHAT E MENSAGENS ========= */
+        .chat-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: background-color 0.3s, transform 0.3s;
-            animation: pulse-light 2.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
         }
-        .portal-action-button:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-            animation-play-state: paused; /* Pausa a animação no hover para melhor interação */
-        }
-
-        /* Estilos da Assinatura Animada */
-        #animated-signature {
+        
+        .chat-bubble {
+            max-width: 85%;
+            padding: 16px 20px;
+            border-radius: 20px;
+            margin-bottom: 12px;
             opacity: 0;
-            transition: opacity 0.5s ease-in;
+            transform: translateY(20px);
+            animation: message-appear 0.5s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            line-height: 1.6;
+            position: relative;
         }
-        #animated-signature.visible {
-            opacity: 1;
+        
+        .chat-bubble.ai {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: #374151;
+            border-bottom-left-radius: 6px;
+            align-self: flex-start;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0, 119, 182, 0.1);
         }
-        #animated-signature.visible .sig-part {
-            display: inline-block;
-            opacity: 0;
-            transform: translateY(15px);
-            animation: fadeInUp 0.8s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        
+        .chat-bubble.user {
+            background: linear-gradient(135deg, #0077B6 0%, #005a8a 100%);
+            color: white;
+            border-bottom-right-radius: 6px;
+            align-self: flex-end;
+            box-shadow: 0 4px 20px rgba(0, 119, 182, 0.3);
         }
-        #animated-signature.visible .sig-part-2 {
-            animation-delay: 0.4s; /* Atraso para a segunda parte */
-        }
-        @keyframes fadeInUp {
+        
+        @keyframes message-appear {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-
-        /* Estilos do Chat */
-        .bg-buzios-mar { background-color: #0077B6; }
-        .chat-bubble { max-width: 85%; padding: 12px 18px; border-radius: 20px; margin-bottom: 8px; opacity: 0; transform: translateY(20px); animation: pop-in 0.5s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94); line-height: 1.6; }
-        .chat-bubble.ai { background-color: #FFFFFF; color: #374151; border-bottom-left-radius: 4px; align-self: flex-start; box-shadow: 0 4px 15px rgba(0,0,0,0.07); }
-        .chat-bubble.user { background-color: #0077B6; color: white; border-bottom-right-radius: 4px; align-self: flex-end; }
-        .typing-indicator span { height: 8px; width: 8px; margin: 0 2px; background-color: #9ca3af; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; }
+        
+        /* Indicador de digitação */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 20px;
+        }
+        
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background-color: #9ca3af;
+            border-radius: 50%;
+            display: inline-block;
+            animation: typing-bounce 1.4s infinite ease-in-out both;
+        }
+        
         .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
         .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
-        @keyframes pop-in { to { opacity: 1; transform: translateY(0); } }
-        .option-button { transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; }
-        .option-button:hover:not(:disabled) { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0, 119, 182, 0.15); }
-        .option-button:disabled, .action-button:disabled, .control-button:disabled { cursor: not-allowed; opacity: 0.5; }
-        .control-button { transition: color 0.2s; }
-        .control-button:hover:not(:disabled) { color: #0077B6; }
+        
+        @keyframes typing-bounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+            }
+            40% {
+                transform: scale(1.0);
+            }
+        }
+        
+        /* ========= ASSINATURA ANIMADA ========= */
+        .signature-container {
+            opacity: 0;
+            transition: opacity 0.8s ease-in;
+        }
+        
+        .signature-container.visible {
+            opacity: 1;
+        }
+        
+        .signature-part {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(15px);
+        }
+        
+        .signature-container.visible .signature-part {
+            animation: signature-reveal 0.8s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .signature-container.visible .signature-part:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes signature-reveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* ========= FEEDBACK VISUAL ========= */
+        .feedback-error {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: 1px solid #fca5a5;
+        }
+        
+        .feedback-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: 1px solid #86efac;
+        }
+        
+        .feedback-info {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: 1px solid #93c5fd;
+        }
+        
+        /* ========= RESPONSIVIDADE ========= */
+        @media (max-width: 320px) {
+            .container-safe {
+                padding: 1rem;
+            }
+            
+            .btn-enhanced {
+                min-width: 120px;
+                min-height: 44px;
+                font-size: 0.875rem;
+            }
+            
+            .immersive-phrase {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .btn-group-mobile {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .btn-group-mobile .btn-enhanced {
+                width: 100%;
+            }
+        }
+        
+        /* ========= ELEMENTOS VISUAIS BÚZIOS ========= */
+        .ocean-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(180deg, transparent 0%, rgba(59, 130, 246, 0.1) 100%);
+            animation: wave-motion 8s ease-in-out infinite;
+        }
+        
+        @keyframes wave-motion {
+            0%, 100% { transform: translateX(0%) scaleY(1); }
+            50% { transform: translateX(2%) scaleY(1.1); }
+        }
+        
+        /* ========= ACESSIBILIDADE ========= */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        /* ========= STATES E UTILIDADES ========= */
+        .hidden { display: none !important; }
+        .flex { display: flex !important; }
+        
+        /* ========= LOADING E TRANSIÇÕES ========= */
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #ffffff;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* ========= PROGRESS INDICATOR ========= */
+        .progress-indicator {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+            height: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #3b82f6, #06b6d4);
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.5s ease;
+        }
     </style>
 </head>
-<body class="antialiased text-gray-800">
+<body class="antialiased font-buzios text-buzios-light">
 
-    <!-- Portal de IA (Camada de Introdução) -->
-    <div id="ai-intro-portal" class="h-screen w-full flex-col justify-center items-center text-center p-6 relative overflow-hidden flex">
-        <div id="particle-container" class="absolute inset-0"></div>
-        <div class="z-10">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-4 text-glow">
-                <span id="intro-typing-text"></span><span class="cursor">|</span>
-            </h1>
-            <p class="text-lg md:text-xl text-blue-200/80 max-w-3xl mx-auto">
-                Você está falando com a <strong class="font-semibold text-white">IA do Conexão Búzios</strong>. Suas respostas me guiam até a proposta perfeita para você.
-            </p>
-        </div>
-        <div id="portal-actions" class="mt-8 z-10 w-full max-w-lg"></div>
+    <!-- ========= PORTAL DE INTRODUÇÃO ========= -->
+    <div id="ai-intro-portal" class="min-h-screen w-full flex flex-col justify-center items-center text-center px-6 py-12 relative overflow-hidden">
+        <!-- Partículas flutuantes -->
+        <div id="particle-container" class="absolute inset-0 pointer-events-none"></div>
         
-        <!-- Assinatura Animada (Inicialmente Oculta) -->
-        <div id="animated-signature" class="absolute bottom-5 w-full text-center text-xs text-white/50 font-light">
-            <span class="sig-part sig-part-1">
-                Um projeto <a href="https://www.instagram.com/conexao.buzios/" target="_blank" rel="noopener noreferrer" class="font-medium text-white/80 hover:text-white transition-colors">Conexão Búzios</a>
-            </span>
-            <span class="sig-part sig-part-2">
+        <!-- Onda do oceano -->
+        <div class="ocean-wave"></div>
+        
+        <!-- Conteúdo principal -->
+        <div class="z-10 container-safe">
+            <!-- Frase imersiva -->
+            <h1 class="immersive-phrase text-shadow-glow mb-6">
+                <span id="intro-typing-text" aria-live="polite"></span>
+                <span class="typing-cursor">|</span>
+            </h1>
+            
+            <!-- Subtítulo -->
+            <p class="text-xl text-buzios-light/80 max-w-3xl mx-auto mb-8 text-shadow-soft">
+                Você está falando com a <strong class="font-semibold text-buzios-white">IA do Conexão Búzios</strong>. 
+                Suas respostas me guiam até a proposta perfeita para você.
+            </p>
+            
+            <!-- Indicador de progresso inicial -->
+            <div class="progress-indicator w-64 mx-auto mb-8">
+                <div id="progress-bar" class="progress-bar w-0"></div>
+            </div>
+        </div>
+        
+        <!-- Área de ações do portal -->
+        <div id="portal-actions" class="z-10 w-full max-w-2xl px-4">
+            <!-- Será preenchido dinamicamente -->
+        </div>
+        
+        <!-- Assinatura animada -->
+        <div id="animated-signature" class="signature-container absolute bottom-8 w-full text-center text-sm text-buzios-light/60 font-light">
+            <div class="signature-part">
+                Um projeto 
+                <a href="https://www.instagram.com/conexao.buzios/" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="font-medium text-buzios-light/80 hover:text-buzios-white transition-colors duration-300 underline decoration-dotted">
+                    Conexão Búzios
+                </a>
+            </div>
+            <div class="signature-part mt-1">
                 • Potencializado pela IA Gemini
-            </span>
+            </div>
         </div>
     </div>
     
-    <!-- Container do Chat (Carregado, mas escondido) -->
-    <div id="app-container" class="w-full h-screen flex-col items-center justify-center p-4 bg-gray-100 hidden">
-        <div class="w-full max-w-lg h-full max-h-[800px] flex flex-col bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl shadow-gray-300/40 overflow-hidden border border-gray-200/50">
-            <header class="flex items-center justify-between p-4 border-b border-gray-200/80 bg-white/50">
-                <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 rounded-full bg-buzios-mar flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3"/><circle cx="12" cy="10" r="3"/><circle cx="12" cy="12" r="10"/></svg>
+    <!-- ========= CONTAINER DO CHAT ========= -->
+    <div id="app-container" class="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-gradient-to-br from-buzios-deep to-buzios-slate hidden">
+        <div class="w-full max-w-2xl h-full max-h-[90vh] flex flex-col chat-container rounded-3xl shadow-2xl overflow-hidden border border-white/10">
+            
+            <!-- Cabeçalho do chat -->
+            <header class="flex items-center justify-between p-6 border-b border-white/10 backdrop-enhanced">
+                <div class="flex items-center space-x-4">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-buzios-blue to-blue-600 flex items-center justify-center shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3"/>
+                            <circle cx="12" cy="10" r="3"/>
+                            <circle cx="12" cy="12" r="10"/>
+                        </svg>
+                        <span class="sr-only">Avatar do Conexão Búzios</span>
                     </div>
                     <div>
-                        <h1 class="text-lg font-bold text-buzios-mar">Conexão Búzios</h1>
-                        <p class="text-sm text-gray-500 flex items-center"><span class="h-2 w-2 bg-green-500 rounded-full mr-1.5"></span>Online</p>
+                        <h1 class="text-xl font-bold text-buzios-slate">Conexão Búzios</h1>
+                        <p class="text-sm text-slate-600 flex items-center">
+                            <span class="h-2 w-2 bg-buzios-mint rounded-full mr-2 animate-pulse"></span>
+                            <span id="step-indicator">Conversando • Etapa 1</span>
+                        </p>
                     </div>
                 </div>
+                
+                <!-- Botão de informações -->
+                <button id="info-btn" 
+                        class="btn-enhanced p-3 rounded-xl text-slate-400 hover:text-buzios-blue hover:bg-slate-100 transition-colors duration-200"
+                        aria-label="Informações sobre a conversa">
+                    <i data-lucide="info" class="w-5 h-5"></i>
+                </button>
             </header>
-            <main id="chat-window" class="flex-1 p-4 md:p-6 flex flex-col space-y-4 overflow-y-auto"></main>
-            <footer id="input-area" class="p-4 bg-white/60 border-t border-gray-200/80"></footer>
-            <div id="session-controls" class="p-2 text-center bg-gray-100 border-t border-gray-200/80">
-                <p class="text-xs text-gray-500 mb-1">Você está conversando com a IA Gemini.</p>
-                <div class="flex justify-center items-center space-x-4">
-                    <button onclick="handleGoBack()" id="back-btn" class="control-button text-xs text-gray-600 font-medium flex items-center gap-1">
-                        <i data-lucide="arrow-left" class="w-3 h-3"></i> Voltar
+            
+            <!-- Janela do chat -->
+            <main id="chat-window" 
+                  class="flex-1 p-6 flex flex-col space-y-4 overflow-y-auto"
+                  role="log" 
+                  aria-live="polite" 
+                  aria-label="Conversa com a IA">
+                <!-- Mensagens serão inseridas aqui dinamicamente -->
+            </main>
+            
+            <!-- Área de input -->
+            <footer id="input-area" class="p-6 backdrop-enhanced border-t border-white/10">
+                <!-- Será preenchido dinamicamente -->
+            </footer>
+            
+            <!-- Controles da sessão -->
+            <div id="session-controls" class="p-4 text-center backdrop-enhanced border-t border-white/10">
+                <p class="text-xs text-slate-500 mb-3 flex items-center justify-center gap-2">
+                    <i data-lucide="shield-check" class="w-3 h-3 text-buzios-mint"></i>
+                    Conversa segura e privada com IA Gemini
+                </p>
+                <div class="flex justify-center items-center space-x-6">
+                    <button onclick="handleGoBack()" 
+                            id="back-btn" 
+                            class="btn-enhanced text-xs text-slate-600 font-medium flex items-center gap-2 px-3 py-2 rounded-lg hover:text-buzios-blue hover:bg-slate-100 transition-all duration-200"
+                            aria-label="Voltar para a pergunta anterior">
+                        <i data-lucide="arrow-left" class="w-3 h-3"></i> 
+                        Voltar
                     </button>
-                    <button onclick="handleRestart()" class="control-button text-xs text-gray-600 font-medium flex items-center gap-1">
-                        <i data-lucide="refresh-cw" class="w-3 h-3"></i> Reiniciar
+                    <button onclick="handleRestart()" 
+                            class="btn-enhanced text-xs text-slate-600 font-medium flex items-center gap-2 px-3 py-2 rounded-lg hover:text-red-500 hover:bg-red-50 transition-all duration-200"
+                            aria-label="Reiniciar conversa do início">
+                        <i data-lucide="refresh-cw" class="w-3 h-3"></i> 
+                        Reiniciar
                     </button>
                 </div>
             </div>
         </div>
     </div>
     
+    <!-- ========= MODAL DE FEEDBACK ========= -->
+    <div id="feedback-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-white rounded-2xl p-6 max-w-md mx-4 transform scale-95 transition-transform duration-300">
+            <div id="feedback-content" class="text-center">
+                <!-- Será preenchido dinamicamente -->
+            </div>
+        </div>
+    </div>
+    
     <script>
-        // --- ELEMENTOS DA DOM ---
+        // ========= CONFIGURAÇÃO INICIAL =========
+        const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHC3bAoL_c5rscJV2xbwVi9KMedM3QHbWCZ3bo64w0DbiMGOtnahL9BynJ5ADao63I/exec";
+        const SESSION_KEY = 'conexaoBuziosSession';
+        
+        // Elementos da DOM
         const introPortal = document.getElementById('ai-intro-portal');
         const appContainer = document.getElementById('app-container');
         const portalActions = document.getElementById('portal-actions');
@@ -163,61 +558,283 @@
         const inputArea = document.getElementById('input-area');
         const backBtn = document.getElementById('back-btn');
         const animatedSignature = document.getElementById('animated-signature');
-        lucide.createIcons();
-
-        // --- CONFIGURAÇÕES ---
-        const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHC3bAoL_c5rscJV2xbwVi9KMedM3QHbWCZ3bo64w0DbiMGOtnahL9BynJ5ADao63I/exec";
-        const SESSION_KEY = 'conexaoBuziosSession';
-
-        // --- ESTADO DA APLICAÇÃO ---
+        const stepIndicator = document.getElementById('step-indicator');
+        const progressBar = document.getElementById('progress-bar');
+        const feedbackModal = document.getElementById('feedback-modal');
+        const feedbackContent = document.getElementById('feedback-content');
+        
+        // Estado da aplicação
         let state = {};
-
         const initialState = {
             history: [],
             chatLog: [],
             currentStepId: 'start',
             isWaitingForResponse: false,
             userData: {},
-            userHistory: {}
+            userHistory: {},
+            currentStep: 1,
+            totalSteps: 8
         };
         
-        // --- LÓGICA DO PORTAL ---
-        const portalPhrases = [
-            "Olá! Vamos descobrir algo novo?",
-            "Imagine se sua busca terminasse aqui...",
-            "O que você realmente deseja encontrar?",
-            "Estou analisando as possibilidades para você.",
-            "Sinto que algo incrível está por vir."
+        // Frases imersivas para o portal
+        const immersivePhrases = [
+            "Imagine encontrar o paraíso...",
+            "E ele começar a conversar com você.",
+            "Cada resposta sua revela um segredo.",
+            "Búzios espera por você.",
+            "Sua jornada perfeita começa aqui."
         ];
+        
         let phraseIndex = 0;
         let typingTimeout;
-
-        // --- FLUXO DE CONVERSA ---
+        let currentTypingText = '';
+        
+        // ========= FLUXO DE CONVERSA ATUALIZADO =========
         const conversationFlow = {
-            'start': { message: "Oi! Que bom te ver por aqui! ✨ Sou seu amigo em Búzios, pronto pra te mostrar os segredos da cidade. Para começar, me conta, qual dessas opções combina mais com você?", type: 'buttons', variable: 'perfil', options: [ { text: 'Sou Turista 🏖️', nextStep: 'turista_1' }, { text: 'Sou Morador 🏠', nextStep: 'morador_1' }, { text: 'Quero Divulgar 📢', nextStep: 'divulgador_1' } ] },
-            'turista_1': { message: "Maravilha! Búzios tem uma energia única. Me diz, como está sua viagem agora?", type: 'buttons', variable: 'etapa_1', options: [ { text: 'Já estou aqui curtindo ☀️', nextStep: 'turista_2' }, { text: 'Chego nos próximos dias 🧳', nextStep: 'turista_2' }, { text: 'Estou planejando pra breve 🗓️', nextStep: 'turista_2' }, { text: 'Só explorando ideias por enquanto 🗺️', nextStep: 'turista_2' } ] },
-            'turista_2': { message: "Legal! E quem são as pessoas especiais que vão viver essa aventura com você?", type: 'buttons', variable: 'etapa_2', options: [ { text: '👤 Sozinho(a), na minha própria vibe', nextStep: 'turista_3' }, { text: '❤️ Com meu amor', nextStep: 'turista_3' }, { text: '🍻 Com a galera', nextStep: 'turista_3' }, { text: '👨‍👩‍👧‍👦 Com a família', nextStep: 'turista_3' } ] },
-            'turista_3': { message: "Show! E o seu cantinho pra relaxar? Já tem um lugar ou quer uma ajuda pra encontrar algo com a sua cara?", type: 'buttons', variable: 'etapa_3', options: [ { text: 'Já tenho meu cantinho', nextStep: 'turista_4' }, { text: 'Estou procurando um lugar', nextStep: 'turista_4' }, { text: 'Vou ficar na casa de amigos/família', nextStep: 'turista_4' } ] },
-            'turista_4': { message: "Agora a melhor parte! Feche os olhos e imagine... O que você mais quer sentir aqui em Búzios? ❤️", type: 'buttons', variable: 'etapa_4', options: [ { text: '🗺️ Descobrir lugares secretos', nextStep: 'turista_5' }, { text: '🦞 Comer coisas incríveis', nextStep: 'turista_5' }, { text: '🌙 Curtir a noite e a música', nextStep: 'turista_5' }, { text: '🧘 Relaxar e esquecer do mundo', nextStep: 'turista_5' }, { text: '🤝 Conhecer gente nova', nextStep: 'turista_5' } ] },
-            'turista_5': { message: "Sabe, Búzios encanta tanto que muita gente sonha em ficar... Já passou pela sua cabeça ter um negócio seu por aqui?", type: 'buttons', variable: 'etapa_5', options: [ { text: 'Sim, com certeza!', nextStep: 'turista_6' }, { text: 'Talvez um dia, quem sabe...', nextStep: 'turista_6' }, { text: 'Não, só passeio mesmo', nextStep: 'turista_6' } ] },
-            'turista_6': { message: "Pra eu te dar as dicas certas: qual seu orçamento por dia para curtir a cidade?", type: 'buttons', variable: 'etapa_6', options: [ { text: '💸 Até R$100', nextStep: 'transicao_nome' }, { text: '💵 R$100 a R$300', nextStep: 'transicao_nome' }, { text: '💰 R$300 a R$600', nextStep: 'transicao_nome' }, { text: '💎 Acima de R$600', nextStep: 'transicao_nome' } ] },
-            'morador_1': { message: "E aí, vizinho! Que bom te encontrar. Há quanto tempo Búzios é a sua casa?", type: 'buttons', variable: 'etapa_1', options: [ { text: 'Cheguei há pouco (menos de 1 ano)', nextStep: 'morador_2' }, { text: 'Já sou da área (1 a 3 anos)', nextStep: 'morador_2' }, { text: 'Raiz! (mais de 3 anos)', nextStep: 'morador_2' }, { text: 'Vivo na ponte-aérea', nextStep: 'morador_2' } ] },
-            'morador_2': { message: "Maneiro! E no dia a dia, qual é a sua praia?", type: 'buttons', variable: 'etapa_2', options: [ { text: '🧘 Na paz, lendo um livro na areia', nextStep: 'morador_3' }, { text: '🍻 Gosto de um barzinho e música', nextStep: 'morador_3' }, { text: '👟 Trilha, surf e pé na areia', nextStep: 'morador_3' }, { text: '🎉 Onde tem gente, eu tô!', nextStep: 'morador_3' } ] },
-            'morador_3': { message: "Se você tivesse um superpoder pra melhorar uma coisa em Búzios, o que seria?", type: 'buttons', variable: 'etapa_3', options: [ { text: '🤝 Conectar com mais gente legal', nextStep: 'morador_4' }, { text: '🗓️ Saber de todos os eventos secretos', nextStep: 'morador_4' }, { text: '📢 Fazer meu trabalho bombar!', nextStep: 'morador_4' }, { text: '💎 Ter acesso a dicas e descontos exclusivos', nextStep: 'morador_4' } ] },
-            'morador_4': { message: "Muitos moradores têm talentos incríveis. Você tem algo que gostaria de mostrar pra mais gente?", type: 'buttons', variable: 'etapa_4', options: [ { text: 'Sim, ofereço um serviço', nextStep: 'transicao_nome' }, { text: 'Sim, tenho um imóvel', nextStep: 'transicao_nome' }, { text: 'Sim, vendo um produto', nextStep: 'transicao_nome' }, { text: 'Ainda não, mas tenho uma ideia', nextStep: 'transicao_nome' }, { text: 'Não, só quero curtir mesmo', nextStep: 'transicao_nome' } ] },
-            'divulgador_1': { message: "Vamos fazer sua ideia brilhar! ✨ O que você quer que todo mundo em Búzios conheça?", type: 'buttons', variable: 'etapa_1', options: [ { text: 'Um serviço que eu presto', nextStep: 'divulgador_2' }, { text: 'Um produto que eu vendo', nextStep: 'divulgador_2' }, { text: 'Um imóvel (aluguel/venda)', nextStep: 'divulgador_2' }, { text: 'Um evento ou outra coisa', nextStep: 'divulgador_2' } ] },
-            'divulgador_2': { message: "Legal! E pra quem a gente vai contar essa novidade? Quem vai amar o que você faz?", type: 'buttons', variable: 'etapa_2', options: [ { text: '✈️ Turistas que chegam na cidade', nextStep: 'divulgador_3' }, { text: '🏠 Moradores que já estão aqui', nextStep: 'divulgador_3' }, { text: '🌍 Todo mundo!', nextStep: 'divulgador_3' }, { text: '🤔 Ainda não sei, preciso de ajuda', nextStep: 'divulgador_3' } ] },
-            'divulgador_3': { message: "Todo projeto tem sua jornada. Em que momento o seu está agora?", type: 'buttons', variable: 'etapa_3', options: [ { text: '🌱 Nascendo agora', nextStep: 'divulgador_4' }, { text: '🚀 Dando os primeiros passos', nextStep: 'divulgador_4' }, { text: '💪 Já estou no jogo', nextStep: 'divulgador_4' }, { text: '📈 Quero dominar o mundo!', nextStep: 'divulgador_4' } ] },
-            'divulgador_4': { message: "Pra gente criar uma estratégia que funcione, quanto você pode investir por mês pra ver seu negócio crescer?", type: 'buttons', variable: 'etapa_4', options: [ { text: 'Até R$100', nextStep: 'transicao_nome' }, { text: 'R$100 a R$300', nextStep: 'transicao_nome' }, { text: 'R$300 a R$700', nextStep: 'transicao_nome' }, { text: 'Acima de R$700', nextStep: 'transicao_nome' }, { text: 'Prefiro conversar sobre isso', nextStep: 'transicao_nome' } ] },
-            'transicao_nome': { message: "Perfeito! Estou anotando tudo para criar algo com a sua cara. Antes de te mostrar...", type: 'transition', nextStep: 'ask_name' },
-            'ask_name': { message: "Como eu posso te chamar?", type: 'text', variable: 'nome', placeholder: 'Seu nome...', nextStep: 'ask_phone', validation: 'text' },
-            'ask_phone': { message: "E se eu encontrar aquela oportunidade única, em qual WhatsApp posso te mandar um alô? 📲", type: 'tel', variable: 'telefone', placeholder: 'Seu melhor WhatsApp...', nextStep: 'generate_proposal', validation: 'phone' },
-            'generate_proposal': { message: "Conectando os pontos... Estou criando algo realmente especial pra você. Só um instante! 🔮", type: 'loading', action: 'callBackendForProcessing' },
-            'final_message': { type: 'final' },
-            'error_state': { message: "Ops! Tive um probleminha aqui. Minha conexão com a criatividade falhou. 😅 Que tal tentarmos de novo?", type: 'buttons', options: [ { text: 'Tentar novamente', nextStep: 'generate_proposal' }, { text: 'Reiniciar conversa', action: 'handleRestart' } ] }
+            'start': { 
+                message: "✨ Que bom te ver por aqui! Sou seu amigo pessoal em Búzios, pronto para revelar todos os segredos da cidade. Para começar nossa jornada, me conta: qual dessas opções combina mais com seu coração?", 
+                type: 'buttons', 
+                variable: 'perfil', 
+                options: [ 
+                    { text: '🏖️ Sou Turista Sonhador', value: 'turista', nextStep: 'turista_1', icon: 'map-pin' }, 
+                    { text: '🏠 Sou Morador Local', value: 'morador', nextStep: 'morador_1', icon: 'home' }, 
+                    { text: '📢 Quero Divulgar', value: 'divulgador', nextStep: 'divulgador_1', icon: 'megaphone' } 
+                ],
+                step: 1
+            },
+            
+            'turista_1': { 
+                message: "🌊 Maravilha! Búzios tem uma energia mágica que transforma qualquer pessoa. Me conta, como está sua aventura neste momento?", 
+                type: 'buttons', 
+                variable: 'momento_viagem', 
+                options: [ 
+                    { text: '☀️ Já estou aqui curtindo', value: 'presente', nextStep: 'turista_2', icon: 'sun' }, 
+                    { text: '🧳 Chego nos próximos dias', value: 'breve', nextStep: 'turista_2', icon: 'luggage' }, 
+                    { text: '🗓️ Estou planejando para breve', value: 'planejando', nextStep: 'turista_2', icon: 'calendar' }, 
+                    { text: '🗺️ Só explorando ideias', value: 'explorando', nextStep: 'turista_2', icon: 'search' } 
+                ],
+                step: 2
+            },
+            
+            'turista_2': { 
+                message: "💫 Perfeito! E quem são as pessoas especiais que vão compartilhar essa experiência única com você?", 
+                type: 'buttons', 
+                variable: 'companhia', 
+                options: [ 
+                    { text: '👤 Sozinho(a), na minha própria vibe', value: 'solo', nextStep: 'turista_3', icon: 'user' }, 
+                    { text: '❤️ Com meu grande amor', value: 'casal', nextStep: 'turista_3', icon: 'heart' }, 
+                    { text: '🍻 Com a galera toda', value: 'amigos', nextStep: 'turista_3', icon: 'users' }, 
+                    { text: '👨‍👩‍👧‍👦 Com minha família querida', value: 'familia', nextStep: 'turista_3', icon: 'home' } 
+                ],
+                step: 3
+            },
+            
+            'turista_3': { 
+                message: "🏡 Excelente! E sobre seu cantinho especial para relaxar e recarregar as energias?", 
+                type: 'buttons', 
+                variable: 'hospedagem', 
+                options: [ 
+                    { text: '✅ Já tenho meu refúgio', value: 'definida', nextStep: 'turista_4', icon: 'check-circle' }, 
+                    { text: '🔍 Estou procurando o lugar ideal', value: 'procurando', nextStep: 'turista_4', icon: 'search' }, 
+                    { text: '🤗 Vou ficar com amigos/família', value: 'conhecidos', nextStep: 'turista_4', icon: 'users' } 
+                ],
+                step: 4
+            },
+            
+            'turista_4': { 
+                message: "🎯 Agora a parte mais emocionante! Feche os olhos e imagine... O que seu coração mais deseja sentir aqui em Búzios?", 
+                type: 'buttons', 
+                variable: 'desejo_principal', 
+                options: [ 
+                    { text: '🗺️ Descobrir lugares secretos e mágicos', value: 'descobrir', nextStep: 'turista_5', icon: 'map' }, 
+                    { text: '🦞 Saborear experiências gastronômicas', value: 'gastronomia', nextStep: 'turista_5', icon: 'utensils' }, 
+                    { text: '🌙 Curtir a vida noturna e música', value: 'noite', nextStep: 'turista_5', icon: 'moon' }, 
+                    { text: '🧘 Relaxar e esquecer do mundo', value: 'relaxar', nextStep: 'turista_5', icon: 'leaf' }, 
+                    { text: '🤝 Conectar com pessoas incríveis', value: 'socializar', nextStep: 'turista_5', icon: 'handshake' } 
+                ],
+                step: 5
+            },
+            
+            'turista_5': { 
+                message: "💭 Búzios tem esse poder de encantar... Muitas pessoas se apaixonam tanto que sonham em ter um pedacinho daqui. Já passou pela sua mente ter um cantinho seu neste paraíso?", 
+                type: 'buttons', 
+                variable: 'interesse_negocio', 
+                options: [ 
+                    { text: '✨ Sim, seria um sonho realizado!', value: 'muito_interesse', nextStep: 'turista_6', icon: 'star' }, 
+                    { text: '🤔 Talvez um dia, quem sabe...', value: 'interesse_medio', nextStep: 'turista_6', icon: 'help-circle' }, 
+                    { text: '🏖️ Não, só quero curtir mesmo', value: 'sem_interesse', nextStep: 'turista_6', icon: 'umbrella' } 
+                ],
+                step: 6
+            },
+            
+            'turista_6': { 
+                message: "💰 Para eu preparar as dicas mais certeiras para você: qual seu investimento diário ideal para viver Búzios intensamente?", 
+                type: 'buttons', 
+                variable: 'orcamento_diario', 
+                options: [ 
+                    { text: '💸 Até R$100 - Econômico', value: 'baixo', nextStep: 'transicao_nome', icon: 'dollar-sign' }, 
+                    { text: '💵 R$100 a R$300 - Equilibrado', value: 'medio', nextStep: 'transicao_nome', icon: 'dollar-sign' }, 
+                    { text: '💰 R$300 a R$600 - Confortável', value: 'alto', nextStep: 'transicao_nome', icon: 'dollar-sign' }, 
+                    { text: '💎 Acima de R$600 - Premium', value: 'premium', nextStep: 'transicao_nome', icon: 'gem' } 
+                ],
+                step: 7
+            },
+            
+            'morador_1': { 
+                message: "🤝 E aí, vizinho querido! Que alegria te encontrar. Há quanto tempo este paraíso é a sua casa?", 
+                type: 'buttons', 
+                variable: 'tempo_moradia', 
+                options: [ 
+                    { text: '🌱 Cheguei há pouco (menos de 1 ano)', value: 'novo', nextStep: 'morador_2', icon: 'seedling' }, 
+                    { text: '🌿 Já me adaptei (1 a 3 anos)', value: 'adaptado', nextStep: 'morador_2', icon: 'leaf' }, 
+                    { text: '🌳 Sou raiz mesmo! (mais de 3 anos)', value: 'veterano', nextStep: 'morador_2', icon: 'tree-pine' }, 
+                    { text: '✈️ Vivo na ponte-aérea', value: 'pendular', nextStep: 'morador_2', icon: 'plane' } 
+                ],
+                step: 2
+            },
+            
+            'morador_2': { 
+                message: "🏄‍♂️ Fantástico! E no seu dia a dia paradisíaco, qual é a sua vibe preferida?", 
+                type: 'buttons', 
+                variable: 'estilo_vida', 
+                options: [ 
+                    { text: '🧘 Na paz, lendo na areia', value: 'tranquilo', nextStep: 'morador_3', icon: 'book-open' }, 
+                    { text: '🍻 Gosto de um barzinho e música', value: 'social', nextStep: 'morador_3', icon: 'music' }, 
+                    { text: '👟 Trilha, surf e aventura', value: 'ativo', nextStep: 'morador_3', icon: 'activity' }, 
+                    { text: '🎉 Onde tem festa, eu estou!', value: 'festeiro', nextStep: 'morador_3', icon: 'party-popper' } 
+                ],
+                step: 3
+            },
+            
+            'morador_3': { 
+                message: "🔮 Se você tivesse um superpoder para melhorar uma coisa em Búzios, qual seria sua escolha?", 
+                type: 'buttons', 
+                variable: 'melhoria_desejada', 
+                options: [ 
+                    { text: '🤝 Conectar com mais pessoas especiais', value: 'networking', nextStep: 'morador_4', icon: 'heart-handshake' }, 
+                    { text: '🗓️ Saber de todos os eventos secretos', value: 'eventos', nextStep: 'morador_4', icon: 'calendar-days' }, 
+                    { text: '📢 Fazer meu trabalho decolar!', value: 'trabalho', nextStep: 'morador_4', icon: 'rocket' }, 
+                    { text: '💎 Ter acesso a dicas VIP e descontos', value: 'beneficios', nextStep: 'morador_4', icon: 'star' } 
+                ],
+                step: 4
+            },
+            
+            'morador_4': { 
+                message: "✨ Muitos moradores têm talentos incríveis escondidos. Você tem algo especial que gostaria de compartilhar com mais pessoas?", 
+                type: 'buttons', 
+                variable: 'talento_servico', 
+                options: [ 
+                    { text: '🛠️ Sim, ofereço um serviço', value: 'servico', nextStep: 'transicao_nome', icon: 'wrench' }, 
+                    { text: '🏠 Sim, tenho um imóvel', value: 'imovel', nextStep: 'transicao_nome', icon: 'building' }, 
+                    { text: '🛍️ Sim, vendo um produto', value: 'produto', nextStep: 'transicao_nome', icon: 'shopping-bag' }, 
+                    { text: '💡 Tenho uma ideia incrível', value: 'ideia', nextStep: 'transicao_nome', icon: 'lightbulb' }, 
+                    { text: '😌 Não, só quero curtir mesmo', value: 'nenhum', nextStep: 'transicao_nome', icon: 'smile' } 
+                ],
+                step: 5
+            },
+            
+            'divulgador_1': { 
+                message: "🚀 Vamos fazer sua ideia brilhar como as estrelas de Búzios! O que você quer que todo mundo nesta cidade maravilhosa conheça?", 
+                type: 'buttons', 
+                variable: 'tipo_divulgacao', 
+                options: [ 
+                    { text: '🛠️ Um serviço que presto com amor', value: 'servico', nextStep: 'divulgador_2', icon: 'wrench' }, 
+                    { text: '🛍️ Um produto incrível que vendo', value: 'produto', nextStep: 'divulgador_2', icon: 'shopping-bag' }, 
+                    { text: '🏠 Um imóvel dos sonhos', value: 'imovel', nextStep: 'divulgador_2', icon: 'building' }, 
+                    { text: '🎉 Um evento ou experiência', value: 'evento', nextStep: 'divulgador_2', icon: 'calendar' } 
+                ],
+                step: 2
+            },
+            
+            'divulgador_2': { 
+                message: "🎯 Perfeito! E para quem vamos contar essa novidade incrível? Quem vai se apaixonar pelo que você oferece?", 
+                type: 'buttons', 
+                variable: 'publico_alvo', 
+                options: [ 
+                    { text: '✈️ Turistas em busca de experiências', value: 'turistas', nextStep: 'divulgador_3', icon: 'plane' }, 
+                    { text: '🏠 Moradores que vivem aqui', value: 'moradores', nextStep: 'divulgador_3', icon: 'home' }, 
+                    { text: '🌍 Todo mundo, sem exceção!', value: 'todos', nextStep: 'divulgador_3', icon: 'globe' }, 
+                    { text: '🤔 Preciso de ajuda para descobrir', value: 'indefinido', nextStep: 'divulgador_3', icon: 'help-circle' } 
+                ],
+                step: 3
+            },
+            
+            'divulgador_3': { 
+                message: "📈 Todo sonho tem sua jornada única. Em que momento mágico seu projeto está agora?", 
+                type: 'buttons', 
+                variable: 'estagio_projeto', 
+                options: [ 
+                    { text: '🌱 Acabando de nascer', value: 'inicio', nextStep: 'divulgador_4', icon: 'seedling' }, 
+                    { text: '🚀 Dando os primeiros voos', value: 'primeiros_passos', nextStep: 'divulgador_4', icon: 'rocket' }, 
+                    { text: '💪 Já estou no ritmo', value: 'ativo', nextStep: 'divulgador_4', icon: 'trending-up' }, 
+                    { text: '📈 Quero conquistar o mundo!', value: 'expansao', nextStep: 'divulgador_4', icon: 'crown' } 
+                ],
+                step: 4
+            },
+            
+            'divulgador_4': { 
+                message: "💫 Para criarmos uma estratégia que realmente funcione e transforme sonhos em realidade, quanto você pode investir mensalmente para ver seu projeto florescer?", 
+                type: 'buttons', 
+                variable: 'investimento_mensal', 
+                options: [ 
+                    { text: '💵 Até R$100', value: 'baixo', nextStep: 'transicao_nome', icon: 'dollar-sign' }, 
+                    { text: '💰 R$100 a R$300', value: 'medio', nextStep: 'transicao_nome', icon: 'dollar-sign' }, 
+                    { text: '💎 R$300 a R$700', value: 'alto', nextStep: 'transicao_nome', icon: 'gem' }, 
+                    { text: '🌟 Acima de R$700', value: 'premium', nextStep: 'transicao_nome', icon: 'star' }, 
+                    { text: '🤝 Prefiro conversar sobre isso', value: 'conversar', nextStep: 'transicao_nome', icon: 'message-circle' } 
+                ],
+                step: 5
+            },
+            
+            'transicao_nome': { 
+                message: "✨ Perfeito! Estou organizando tudo com muito carinho para criar algo verdadeiramente especial para você. Antes de revelar a magia...", 
+                type: 'transition', 
+                nextStep: 'ask_name',
+                step: 7
+            },
+            
+            'ask_name': { 
+                message: "🌟 Como posso chamar você? Me conta seu nome para tornar nossa conversa ainda mais especial!", 
+                type: 'text', 
+                variable: 'nome', 
+                placeholder: 'Digite seu nome aqui...', 
+                nextStep: 'ask_phone', 
+                validation: 'text',
+                step: 8
+            },
+            
+            'ask_phone': { 
+                message: "📲 E se eu encontrar aquela oportunidade única e perfeita para você, qual o melhor WhatsApp para te enviar um alô especial?", 
+                type: 'tel', 
+                variable: 'telefone', 
+                placeholder: '(11) 99999-9999', 
+                nextStep: 'generate_proposal', 
+                validation: 'phone',
+                step: 9
+            },
+            
+            'generate_proposal': { 
+                message: "🔮 Conectando todos os pontos mágicos... Estou criando algo verdadeiramente especial e único para você. A magia está acontecendo!", 
+                type: 'loading', 
+                action: 'callBackendForProcessing',
+                step: 10
+            },
+            
+            'final_message': { 
+                type: 'final' 
+            },
+            
+            'error_state': { 
+                message: "😅 Ops! Minha conexão com a criatividade teve um pequeno soluço. Mas não se preocupe, vamos resolver isso juntos!", 
+                type: 'buttons', 
+                options: [ 
+                    { text: '🔄 Tentar novamente', action: 'retry', nextStep: 'generate_proposal', icon: 'refresh-cw' }, 
+                    { text: '🏠 Começar do início', action: 'restart', icon: 'home' } 
+                ]
+            }
         };
-
-        // --- FUNÇÕES DE CONTROLE DE ESTADO ---
+        
+        // ========= FUNÇÕES DE ESTADO =========
         function saveState() {
             try {
                 localStorage.setItem(SESSION_KEY, JSON.stringify(state));
@@ -235,7 +852,7 @@
                 }
                 return false;
             } catch (e) {
-                console.warn("Não foi possível restaurar a sessão. Começando uma nova.", e);
+                console.warn("Não foi possível restaurar a sessão:", e);
                 localStorage.removeItem(SESSION_KEY);
                 return false;
             }
@@ -244,106 +861,212 @@
         function setState(newState) {
             state = { ...state, ...newState };
             saveState();
+            updateProgressIndicator();
         }
 
         function pushHistory() {
-            const currentStateSnapshot = JSON.parse(JSON.stringify(state)); // Deep copy
+            const currentStateSnapshot = JSON.parse(JSON.stringify(state));
             const newHistory = [...(state.history || []), currentStateSnapshot];
             setState({ history: newHistory });
         }
-
-        // --- FUNÇÕES DE UI E ANIMAÇÃO ---
+        
+        // ========= FUNÇÕES DE UI E ANIMAÇÃO =========
         function typeWriter(text, i = 0, onComplete) {
             clearTimeout(typingTimeout);
             if (i < text.length) {
-                typingTextEl.innerHTML = text.substring(0, i + 1);
-                typingTimeout = setTimeout(() => typeWriter(text, i + 1, onComplete), 65);
+                currentTypingText = text.substring(0, i + 1);
+                typingTextEl.innerHTML = currentTypingText;
+                typingTimeout = setTimeout(() => typeWriter(text, i + 1, onComplete), 80);
             } else if (onComplete) {
                 onComplete();
             }
         }
 
         function cyclePhrases() {
-            typeWriter(portalPhrases[phraseIndex], 0, () => {
+            typeWriter(immersivePhrases[phraseIndex], 0, () => {
                 typingTimeout = setTimeout(() => {
-                    phraseIndex = (phraseIndex + 1) % portalPhrases.length;
+                    phraseIndex = (phraseIndex + 1) % immersivePhrases.length;
                     cyclePhrases();
-                }, 4000); // Wait 4 seconds before showing the next phrase
+                }, 4500);
             });
         }
 
         function createParticles() {
             const container = document.getElementById('particle-container');
             if (container.children.length > 0) return;
-            for (let i = 0; i < 30; i++) {
+            
+            for (let i = 0; i < 35; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
-                const size = Math.random() * 5 + 1;
+                const size = Math.random() * 6 + 2;
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
                 particle.style.left = `${Math.random() * 100}%`;
                 particle.style.top = `${Math.random() * 100}%`;
-                particle.style.animationDuration = `${Math.random() * 15 + 10}s`;
-                particle.style.animationDelay = `${Math.random() * 5}s`;
+                particle.style.animationDuration = `${Math.random() * 20 + 15}s`;
+                particle.style.animationDelay = `${Math.random() * 10}s`;
                 container.appendChild(particle);
+            }
+        }
+
+        function updateProgressIndicator() {
+            const currentStep = state.currentStep || 1;
+            const totalSteps = state.totalSteps || 10;
+            const progress = Math.min((currentStep / totalSteps) * 100, 100);
+            
+            if (progressBar) {
+                progressBar.style.width = `${progress}%`;
+            }
+            
+            if (stepIndicator) {
+                const stepText = currentStep <= totalSteps ? 
+                    `Conversando • Etapa ${currentStep} de ${totalSteps}` : 
+                    'Conversa finalizada';
+                stepIndicator.textContent = stepText;
             }
         }
 
         function showTypingIndicator(show) {
             const existing = document.getElementById('typing-indicator');
             if (existing) existing.remove();
+            
             if (show) {
-                chatWindow.insertAdjacentHTML('beforeend', `<div id="typing-indicator" class="chat-bubble ai typing-indicator"><span></span><span></span><span></span></div>`);
+                const indicator = document.createElement('div');
+                indicator.id = 'typing-indicator';
+                indicator.className = 'chat-bubble ai typing-indicator';
+                indicator.innerHTML = '<span></span><span></span><span></span>';
+                chatWindow.appendChild(indicator);
                 scrollToBottom();
             }
         }
 
         function addMessageToChat(text, sender, isRestored = false) {
-            const animationClass = isRestored ? '' : 'animate-pop-in';
-            const sanitizedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
-            chatWindow.insertAdjacentHTML('beforeend', `<div class="chat-bubble ${sender} ${animationClass}">${sanitizedText}</div>`);
+            const messageEl = document.createElement('div');
+            messageEl.className = `chat-bubble ${sender}`;
+            
+            // Processar texto para permitir emojis e formatação
+            const processedText = text
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\n/g, "<br>")
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>');
+                
+            messageEl.innerHTML = processedText;
+            
             if (!isRestored) {
+                messageEl.style.opacity = '0';
+                messageEl.style.transform = 'translateY(20px)';
+            }
+            
+            chatWindow.appendChild(messageEl);
+            
+            if (!isRestored) {
+                // Animar entrada da mensagem
+                requestAnimationFrame(() => {
+                    messageEl.style.transition = 'all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    messageEl.style.opacity = '1';
+                    messageEl.style.transform = 'translateY(0)';
+                });
+                
                 setState({ chatLog: [...state.chatLog, { text, sender }] });
             }
+            
             scrollToBottom();
         }
-        
-        function scrollToBottom() { chatWindow.scrollTop = chatWindow.scrollHeight; }
+
+        function scrollToBottom() {
+            requestAnimationFrame(() => {
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            });
+        }
 
         function disableAllInputs(shouldDisable) {
-            const elements = document.querySelectorAll('#portal-actions button, #input-area button, #input-area input');
-            elements.forEach(el => el.disabled = shouldDisable);
+            const elements = document.querySelectorAll('button:not([data-system]), input');
+            elements.forEach(el => {
+                el.disabled = shouldDisable;
+                if (shouldDisable) {
+                    el.classList.add('btn-disabled');
+                } else {
+                    el.classList.remove('btn-disabled');
+                }
+            });
             setState({ isWaitingForResponse: shouldDisable });
         }
 
-        // --- LÓGICA DA CONVERSA ---
+        function showFeedback(type, title, message, autoClose = true) {
+            const iconMap = {
+                success: 'check-circle',
+                error: 'x-circle',
+                info: 'info'
+            };
+            
+            const colorMap = {
+                success: 'text-buzios-mint',
+                error: 'text-red-500',
+                info: 'text-buzios-blue'
+            };
+            
+            feedbackContent.innerHTML = `
+                <div class="mb-4">
+                    <i data-lucide="${iconMap[type]}" class="w-12 h-12 mx-auto ${colorMap[type]} mb-3"></i>
+                    <h3 class="text-lg font-semibold text-slate-800 mb-2">${title}</h3>
+                    <p class="text-slate-600">${message}</p>
+                </div>
+            `;
+            
+            feedbackModal.classList.remove('opacity-0', 'pointer-events-none');
+            feedbackModal.classList.add('opacity-100', 'pointer-events-auto');
+            
+            lucide.createIcons();
+            
+            if (autoClose) {
+                setTimeout(() => {
+                    feedbackModal.classList.add('opacity-0', 'pointer-events-none');
+                    feedbackModal.classList.remove('opacity-100', 'pointer-events-auto');
+                }, 3000);
+            }
+        }
+        
+        // ========= LÓGICA DA CONVERSA =========
         function displayStep(stepId, context = {}) {
             const step = conversationFlow[stepId];
             if (!step) {
                 console.error(`Passo "${stepId}" não encontrado.`);
                 return;
             }
-            setState({ currentStepId: stepId });
+            
+            setState({ 
+                currentStepId: stepId,
+                currentStep: step.step || state.currentStep
+            });
+            
             const isPortalStep = stepId === 'start';
             const targetContainer = isPortalStep ? portalActions : inputArea;
             targetContainer.innerHTML = '';
             
             if (isPortalStep) {
-                if(state.chatLog.length === 0) addMessageToChat(step.message, 'ai');
+                if (state.chatLog.length === 0) {
+                    addMessageToChat(step.message, 'ai');
+                }
             } else {
                 showTypingIndicator(true);
             }
 
+            const delay = isPortalStep ? 100 : 1500;
             setTimeout(() => {
                 if (!isPortalStep) {
                     showTypingIndicator(false);
-                    if (step.message) addMessageToChat(step.message, 'ai');
+                    if (step.message) {
+                        addMessageToChat(step.message, 'ai');
+                    }
                 }
                 renderInputs(step, context, targetContainer);
+                
                 const isAutoStep = step.type === 'loading' || step.type === 'transition';
                 if (isAutoStep) {
                     if (typeof step.action === 'string') {
-                        window[step.action](); // Chama a função de backend
+                        window[step.action]();
                     } else if (typeof step.action === 'function') {
                         step.action();
                     } else {
@@ -353,51 +1076,185 @@
                     disableAllInputs(false);
                 }
                 updateControls();
-            }, isPortalStep ? 100 : 1200);
+            }, delay);
         }
 
         function renderInputs(step, context, container) {
             const isPortalStep = state.currentStepId === 'start';
+            
             switch (step.type) {
                 case 'buttons':
-                    let finalHTML = '';
-                    if (isPortalStep) {
-                        finalHTML += `<p class="text-white/70 text-sm mb-4 animate-pop-in">Para começar, escolha seu perfil abaixo:</p>`;
-                    }
-                    const wrapperClass = isPortalStep ? 'flex flex-col sm:flex-row gap-4' : '';
-                    const buttonClass = isPortalStep 
-                        ? 'portal-action-button text-white font-semibold px-6 py-3 rounded-lg w-full sm:w-auto' 
-                        : 'option-button w-full text-left p-4 mb-2 bg-white rounded-xl border border-gray-200 hover:border-buzios-mar focus:outline-none focus:ring-2 focus:ring-buzios-mar/50';
-                    const buttonsHTML = step.options.map(opt => 
-                        `<button onclick="handleUserAction('button', {text: '${opt.text}', nextStep: '${opt.nextStep}', variable: '${step.variable}'})" class="${buttonClass}">
-                            <span>${opt.text}</span>
-                         </button>`
-                    ).join('');
-                    finalHTML += `<div class="animate-pop-in ${wrapperClass}">${buttonsHTML}</div>`;
-                    container.innerHTML = finalHTML;
+                    renderButtons(step, container, isPortalStep);
                     break;
                 case 'text':
                 case 'tel':
-                    container.innerHTML = `<form onsubmit="handleUserAction('form', {event: event, nextStep: '${step.nextStep}', variable: '${step.variable}', validation: '${step.validation}'})" class="flex space-x-2 animate-pop-in"><input type="${step.type}" id="text-input" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-buzios-mar" placeholder="${step.placeholder}"><button type="submit" class="action-button bg-buzios-mar text-white font-bold px-5 py-3 rounded-lg hover:bg-buzios-mar/90">OK</button></form>`;
-                    document.getElementById('text-input').focus();
+                    renderTextInput(step, container);
                     break;
                 case 'final':
-                    addMessageToChat(context.proposal, 'ai');
-                    container.innerHTML = `<div class="text-center animate-pop-in"><p class="text-sm text-gray-600 mb-2">Sua proposta foi gerada! O que deseja fazer agora?</p><button onclick="handleRestart()" class="action-button bg-buzios-mar text-white font-bold px-6 py-3 rounded-lg">🔁 Começar uma nova conversa</button></div>`;
+                    renderFinalMessage(context, container);
+                    break;
+                case 'loading':
+                    renderLoadingMessage(container);
                     break;
             }
+            
             if (!isPortalStep) scrollToBottom();
+        }
+
+        function renderButtons(step, container, isPortalStep) {
+            let html = '';
+            
+            if (isPortalStep) {
+                html += `
+                    <div class="text-buzios-light/70 text-base mb-6 animate-pulse">
+                        <i data-lucide="sparkles" class="w-5 h-5 inline mr-2"></i>
+                        Para começar nossa jornada, escolha sua categoria:
+                    </div>
+                `;
+            }
+            
+            const wrapperClass = isPortalStep ? 
+                'btn-group-mobile flex flex-col sm:flex-row gap-4 justify-center' : 
+                'flex flex-col gap-3';
+                
+            const buttonClass = isPortalStep ? 
+                'btn-enhanced btn-portal text-buzios-white font-semibold px-8 py-4 rounded-xl text-center transition-all duration-300' : 
+                'btn-enhanced btn-chat w-full text-left p-4 rounded-xl border border-gray-200 hover:border-buzios-blue transition-all duration-300';
+            
+            const buttonsHTML = step.options.map(opt => {
+                const iconHtml = opt.icon ? `<i data-lucide="${opt.icon}" class="w-5 h-5 ${isPortalStep ? 'mr-2' : 'mr-3'}"></i>` : '';
+                const value = opt.value || opt.text;
+                
+                return `
+                    <button 
+                        onclick="handleUserAction('button', {text: '${opt.text}', value: '${value}', nextStep: '${opt.nextStep}', variable: '${step.variable}', action: '${opt.action || ''}'})" 
+                        class="${buttonClass}"
+                        aria-label="${opt.text}">
+                        <span class="flex items-center ${isPortalStep ? 'justify-center' : 'justify-start'}">
+                            ${iconHtml}
+                            <span>${opt.text}</span>
+                        </span>
+                    </button>
+                `;
+            }).join('');
+            
+            html += `<div class="${wrapperClass}">${buttonsHTML}</div>`;
+            container.innerHTML = html;
+            
+            // Inicializar ícones do Lucide
+            lucide.createIcons();
+        }
+
+        function renderTextInput(step, container) {
+            const inputType = step.type === 'tel' ? 'tel' : 'text';
+            const iconName = step.type === 'tel' ? 'phone' : 'user';
+            
+            container.innerHTML = `
+                <form onsubmit="handleUserAction('form', {event: event, nextStep: '${step.nextStep}', variable: '${step.variable}', validation: '${step.validation}'})" 
+                      class="flex space-x-3">
+                    <div class="flex-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i data-lucide="${iconName}" class="w-5 h-5 text-gray-400"></i>
+                        </div>
+                        <input 
+                            type="${inputType}" 
+                            id="text-input" 
+                            required 
+                            class="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-buzios-blue focus:border-buzios-blue transition-all duration-300" 
+                            placeholder="${step.placeholder}"
+                            aria-label="${step.message}">
+                    </div>
+                    <button 
+                        type="submit" 
+                        class="btn-enhanced btn-primary px-6 py-4 rounded-xl font-semibold transition-all duration-300"
+                        aria-label="Enviar resposta">
+                        <i data-lucide="send" class="w-5 h-5"></i>
+                    </button>
+                </form>
+            `;
+            
+            lucide.createIcons();
+            
+            const input = document.getElementById('text-input');
+            input.focus();
+            
+            // Permitir envio com Enter
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const form = input.closest('form');
+                    if (form) form.requestSubmit();
+                }
+            });
+        }
+
+        function renderLoadingMessage(container) {
+            container.innerHTML = `
+                <div class="text-center py-6">
+                    <div class="loading-spinner mx-auto mb-4"></div>
+                    <p class="text-sm text-slate-600">
+                        <i data-lucide="sparkles" class="w-4 h-4 inline mr-1"></i>
+                        Criando sua experiência personalizada...
+                    </p>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function renderFinalMessage(context, container) {
+            const proposalCards = context.proposal ? context.proposal.split('\n\n').map((section, index) => {
+                if (section.trim()) {
+                    return `
+                        <div class="bg-gradient-to-br from-white to-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+                            <div class="text-slate-700 leading-relaxed">${section.replace(/\n/g, '<br>')}</div>
+                        </div>
+                    `;
+                }
+                return '';
+            }).join('') : '';
+
+            container.innerHTML = `
+                <div class="text-center space-y-6">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-buzios-mint to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-lucide="check" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">✨ Sua proposta está pronta!</h3>
+                        <p class="text-slate-600">Criamos algo especial pensando em você</p>
+                    </div>
+                    
+                    ${proposalCards}
+                    
+                    <div class="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+                        <button 
+                            onclick="shareProposta()" 
+                            class="btn-enhanced btn-primary px-6 py-3 rounded-xl font-semibold">
+                            <i data-lucide="share-2" class="w-4 h-4 mr-2"></i>
+                            Compartilhar
+                        </button>
+                        <button 
+                            onclick="handleRestart()" 
+                            class="btn-enhanced btn-chat px-6 py-3 rounded-xl font-semibold">
+                            <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>
+                            Nova Conversa
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            lucide.createIcons();
         }
 
         function handleUserAction(type, data) {
             if (state.isWaitingForResponse) return;
+            
             disableAllInputs(true);
             pushHistory();
 
             if (state.currentStepId === 'start' && type === 'button') {
-                // Aciona a animação da assinatura
+                // Mostrar assinatura e fazer transição
                 animatedSignature.classList.add('visible');
-
+                
                 introPortal.style.opacity = '0';
                 setTimeout(() => {
                     introPortal.style.display = 'none';
@@ -407,40 +1264,38 @@
             }
 
             let value;
+            let displayText;
+            
             if (type === 'button') {
-                value = data.text;
+                value = data.value || data.text;
+                displayText = data.text;
+                
+                if (data.action === 'retry') {
+                    displayStep(data.nextStep);
+                    return;
+                } else if (data.action === 'restart') {
+                    handleRestart();
+                    return;
+                }
             } else if (type === 'form') {
                 data.event.preventDefault();
                 const input = document.getElementById('text-input');
                 const originalPlaceholder = input.placeholder;
                 value = input.value.trim();
+                displayText = value;
+                
                 const validationType = data.validation;
-                let isValid = true;
-                let errorMessage = '';
-
-                if (validationType === 'text' && value.length < 2) {
-                    isValid = false;
-                    errorMessage = 'Por favor, insira um nome válido.';
-                }
-                if (validationType === 'phone' && value.replace(/\D/g, '').length < 9) {
-                    isValid = false;
-                    errorMessage = 'Por favor, insira um telefone válido.';
-                }
-
-                if (!isValid) {
-                    input.style.borderColor = '#FF6F61';
-                    input.value = '';
-                    input.placeholder = errorMessage;
-                    setTimeout(() => {
-                        input.style.borderColor = '';
-                        input.placeholder = originalPlaceholder;
-                    }, 2500);
+                const validation = validateInput(value, validationType);
+                
+                if (!validation.isValid) {
+                    showInputError(input, validation.message, originalPlaceholder);
                     disableAllInputs(false);
                     return;
                 }
             }
             
-            addMessageToChat(value, 'user');
+            addMessageToChat(displayText, 'user');
+            
             if (data.variable) {
                 const cleanText = value.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').trim();
                 const lastQuestion = state.chatLog.filter(m => m.sender === 'ai').pop()?.text || 'N/A';
@@ -448,41 +1303,95 @@
                 const userHistory = { ...state.userHistory, [data.variable]: { question: lastQuestion, answer: cleanText } };
                 setState({ userData, userHistory });
             }
+            
             displayStep(data.nextStep);
         }
 
-        // --- CONTROLES DE SESSÃO ---
-        function handleRestart() {
-            localStorage.removeItem(SESSION_KEY);
-            init();
+        function validateInput(value, validationType) {
+            switch (validationType) {
+                case 'text':
+                    if (value.length < 2) {
+                        return { isValid: false, message: 'Por favor, insira um nome válido (mínimo 2 caracteres).' };
+                    }
+                    break;
+                case 'phone':
+                    const phoneDigits = value.replace(/\D/g, '');
+                    if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+                        return { isValid: false, message: 'Por favor, insira um telefone válido com DDD.' };
+                    }
+                    break;
+            }
+            return { isValid: true };
         }
-        
+
+        function showInputError(input, message, originalPlaceholder) {
+            input.style.borderColor = '#ef4444';
+            input.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.1)';
+            input.value = '';
+            input.placeholder = message;
+            
+            // Efeito de shake
+            input.style.animation = 'shake 0.5s ease-in-out';
+            
+            setTimeout(() => {
+                input.style.borderColor = '';
+                input.style.boxShadow = '';
+                input.style.animation = '';
+                input.placeholder = originalPlaceholder;
+            }, 3000);
+        }
+
+        // ========= CONTROLES DE SESSÃO =========
+        function handleRestart() {
+            // Mostrar confirmação
+            if (confirm('Tem certeza que deseja reiniciar a conversa? Todas as informações serão perdidas.')) {
+                localStorage.removeItem(SESSION_KEY);
+                location.reload();
+            }
+        }
+
         function handleGoBack() {
-            if (state.history.length < 2) return; // Não pode voltar do primeiro passo
+            if (state.history.length < 2) return;
+            
             const previousState = state.history[state.history.length - 2];
-            
-            // Sincroniza o estado global com o estado anterior
             state = JSON.parse(JSON.stringify(previousState));
-            
-            // Remove o estado atual do histórico para não voltar para ele
             state.history.pop();
             saveState();
 
-            // Remonta a UI
             rebuildUIFromState();
             displayStep(state.currentStepId);
         }
-        
+
         function updateControls() {
             backBtn.disabled = state.history.length < 2;
         }
 
-        // --- INICIALIZAÇÃO E LÓGICA PRINCIPAL ---
         function rebuildUIFromState() {
             chatWindow.innerHTML = '';
             state.chatLog.forEach(msg => addMessageToChat(msg.text, msg.sender, true));
         }
 
+        // ========= FUNÇÕES AUXILIARES =========
+        function shareProposta() {
+            const proposal = state.chatLog
+                .filter(msg => msg.sender === 'ai')
+                .pop()?.text || 'Proposta personalizada do Conexão Búzios';
+                
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Minha proposta do Conexão Búzios',
+                    text: proposal,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback para cópia
+                navigator.clipboard.writeText(proposal).then(() => {
+                    showFeedback('success', 'Copiado!', 'Proposta copiada para a área de transferência.');
+                });
+            }
+        }
+
+        // ========= BACKEND =========
         async function callBackendForProcessing() {
             const userDataPayload = {
                 nome: state.userData.nome,
@@ -490,50 +1399,92 @@
                 perfil: state.userData.perfil,
                 historico: Object.values(state.userHistory || {})
             };
+            
             console.log("Enviando para processamento:", userDataPayload);
+            
             try {
                 const response = await fetch(GOOGLE_APP_SCRIPT_URL, {
                     method: 'POST',
                     body: JSON.stringify({ action: 'processAndSaveDossier', data: userDataPayload }),
                     mode: 'cors',
                 });
-                if (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+                }
+                
                 const result = await response.json();
+                
                 if (result.success) {
+                    setState({ currentStep: 10 });
                     displayStep('final_message', { proposal: result.data.proposta_personalizada });
                 } else {
                     throw new Error(result.error);
                 }
             } catch (error) {
                 console.error("Falha na comunicação com o backend:", error);
+                showFeedback('error', 'Ops!', 'Houve um problema ao gerar sua proposta. Vamos tentar novamente?');
                 displayStep('error_state');
             }
         }
 
+        // ========= INICIALIZAÇÃO =========
         function init() {
+            // Aplicar estilos personalizados CSS
+            const customStyles = document.createElement('style');
+            customStyles.textContent = `
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    25% { transform: translateX(-5px); }
+                    75% { transform: translateX(5px); }
+                }
+            `;
+            document.head.appendChild(customStyles);
+            
+            // Verificar se há sessão salva
             if (restoreState() && state.currentStepId !== 'start') {
                 introPortal.style.display = 'none';
                 appContainer.classList.remove('hidden');
                 appContainer.classList.add('flex');
-                animatedSignature.classList.add('visible'); // Garante que a assinatura seja visível se a sessão for restaurada
+                animatedSignature.classList.add('visible');
                 rebuildUIFromState();
                 displayStep(state.currentStepId);
             } else {
-                state = JSON.parse(JSON.stringify(initialState)); // Deep copy
+                state = JSON.parse(JSON.stringify(initialState));
                 saveState();
                 chatWindow.innerHTML = '';
                 appContainer.classList.add('hidden');
                 appContainer.classList.remove('flex');
                 introPortal.style.display = 'flex';
                 introPortal.style.opacity = '1';
-                animatedSignature.classList.remove('visible'); // Garante que a assinatura comece invisível
+                animatedSignature.classList.remove('visible');
                 createParticles();
-                cyclePhrases(); // Inicia o ciclo de frases
+                cyclePhrases();
                 displayStep('start');
             }
+            
+            // Inicializar ícones
+            lucide.createIcons();
         }
 
+        // ========= EVENT LISTENERS =========
         document.addEventListener('DOMContentLoaded', init);
+        
+        // Fechar modal ao clicar fora
+        feedbackModal.addEventListener('click', (e) => {
+            if (e.target === feedbackModal) {
+                feedbackModal.classList.add('opacity-0', 'pointer-events-none');
+                feedbackModal.classList.remove('opacity-100', 'pointer-events-auto');
+            }
+        });
+        
+        // Acessibilidade - ESC para fechar modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && feedbackModal.classList.contains('opacity-100')) {
+                feedbackModal.classList.add('opacity-0', 'pointer-events-none');
+                feedbackModal.classList.remove('opacity-100', 'pointer-events-auto');
+            }
+        });
     </script>
 </body>
 </html>
