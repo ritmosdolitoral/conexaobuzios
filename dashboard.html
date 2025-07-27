@@ -96,8 +96,8 @@
         /* Cards de leads aprimorados */
         .card-glow { 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             position: relative;
             overflow: hidden;
         }
@@ -118,10 +118,10 @@
         }
 
         .card-glow:hover { 
-            border-color: var(--color-brand);
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2), 0 10px 20px rgba(0, 0, 0, 0.15);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%);
+            border-color: #3b82f6;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.2);
+            background: rgba(255, 255, 255, 0.12);
         }
 
         /* Avatar aprimorado */
@@ -314,19 +314,26 @@
         /* Grid responsivo aprimorado */
         .opportunities-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        @media (min-width: 768px) {
+            .opportunities-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
         }
 
         @media (min-width: 1024px) {
             .opportunities-grid {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 1.5rem;
             }
         }
 
         @media (min-width: 1536px) {
             .opportunities-grid {
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             }
         }
 
@@ -350,6 +357,13 @@
         .section-intro {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(14, 165, 233, 0.04) 100%);
             border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         /* Elementos decorativos */
@@ -409,101 +423,88 @@
             </div>
         </header>
 
-        <!-- Seção de Apresentação Aprimorada -->
-        <section class="section-intro glass-effect rounded-2xl p-8 mb-8 animate-slide-up">
-            <div class="max-w-6xl mx-auto">
-                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3 font-playfair">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                        <i data-lucide="lightbulb" class="w-5 h-5 text-white"></i>
-                    </div>
-                    O que é este painel?
-                </h2>
-                <div class="grid md:grid-cols-3 gap-6 text-slate-200 leading-relaxed font-inter">
-                    <div class="space-y-4">
-                        <p class="text-base">
-                            Este é um painel inteligente que apresenta <strong class="font-semibold text-blue-300">leads reais e qualificados</strong>, capturados pelo projeto Conexão Búzios através de conversas com IA.
-                        </p>
-                        <p class="text-sm text-slate-300">
-                            Cada lead passou por um funil completo de qualificação, respondendo perguntas estratégicas que revelam necessidades, orçamento e intenção de compra.
-                        </p>
-                    </div>
-                    <div class="space-y-4">
-                        <p class="text-base">
-                            Ideal para <strong class="font-semibold text-emerald-300">profissionais de vendas, turismo, serviços e investidores</strong> interessados no ecossistema de Búzios.
-                        </p>
-                        <p class="text-sm text-slate-300">
-                            Aqui você encontra perfis detalhados, histórico de respostas, propostas personalizadas por IA e contato direto via WhatsApp.
-                        </p>
-                    </div>
-                    <div class="space-y-4">
-                        <p class="text-base">
-                            O valor está na <strong class="font-semibold text-purple-300">eficiência e precisão</strong>: economiza tempo, organiza contatos e conecta você apenas com leads com intenção real.
-                        </p>
-                        <div class="decorative-line my-4"></div>
-                        <p class="text-sm text-blue-200 italic font-medium">
-                            "Seu funil de vendas inteligente, funcionando 24/7"
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
+                 <!-- Seção de Apresentação Compacta -->
+         <section class="section-intro glass-effect rounded-xl p-6 mb-6 animate-slide-up">
+             <div class="max-w-4xl mx-auto">
+                 <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-3 font-playfair">
+                     <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                         <i data-lucide="lightbulb" class="w-4 h-4 text-white"></i>
+                     </div>
+                     Painel de Leads Qualificados
+                 </h2>
+                 <div class="grid md:grid-cols-2 gap-6 text-slate-200 font-inter">
+                     <div>
+                         <p class="text-sm leading-relaxed">
+                             Leads reais capturados pela <strong class="text-blue-300">IA do Conexão Búzios</strong>, 
+                             com perfis detalhados, necessidades mapeadas e propostas personalizadas.
+                         </p>
+                     </div>
+                     <div>
+                         <p class="text-sm leading-relaxed">
+                             <strong class="text-emerald-300">Ferramenta de vendas inteligente</strong> 
+                             para profissionais do turismo e serviços em Búzios.
+                         </p>
+                     </div>
+                 </div>
+             </div>
+         </section>
 
-        <!-- FILTROS E CONTROLES APRIMORADOS -->
-        <div class="filter-section rounded-2xl p-6 mb-8 animate-slide-up" style="animation-delay: 0.2s;">
-            <div class="flex flex-col lg:flex-row justify-between items-center gap-6">
-                <!-- Filtros por Perfil -->
-                <div class="flex flex-wrap items-center gap-4">
-                    <h3 class="text-sm font-semibold text-blue-200 uppercase tracking-wider">Perfil:</h3>
-                    <div id="filters-profile" class="flex flex-wrap gap-2">
-                        <button data-filter="all" class="filter-btn active filter-btn-profile text-white px-4 py-2.5 rounded-xl text-sm font-medium font-inter transition-all">
-                            Todos
-                        </button>
-                        <button data-filter="Turista" class="filter-btn filter-btn-profile text-slate-300 px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 font-inter">
-                            <i data-lucide="sun-moon" class="w-4 h-4"></i> Turistas
-                        </button>
-                        <button data-filter="Morador" class="filter-btn filter-btn-profile text-slate-300 px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 font-inter">
-                            <i data-lucide="home" class="w-4 h-4"></i> Moradores
-                        </button>
-                        <button data-filter="Divulgador" class="filter-btn filter-btn-profile text-slate-300 px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 font-inter">
-                            <i data-lucide="megaphone" class="w-4 h-4"></i> Parceiros
-                        </button>
-                    </div>
-                </div>
+                 <!-- FILTROS E CONTROLES OTIMIZADOS -->
+         <div class="filter-section rounded-xl p-5 mb-6 animate-slide-up" style="animation-delay: 0.2s;">
+             <div class="flex flex-col gap-4">
+                 <div class="flex flex-wrap justify-between items-center gap-4">
+                     <div class="flex items-center gap-4">
+                         <span id="dossier-count" class="text-sm font-medium text-blue-300 font-inter bg-blue-500/20 px-3 py-2 rounded-lg" aria-live="polite"></span>
+                         <button id="refresh-btn" class="p-2 rounded-lg hover:bg-white/10 transition-all glass-effect" aria-label="Atualizar dossiês">
+                             <i data-lucide="refresh-cw" class="w-4 h-4 text-slate-300"></i>
+                         </button>
+                     </div>
+                 </div>
+                 
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     <!-- Filtros por Perfil -->
+                     <div class="space-y-2">
+                         <h3 class="text-xs font-semibold text-blue-200 uppercase tracking-wider">Perfil:</h3>
+                         <div id="filters-profile" class="flex flex-wrap gap-2">
+                             <button data-filter="all" class="filter-btn active filter-btn-profile text-white px-3 py-2 rounded-lg text-xs font-medium font-inter">
+                                 Todos
+                             </button>
+                             <button data-filter="Turista" class="filter-btn filter-btn-profile text-slate-300 px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-2 font-inter">
+                                 <i data-lucide="sun-moon" class="w-3 h-3"></i> Turistas
+                             </button>
+                             <button data-filter="Morador" class="filter-btn filter-btn-profile text-slate-300 px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-2 font-inter">
+                                 <i data-lucide="home" class="w-3 h-3"></i> Moradores
+                             </button>
+                             <button data-filter="Divulgador" class="filter-btn filter-btn-profile text-slate-300 px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-2 font-inter">
+                                 <i data-lucide="megaphone" class="w-3 h-3"></i> Parceiros
+                             </button>
+                         </div>
+                     </div>
 
-                <!-- Divisor vertical -->
-                <div class="hidden lg:block w-px h-8 bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
-
-                <!-- Filtros por Status -->
-                <div class="flex flex-wrap items-center gap-4">
-                    <h3 class="text-sm font-semibold text-blue-200 uppercase tracking-wider">Status:</h3>
-                    <div id="filters-status" class="flex flex-wrap gap-2">
-                        <button data-status-filter="all" class="filter-btn active filter-btn-status text-white px-4 py-2.5 rounded-xl text-sm font-medium font-inter">
-                            Todos
-                        </button>
-                        <button data-status-filter="Novo" class="filter-btn filter-btn-status text-slate-300 px-4 py-2.5 rounded-xl text-sm font-medium font-inter">
-                            Novos
-                        </button>
-                        <button data-status-filter="Em Contato" class="filter-btn filter-btn-status text-slate-300 px-4 py-2.5 rounded-xl text-sm font-medium font-inter">
-                            Em Contato
-                        </button>
-                        <button data-status-filter="Proposta" class="filter-btn filter-btn-status text-slate-300 px-4 py-2.5 rounded-xl text-sm font-medium font-inter">
-                            Proposta
-                        </button>
-                        <button data-status-filter="Negociação" class="filter-btn filter-btn-status text-slate-300 px-4 py-2.5 rounded-xl text-sm font-medium font-inter">
-                            Negociação
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Controles -->
-                <div class="flex items-center gap-4">
-                    <span id="dossier-count" class="text-sm font-medium text-blue-300 font-inter bg-blue-500/20 px-3 py-1.5 rounded-lg" aria-live="polite"></span>
-                    <button id="refresh-btn" class="p-3 rounded-xl hover:bg-white/10 transition-all glass-effect" aria-label="Atualizar dossiês">
-                        <i data-lucide="refresh-cw" class="w-5 h-5 text-slate-300"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
+                     <!-- Filtros por Status -->
+                     <div class="space-y-2">
+                         <h3 class="text-xs font-semibold text-blue-200 uppercase tracking-wider">Status:</h3>
+                         <div id="filters-status" class="flex flex-wrap gap-2">
+                             <button data-status-filter="all" class="filter-btn active filter-btn-status text-white px-3 py-2 rounded-lg text-xs font-medium font-inter">
+                                 Todos
+                             </button>
+                             <button data-status-filter="Novo" class="filter-btn filter-btn-status text-slate-300 px-3 py-2 rounded-lg text-xs font-medium font-inter">
+                                 Novos
+                             </button>
+                             <button data-status-filter="Em Contato" class="filter-btn filter-btn-status text-slate-300 px-3 py-2 rounded-lg text-xs font-medium font-inter">
+                                 Contato
+                             </button>
+                             <button data-status-filter="Proposta" class="filter-btn filter-btn-status text-slate-300 px-3 py-2 rounded-lg text-xs font-medium font-inter">
+                                 Proposta
+                             </button>
+                             <button data-status-filter="Negociação" class="filter-btn filter-btn-status text-slate-300 px-3 py-2 rounded-lg text-xs font-medium font-inter">
+                                 Negociação
+                             </button>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
 
         <!-- GRID DE LEADS APRIMORADO -->
         <main id="dossier-grid" class="opportunities-grid animate-slide-up" style="animation-delay: 0.4s;"></main>
@@ -615,8 +616,8 @@
 
             filteredDossiers.forEach((dossier, index) => {
                 const card = document.createElement('button');
-                card.className = 'card-glow glass-effect rounded-2xl p-6 text-left flex flex-col gap-4 animate-slide-up';
-                card.style.animationDelay = `${index * 100}ms`;
+                card.className = 'card-glow glass-effect rounded-xl p-5 text-left flex flex-col animate-slide-up';
+                card.style.animationDelay = `${index * 80}ms`;
                 card.dataset.id = dossier.id;
                 
                 const initials = getInitials(dossier.name);
@@ -625,27 +626,27 @@
                 const profileIcon = profileIcons[dossier.profile] || 'help-circle';
 
                 card.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div class="avatar w-14 h-14 rounded-xl flex items-center justify-center text-white font-bold text-lg font-inter">${initials}</div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="avatar w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-base font-inter">${initials}</div>
                         <div class="flex flex-col items-end gap-2">
-                            <div class="flex items-center gap-2">
-                                <i data-lucide="${profileIcon}" class="w-4 h-4 text-slate-400"></i>
-                                <span class="text-xs text-slate-400 font-medium uppercase tracking-wider font-inter">${dossier.profile}</span>
-                            </div>
+                            <span class="text-xs text-slate-400 font-medium font-inter flex items-center gap-1">
+                                <i data-lucide="${profileIcon}" class="w-3 h-3"></i>
+                                ${dossier.profile}
+                            </span>
                             <span class="status-tag ${statusInfo.class}">
                                 <i data-lucide="${statusInfo.icon}" class="w-3 h-3"></i>
                                 ${dossier.status}
                             </span>
                         </div>
                     </div>
-                    <div class="flex-grow space-y-3">
-                        <h3 class="text-lg font-semibold text-white truncate font-playfair">${sanitizeHTML(dossier.name || 'Lead Anônimo')}</h3>
-                        <p class="text-sm text-slate-300 h-12 overflow-hidden leading-relaxed font-inter">${sanitizeHTML(dossier.interest || 'Nenhum interesse principal informado')}</p>
+                    <div class="flex-grow space-y-3 mb-4">
+                        <h3 class="text-base font-semibold text-white font-playfair leading-tight">${sanitizeHTML(dossier.name || 'Lead Anônimo')}</h3>
+                        <p class="text-sm text-slate-300 line-clamp-2 leading-relaxed font-inter">${sanitizeHTML(dossier.interest || 'Nenhum interesse principal informado')}</p>
                     </div>
-                    <div class="pt-4 border-t border-white/10 flex justify-between items-center">
+                    <div class="pt-3 border-t border-white/10 flex justify-between items-center">
                         <span class="text-xs text-slate-400 font-inter">${formatRelativeTime(dossier.timestamp)}</span>
-                        <span class="status-tag ${potentialInfo.color} text-xs font-semibold flex items-center gap-1.5">
-                            <i data-lucide="${potentialInfo.icon}" class="w-3.5 h-3.5"></i>
+                        <span class="status-tag ${potentialInfo.color} text-xs font-semibold flex items-center gap-1">
+                            <i data-lucide="${potentialInfo.icon}" class="w-3 h-3"></i>
                             ${dossier.potential}
                         </span>
                     </div>`;

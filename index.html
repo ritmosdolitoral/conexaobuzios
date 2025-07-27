@@ -220,23 +220,23 @@
         
         .chat-bubble { 
             max-width: 85%; 
-            padding: 16px 20px; 
-            border-radius: 24px; 
-            margin-bottom: 12px; 
+            padding: 14px 18px; 
+            border-radius: 18px; 
+            margin-bottom: 10px; 
             opacity: 0; 
             transform: translateY(20px); 
             animation: pop-in 0.6s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94); 
-            line-height: 1.6;
-            font-size: 15px;
+            line-height: 1.5;
+            font-size: 14px;
         }
         
         .chat-bubble.ai { 
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            color: #1e293b; 
+            background: #ffffff;
+            color: #334155; 
             border-bottom-left-radius: 6px; 
             align-self: flex-start; 
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08), 0 3px 10px rgba(0,0,0,0.06);
-            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid rgba(148, 163, 184, 0.15);
         }
         
         .chat-bubble.user { 
@@ -244,7 +244,33 @@
             color: white; 
             border-bottom-right-radius: 6px; 
             align-self: flex-end;
-            box-shadow: 0 8px 25px rgba(3, 105, 161, 0.3);
+            box-shadow: 0 4px 12px rgba(3, 105, 161, 0.25);
+        }
+
+        .chat-bubble.proposal {
+            max-width: 95%;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #0284c7;
+            border-left: 4px solid #0284c7;
+            padding: 20px;
+            margin: 16px 0;
+            border-radius: 12px;
+            color: #0f172a;
+            font-size: 15px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .proposal-header {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: white;
+            padding: 12px 18px;
+            margin: -20px -20px 16px -20px;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .typing-indicator span { 
@@ -589,12 +615,27 @@
             }
         }
 
-        function addMessageToChat(text, sender, isRestored = false) {
+        function addMessageToChat(text, sender, isRestored = false, isProposal = false) {
             const animationClass = isRestored ? '' : 'animate-pop-in';
             const sanitizedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
-            chatWindow.insertAdjacentHTML('beforeend', `<div class="chat-bubble ${sender} ${animationClass}">${sanitizedText}</div>`);
+            
+            if (isProposal) {
+                const proposalHTML = `
+                    <div class="chat-bubble proposal ${animationClass}">
+                        <div class="proposal-header">
+                            <i data-lucide="sparkles" class="w-5 h-5"></i>
+                            Sua Proposta Personalizada
+                        </div>
+                        <div class="proposal-content">${sanitizedText}</div>
+                    </div>`;
+                chatWindow.insertAdjacentHTML('beforeend', proposalHTML);
+                lucide.createIcons();
+            } else {
+                chatWindow.insertAdjacentHTML('beforeend', `<div class="chat-bubble ${sender} ${animationClass}">${sanitizedText}</div>`);
+            }
+            
             if (!isRestored) {
-                setState({ chatLog: [...state.chatLog, { text, sender }] });
+                setState({ chatLog: [...state.chatLog, { text, sender, isProposal }] });
             }
             scrollToBottom();
         }
@@ -673,8 +714,23 @@
                     document.getElementById('text-input').focus();
                     break;
                 case 'final':
-                    addMessageToChat(context.proposal, 'ai');
-                    container.innerHTML = `<div class="text-center animate-fade-in"><p class="text-sm text-slate-600 mb-4 font-inter">Sua proposta personalizada foi gerada! O que deseja fazer agora?</p><button onclick="handleRestart()" class="action-button text-white font-bold rounded-xl font-inter">🔄 Começar nova conversa</button></div>`;
+                    container.innerHTML = `<div class="text-center animate-fade-in bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border border-green-200">
+                        <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-lucide="check-circle" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-slate-800 mb-2 font-playfair">Proposta Gerada com Sucesso!</h3>
+                        <p class="text-sm text-slate-600 mb-6 font-inter">Sua proposta personalizada está pronta. O que deseja fazer agora?</p>
+                        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                            <button onclick="copyProposalFromChat()" class="action-button bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl font-inter flex items-center justify-center gap-2">
+                                <i data-lucide="copy" class="w-4 h-4"></i>
+                                Copiar Proposta
+                            </button>
+                            <button onclick="handleRestart()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-3 rounded-xl font-inter transition-all">
+                                🔄 Nova Conversa
+                            </button>
+                        </div>
+                    </div>`;
+                    lucide.createIcons();
                     break;
             }
             if (!isPortalStep) scrollToBottom();
@@ -749,6 +805,27 @@
             localStorage.removeItem(SESSION_KEY);
             init();
         }
+
+        function copyProposalFromChat() {
+            const proposalElement = document.querySelector('.proposal-content');
+            if (proposalElement) {
+                const proposalText = proposalElement.textContent;
+                navigator.clipboard.writeText(proposalText).then(() => {
+                    const button = event.target.closest('button');
+                    const originalHTML = button.innerHTML;
+                    button.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Copiado!';
+                    button.disabled = true;
+                    lucide.createIcons();
+                    setTimeout(() => {
+                        button.innerHTML = originalHTML;
+                        button.disabled = false;
+                        lucide.createIcons();
+                    }, 2000);
+                }).catch(() => {
+                    alert('Erro ao copiar. Tente selecionar o texto manualmente.');
+                });
+            }
+        }
         
         function handleGoBack() {
             if (state.history.length < 2) return; // Não pode voltar do primeiro passo
@@ -773,7 +850,7 @@
         // --- INICIALIZAÇÃO E LÓGICA PRINCIPAL ---
         function rebuildUIFromState() {
             chatWindow.innerHTML = '';
-            state.chatLog.forEach(msg => addMessageToChat(msg.text, msg.sender, true));
+            state.chatLog.forEach(msg => addMessageToChat(msg.text, msg.sender, true, msg.isProposal));
         }
 
         async function callBackendForProcessing() {
@@ -793,7 +870,9 @@
                 if (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);
                 const result = await response.json();
                 if (result.success) {
-                    displayStep('final_message', { proposal: result.data.proposta_personalizada });
+                    // Adiciona a proposta como uma mensagem especial
+                    addMessageToChat(result.data.proposta_personalizada, 'ai', false, true);
+                    displayStep('final_message');
                 } else {
                     throw new Error(result.error);
                 }
