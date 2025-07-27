@@ -280,6 +280,8 @@
             flex-direction: column;
             height: 100%;
             max-height: 100%;
+            min-height: 0;
+            flex: 1;
         }
         
         .chat-messages {
@@ -289,6 +291,8 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            min-height: 0;
+            max-height: 100%;
         }
         
         .chat-bubble { 
@@ -597,7 +601,7 @@
     
     <!-- Container do Chat (Carregado, mas escondido) -->
     <div id="app-container" class="w-full h-screen flex-col items-center justify-center p-4 bg-gray-100 hidden">
-        <div class="w-full max-w-md h-full max-h-[600px] flex flex-col bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl shadow-gray-300/40 overflow-hidden border border-gray-200/50">
+        <div class="w-full max-w-md h-full max-h-[600px] flex flex-col bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl shadow-gray-300/40 overflow-hidden border border-gray-200/50" style="min-height: 500px;">
             <!-- Resumo visual no topo -->
             <div class="status-bar">
                 <span>🤖</span>
@@ -619,7 +623,7 @@
                     </div>
                 </div>
             </header>
-            <main id="chat-window" class="chat-container">
+            <main id="chat-window" class="chat-container" style="height: calc(100% - 120px);">
                 <div id="chat-messages" class="chat-messages"></div>
                 <div id="input-area" class="chat-options"></div>
             </main>
@@ -777,13 +781,15 @@
         function showTypingIndicator(show) {
             const existing = document.getElementById('typing-indicator');
             if (existing) existing.remove();
-            if (show) {
+            if (show && chatMessages) {
                 chatMessages.insertAdjacentHTML('beforeend', `<div id="typing-indicator" class="chat-bubble ai typing-indicator"><span></span><span></span><span></span></div>`);
                 scrollToBottom();
             }
         }
 
         function addMessageToChat(text, sender, isRestored = false, isWelcomeMessage = false) {
+            if (!chatMessages) return;
+            
             const animationClass = isRestored ? '' : 'animate-pop-in';
             const welcomeClass = isWelcomeMessage ? 'welcome-message' : '';
             const sanitizedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
@@ -805,10 +811,14 @@
             }
         }
         
-        function scrollToBottom() { chatMessages.scrollTop = chatMessages.scrollHeight; }
+        function scrollToBottom() { 
+            if (chatMessages) {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
 
         function disableAllInputs(shouldDisable) {
-            const elements = document.querySelectorAll('#portal-actions button, #input-area button, #input-area input');
+            const elements = document.querySelectorAll('#portal-actions button, #input-area button, #input-area input, .option-button');
             elements.forEach(el => el.disabled = shouldDisable);
             setState({ isWaitingForResponse: shouldDisable });
         }
@@ -1027,8 +1037,10 @@
 
         // --- INICIALIZAÇÃO E LÓGICA PRINCIPAL ---
         function rebuildUIFromState() {
-            chatMessages.innerHTML = '';
-            state.chatLog.forEach(msg => addMessageToChat(msg.text, msg.sender, true, msg.isWelcomeMessage));
+            if (chatMessages) {
+                chatMessages.innerHTML = '';
+                state.chatLog.forEach(msg => addMessageToChat(msg.text, msg.sender, true, msg.isWelcomeMessage));
+            }
         }
 
         async function callBackendForProcessing() {
@@ -1069,7 +1081,7 @@
             } else {
                 state = JSON.parse(JSON.stringify(initialState)); // Deep copy
                 saveState();
-                chatWindow.innerHTML = '';
+                chatMessages.innerHTML = '';
                 appContainer.classList.add('hidden');
                 appContainer.classList.remove('flex');
                 introPortal.style.display = 'flex';
