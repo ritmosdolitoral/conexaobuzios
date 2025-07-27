@@ -10,69 +10,158 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #020617; overflow: hidden; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #020617 100%);
+            overflow: hidden; 
+        }
         
         /* Estilos do Portal de IA */
         #ai-intro-portal {
-            background: radial-gradient(ellipse at bottom, #1e3a8a 0%, #020617 70%);
+            background: radial-gradient(ellipse at center, #1e3a8a 0%, #1e1b4b 40%, #020617 80%);
             transition: opacity 0.8s ease-in-out;
+            position: relative;
         }
+        
+        #ai-intro-portal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
         .particle {
             position: absolute;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.08);
             animation: float 25s infinite linear;
+            filter: blur(0.5px);
         }
-        @keyframes float {
-            0% { transform: translateY(0) translateX(0); opacity: 0.15; }
-            100% { transform: translateY(-100vh) translateX(20vw); opacity: 0; }
-        }
-        .text-glow {
-            text-shadow: 0 0 8px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
-        }
-        .cursor { animation: blink 1s step-end infinite; }
-        @keyframes blink { 50% { color: transparent; } }
         
-        /* Animação de pulso para os botões */
+        .particle:nth-child(3n) {
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .particle:nth-child(5n) {
+            background: rgba(139, 92, 246, 0.08);
+        }
+        
+        @keyframes float {
+            0% { 
+                transform: translateY(0) translateX(0) rotate(0deg); 
+                opacity: 0; 
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% { 
+                transform: translateY(-100vh) translateX(30vw) rotate(360deg); 
+                opacity: 0; 
+            }
+        }
+        
+        .text-glow {
+            text-shadow: 
+                0 0 10px rgba(59, 130, 246, 0.4), 
+                0 0 20px rgba(59, 130, 246, 0.3),
+                0 0 40px rgba(59, 130, 246, 0.2);
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .cursor { 
+            animation: blink 1s step-end infinite;
+            color: #3b82f6;
+        }
+        
+        @keyframes blink { 
+            50% { opacity: 0; } 
+        }
+        
+        /* Animação de pulso aprimorada para os botões do portal */
         @keyframes pulse-light {
             0%, 100% {
                 transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2);
+                box-shadow: 
+                    0 0 0 0 rgba(255, 255, 255, 0.15),
+                    0 4px 20px rgba(0, 0, 0, 0.1);
             }
             50% {
                 transform: scale(1.02);
-                box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.1);
+                box-shadow: 
+                    0 0 20px 8px rgba(255, 255, 255, 0.08),
+                    0 8px 25px rgba(0, 0, 0, 0.15);
             }
         }
+        
         .portal-action-button {
-            background-color: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: background-color 0.3s, transform 0.3s;
-            animation: pulse-light 2.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: pulse-light 3s infinite cubic-bezier(0.4, 0, 0.6, 1);
+            position: relative;
+            overflow: hidden;
         }
+        
+        .portal-action-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s;
+        }
+        
+        .portal-action-button:hover::before {
+            left: 100%;
+        }
+        
         .portal-action-button:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-            animation-play-state: paused; /* Pausa a animação no hover para melhor interação */
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.12) 100%);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 
+                0 0 30px 10px rgba(255, 255, 255, 0.1),
+                0 12px 35px rgba(0, 0, 0, 0.2);
+            animation-play-state: paused;
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         /* Estilos da Assinatura Animada */
         #animated-signature {
             opacity: 0;
-            transition: opacity 0.5s ease-in;
+            transition: opacity 0.6s ease-in;
         }
+        
         #animated-signature.visible {
             opacity: 1;
         }
+        
         #animated-signature.visible .sig-part {
             display: inline-block;
             opacity: 0;
-            transform: translateY(15px);
-            animation: fadeInUp 0.8s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: translateY(20px);
+            animation: fadeInUp 1s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
+        
         #animated-signature.visible .sig-part-2 {
-            animation-delay: 0.4s; /* Atraso para a segunda parte */
+            animation-delay: 0.5s;
         }
+        
         @keyframes fadeInUp {
             to {
                 opacity: 1;
@@ -80,21 +169,328 @@
             }
         }
 
-        /* Estilos do Chat */
-        .bg-buzios-mar { background-color: #0077B6; }
-        .chat-bubble { max-width: 85%; padding: 12px 18px; border-radius: 20px; margin-bottom: 8px; opacity: 0; transform: translateY(20px); animation: pop-in 0.5s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94); line-height: 1.6; }
-        .chat-bubble.ai { background-color: #FFFFFF; color: #374151; border-bottom-left-radius: 4px; align-self: flex-start; box-shadow: 0 4px 15px rgba(0,0,0,0.07); }
-        .chat-bubble.user { background-color: #0077B6; color: white; border-bottom-right-radius: 4px; align-self: flex-end; }
-        .typing-indicator span { height: 8px; width: 8px; margin: 0 2px; background-color: #9ca3af; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; }
+        /* Estilos do Chat Container */
+        .bg-buzios-mar { 
+            background: linear-gradient(135deg, #0077B6 0%, #0096c7 100%);
+        }
+        
+        #app-container {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        }
+        
+        .chat-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Header aprimorado */
+        header {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%);
+            border-bottom: 1px solid rgba(0, 119, 182, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .avatar-container {
+            background: linear-gradient(135deg, #0077B6 0%, #0096c7 100%);
+            box-shadow: 
+                0 4px 15px rgba(0, 119, 182, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        .status-indicator {
+            box-shadow: 0 0 0 2px white, 0 0 8px rgba(34, 197, 94, 0.4);
+            animation: pulse-status 2s infinite;
+        }
+        
+        @keyframes pulse-status {
+            0%, 100% { 
+                transform: scale(1); 
+                opacity: 1; 
+            }
+            50% { 
+                transform: scale(1.1); 
+                opacity: 0.8; 
+            }
+        }
+        
+        /* Estilos das bolhas de chat aprimorados */
+        .chat-bubble { 
+            max-width: 85%; 
+            padding: 16px 20px; 
+            border-radius: 24px; 
+            margin-bottom: 12px; 
+            opacity: 0; 
+            transform: translateY(30px); 
+            animation: pop-in 0.6s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+            line-height: 1.6;
+            position: relative;
+            word-wrap: break-word;
+        }
+        
+        .chat-bubble::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+        }
+        
+        .chat-bubble.ai { 
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: #374151; 
+            border-bottom-left-radius: 6px; 
+            align-self: flex-start; 
+            box-shadow: 
+                0 4px 20px rgba(0, 0, 0, 0.08),
+                0 1px 3px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 119, 182, 0.1);
+        }
+        
+        .chat-bubble.ai::before {
+            bottom: 0;
+            left: -8px;
+            border-left: 8px solid transparent;
+            border-right: 8px solid #ffffff;
+            border-top: 8px solid #ffffff;
+            border-bottom: 8px solid transparent;
+        }
+        
+        .chat-bubble.user { 
+            background: linear-gradient(135deg, #0077B6 0%, #0096c7 100%);
+            color: white; 
+            border-bottom-right-radius: 6px; 
+            align-self: flex-end;
+            box-shadow: 
+                0 4px 20px rgba(0, 119, 182, 0.25),
+                0 1px 3px rgba(0, 119, 182, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        .chat-bubble.user::before {
+            bottom: 0;
+            right: -8px;
+            border-left: 8px solid #0077B6;
+            border-right: 8px solid transparent;
+            border-top: 8px solid #0077B6;
+            border-bottom: 8px solid transparent;
+        }
+        
+        /* Indicador de digitação aprimorado */
+        .typing-indicator {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border: 1px solid rgba(0, 119, 182, 0.1);
+        }
+        
+        .typing-indicator span { 
+            height: 10px; 
+            width: 10px; 
+            margin: 0 3px; 
+            background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+            border-radius: 50%; 
+            display: inline-block; 
+            animation: bounce 1.4s infinite ease-in-out both;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
         .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
         .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
-        @keyframes pop-in { to { opacity: 1; transform: translateY(0); } }
-        .option-button { transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; }
-        .option-button:hover:not(:disabled) { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0, 119, 182, 0.15); }
-        .option-button:disabled, .action-button:disabled, .control-button:disabled { cursor: not-allowed; opacity: 0.5; }
-        .control-button { transition: color 0.2s; }
-        .control-button:hover:not(:disabled) { color: #0077B6; }
+        
+        @keyframes bounce { 
+            0%, 80%, 100% { 
+                transform: scale(0.8); 
+                opacity: 0.5; 
+            } 
+            40% { 
+                transform: scale(1.2); 
+                opacity: 1; 
+            } 
+        }
+        
+        @keyframes pop-in { 
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            } 
+        }
+        
+        /* Botões de opção aprimorados */
+        .option-button { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(0, 119, 182, 0.15);
+            box-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.06),
+                0 1px 3px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 119, 182, 0.05), transparent);
+            transition: left 0.5s;
+        }
+        
+        .option-button:hover:not(:disabled)::before {
+            left: 100%;
+        }
+        
+        .option-button:hover:not(:disabled) { 
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 
+                0 12px 25px rgba(0, 119, 182, 0.12),
+                0 8px 20px rgba(0, 0, 0, 0.08);
+            border-color: rgba(0, 119, 182, 0.3);
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+        }
+        
+        .option-button:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+        
+        /* Botões de ação aprimorados */
+        .action-button {
+            background: linear-gradient(135deg, #0077B6 0%, #0096c7 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 4px 15px rgba(0, 119, 182, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .action-button:hover:not(:disabled)::before {
+            left: 100%;
+        }
+        
+        .action-button:hover:not(:disabled) {
+            background: linear-gradient(135deg, #005f8f 0%, #007bb5 100%);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 8px 25px rgba(0, 119, 182, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Campos de input aprimorados */
+        #text-input {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 2px solid rgba(0, 119, 182, 0.2);
+            box-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.06),
+                inset 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        
+        #text-input:focus {
+            border-color: #0077B6;
+            box-shadow: 
+                0 0 0 4px rgba(0, 119, 182, 0.1),
+                0 4px 15px rgba(0, 119, 182, 0.15);
+            background: #ffffff;
+            transform: scale(1.01);
+        }
+        
+        /* Botões de controle aprimorados */
+        .control-button { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0, 119, 182, 0.1);
+        }
+        
+        .control-button:hover:not(:disabled) { 
+            color: #0077B6;
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 119, 182, 0.15);
+        }
+        
+        /* Estados desabilitados aprimorados */
+        .option-button:disabled, 
+        .action-button:disabled, 
+        .control-button:disabled { 
+            cursor: not-allowed; 
+            opacity: 0.4; 
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
+        /* Footer aprimorado */
+        #input-area {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0, 119, 182, 0.1);
+        }
+        
+        #session-controls {
+            background: linear-gradient(135deg, rgba(241, 245, 249, 0.9) 0%, rgba(226, 232, 240, 0.9) 100%);
+            backdrop-filter: blur(5px);
+            border-top: 1px solid rgba(0, 119, 182, 0.1);
+        }
+        
+        /* Scrollbar personalizada */
+        #chat-window::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        #chat-window::-webkit-scrollbar-track {
+            background: rgba(241, 245, 249, 0.5);
+            border-radius: 3px;
+        }
+        
+        #chat-window::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, rgba(0, 119, 182, 0.3) 0%, rgba(0, 150, 199, 0.3) 100%);
+            border-radius: 3px;
+        }
+        
+        #chat-window::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, rgba(0, 119, 182, 0.5) 0%, rgba(0, 150, 199, 0.5) 100%);
+        }
+        
+        /* Animações suaves para transições */
+        .animate-pop-in {
+            animation: pop-in 0.6s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        /* Melhorias na tipografia */
+        h1 {
+            letter-spacing: -0.025em;
+        }
+        
+        .chat-bubble {
+            font-weight: 400;
+            letter-spacing: 0.01em;
+        }
+        
+        /* Efeitos de foco aprimorados */
+        button:focus-visible {
+            outline: 2px solid #0077B6;
+            outline-offset: 2px;
+        }
+        
+        input:focus-visible {
+            outline: none;
+        }
     </style>
 </head>
 <body class="antialiased text-gray-800">
@@ -125,21 +521,21 @@
     
     <!-- Container do Chat (Carregado, mas escondido) -->
     <div id="app-container" class="w-full h-screen flex-col items-center justify-center p-4 bg-gray-100 hidden">
-        <div class="w-full max-w-lg h-full max-h-[800px] flex flex-col bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl shadow-gray-300/40 overflow-hidden border border-gray-200/50">
-            <header class="flex items-center justify-between p-4 border-b border-gray-200/80 bg-white/50">
+        <div class="chat-container w-full max-w-lg h-full max-h-[800px] flex flex-col rounded-2xl overflow-hidden border border-gray-200/50">
+            <header class="flex items-center justify-between p-4 border-b border-gray-200/80">
                 <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 rounded-full bg-buzios-mar flex items-center justify-center">
+                    <div class="avatar-container w-12 h-12 rounded-full flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3"/><circle cx="12" cy="10" r="3"/><circle cx="12" cy="12" r="10"/></svg>
                     </div>
                     <div>
                         <h1 class="text-lg font-bold text-buzios-mar">Conexão Búzios</h1>
-                        <p class="text-sm text-gray-500 flex items-center"><span class="h-2 w-2 bg-green-500 rounded-full mr-1.5"></span>Online</p>
+                        <p class="text-sm text-gray-500 flex items-center"><span class="status-indicator h-2 w-2 bg-green-500 rounded-full mr-1.5"></span>Online</p>
                     </div>
                 </div>
             </header>
             <main id="chat-window" class="flex-1 p-4 md:p-6 flex flex-col space-y-4 overflow-y-auto"></main>
-            <footer id="input-area" class="p-4 bg-white/60 border-t border-gray-200/80"></footer>
-            <div id="session-controls" class="p-2 text-center bg-gray-100 border-t border-gray-200/80">
+            <footer id="input-area" class="p-4 border-t border-gray-200/80"></footer>
+            <div id="session-controls" class="p-2 text-center border-t border-gray-200/80">
                 <p class="text-xs text-gray-500 mb-1">Você está conversando com a IA Gemini.</p>
                 <div class="flex justify-center items-center space-x-4">
                     <button onclick="handleGoBack()" id="back-btn" class="control-button text-xs text-gray-600 font-medium flex items-center gap-1">
