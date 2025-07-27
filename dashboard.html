@@ -51,9 +51,9 @@
 
         body { 
             font-family: 'Inter', sans-serif; 
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
             background-attachment: fixed;
-            color: #f8fafc;
+            color: #1e293b;
             line-height: 1.6;
             min-height: 100vh;
         }
@@ -65,47 +65,43 @@
 
         /* Efeitos de vidro aprimorados */
         .glass-effect { 
-            background: var(--color-glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--color-border);
-            box-shadow: var(--shadow-soft);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         }
 
         .glass-effect-strong {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: var(--shadow-medium);
+            background: #ffffff;
+            border: 2px solid #d1d5db;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
         }
 
         /* Header aprimorado */
         .hero-section {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(14, 165, 233, 0.1) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            border: 1px solid #1d4ed8;
+            box-shadow: 0 8px 32px rgba(30, 64, 175, 0.3);
         }
 
         .hero-title {
             color: #ffffff;
-            text-shadow: 0 2px 10px rgba(59, 130, 246, 0.5);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
             font-weight: 800;
         }
 
         .hero-subtitle {
-            color: #e2e8f0;
+            color: #dbeafe;
             font-weight: 500;
         }
 
         /* Cards de leads aprimorados */
         .card-glow { 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .card-glow::before {
@@ -115,7 +111,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
             transition: left 0.6s;
         }
 
@@ -124,24 +120,24 @@
         }
 
         .card-glow:hover { 
-            border-color: #60a5fa;
+            border-color: #3b82f6;
             transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.3);
-            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.2);
+            background: #fafbff;
         }
 
         .card-title {
-            color: #ffffff;
+            color: #111827;
             font-weight: 600;
         }
 
         .card-description {
-            color: #cbd5e1;
+            color: #4b5563;
             font-weight: 400;
         }
 
         .card-meta {
-            color: #94a3b8;
+            color: #6b7280;
             font-size: 12px;
         }
 
@@ -178,49 +174,43 @@
             font-weight: 600; 
             text-transform: uppercase; 
             letter-spacing: 0.05em;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid currentColor;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         /* Filtros aprimorados */
         .filter-section {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
         .filter-btn {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: #e2e8f0;
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            color: #374151;
             font-weight: 500;
         }
 
         .filter-btn:hover {
-            background: rgba(59, 130, 246, 0.25);
-            border-color: rgba(59, 130, 246, 0.5);
+            background: #e5e7eb;
+            border-color: #9ca3af;
             transform: translateY(-1px);
-            color: #ffffff;
+            color: #111827;
         }
 
         .filter-btn.active {
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             border-color: #1d4ed8;
             color: white;
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
             font-weight: 600;
         }
 
         .filter-label {
-            color: #60a5fa;
-            font-weight: 600;
+            color: #1e40af;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             font-size: 11px;
@@ -372,39 +362,42 @@
 
         /* Gradientes de potencial */
         .potential-alto {
-            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-            color: white;
+            background: #dcfdf7;
+            color: #065f46;
+            border-color: #34d399;
         }
 
         .potential-medio {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
+            background: #fef3c7;
+            color: #92400e;
+            border-color: #fbbf24;
         }
 
         .potential-baixo {
-            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-            color: white;
+            background: #f3f4f6;
+            color: #374151;
+            border-color: #9ca3af;
         }
 
         /* Melhorias no layout */
         .section-intro {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(14, 165, 233, 0.08) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border: 2px solid #93c5fd;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
         }
 
         .intro-title {
-            color: #ffffff;
+            color: #1e40af;
             font-weight: 700;
         }
 
         .intro-text {
-            color: #e2e8f0;
+            color: #334155;
             line-height: 1.6;
         }
 
         .intro-highlight {
-            color: #60a5fa;
+            color: #1d4ed8;
             font-weight: 600;
         }
 
@@ -424,18 +417,16 @@
 
         /* Estados de UI aprimorados */
         .empty-state, .error-state, .loading-state {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .count-badge {
             background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
             color: #ffffff;
             font-weight: 600;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            border: 1px solid #1d4ed8;
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
@@ -631,10 +622,10 @@
             'Baixo': { icon: 'trending-down', color: 'potential-baixo', text: 'Potencial Baixo' }
         };
         const statusStyling = {
-            'Novo': { class: 'bg-blue-500/30 text-blue-200 border-blue-400/30', icon: 'sparkles' },
-            'Em Contato': { class: 'bg-yellow-500/30 text-yellow-200 border-yellow-400/30', icon: 'phone-forwarded' },
-            'Proposta': { class: 'bg-green-500/30 text-green-200 border-green-400/30', icon: 'file-check-2' },
-            'Negociação': { class: 'bg-purple-500/30 text-purple-200 border-purple-400/30', icon: 'handshake' }
+            'Novo': { class: 'bg-blue-100 text-blue-800 border-blue-300', icon: 'sparkles' },
+            'Em Contato': { class: 'bg-yellow-100 text-yellow-800 border-yellow-300', icon: 'phone-forwarded' },
+            'Proposta': { class: 'bg-green-100 text-green-800 border-green-300', icon: 'file-check-2' },
+            'Negociação': { class: 'bg-purple-100 text-purple-800 border-purple-300', icon: 'handshake' }
         };
         const profileIcons = { 'Turista': 'sun-moon', 'Morador': 'home', 'Divulgador': 'megaphone', 'N/A': 'help-circle' };
         
