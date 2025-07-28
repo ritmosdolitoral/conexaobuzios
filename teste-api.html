@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste da API - Conexão Búzios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #0a3d5c 0%, #1e6b96 50%, #17a2b8 100%);
+            color: #fdfcfa;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .test-card {
+            background: rgba(29, 107, 150, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(244, 230, 211, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        .test-card:hover {
+            border-color: rgba(244, 230, 211, 0.4);
+            transform: translateY(-2px);
+        }
+        .success { border-color: #20c997; background: rgba(32, 201, 151, 0.1); }
+        .error { border-color: #dc3545; background: rgba(220, 53, 69, 0.1); }
+        .loading { border-color: #ffc107; background: rgba(255, 193, 7, 0.1); }
+        .spinner {
+            border: 2px solid rgba(244, 230, 211, 0.3);
+            border-top: 2px solid #f4e6d3;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-8">🧪 Teste da API Conexão Búzios</h1>
+        
+        <div class="test-card">
+            <h2 class="text-xl font-semibold mb-4">📋 Status dos Testes</h2>
+            <div id="test-results"></div>
+        </div>
+        
+        <div class="test-card">
+            <h2 class="text-xl font-semibold mb-4">🔧 Configurações</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">API Key Gemini:</label>
+                    <input type="text" id="api-key" value="AIzaSyBlOiC0sqSE-CjJ4wDBIj34DKit1NgoAV4" class="w-full p-2 rounded bg-white/10 border border-white/20 text-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">ID da Pasta:</label>
+                    <input type="text" id="folder-id" value="1iyZXYcdDrr41wM1GEvyEdl_3kgZFafUA" class="w-full p-2 rounded bg-white/10 border border-white/20 text-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">URL da API:</label>
+                    <input type="text" id="api-url" value="https://script.google.com/macros/s/AKfycbwHC3bAoL_c5rscJV2xbwVi9KMedM3QHbWCZ3bo64w0DbiMGOtnahL9BynJ5ADao63I/exec" class="w-full p-2 rounded bg-white/10 border border-white/20 text-white">
+                </div>
+                <div class="flex items-end">
+                    <button onclick="runAllTests()" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium py-2 px-4 rounded transition-all duration-300">
+                        🚀 Executar Todos os Testes
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <h2 class="text-xl font-semibold mb-4">📊 Logs Detalhados</h2>
+            <div id="logs" class="bg-black/20 rounded p-4 h-64 overflow-y-auto font-mono text-sm"></div>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHC3bAoL_c5rscJV2xbwVi9KMedM3QHbWCZ3bo64w0DbiMGOtnahL9BynJ5ADao63I/exec";
+        
+        function log(message, type = 'info') {
+            const logsDiv = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#dc3545' : type === 'success' ? '#20c997' : type === 'warning' ? '#ffc107' : '#f4e6d3';
+            logsDiv.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+        
+        function updateTestResult(testName, status, message = '') {
+            const resultsDiv = document.getElementById('test-results');
+            const existingTest = resultsDiv.querySelector(`[data-test="${testName}"]`);
+            
+            const statusIcon = status === 'success' ? '✅' : status === 'error' ? '❌' : status === 'loading' ? '🔄' : '⚠️';
+            const statusClass = status === 'success' ? 'success' : status === 'error' ? 'error' : status === 'loading' ? 'loading' : '';
+            
+            const testHtml = `
+                <div data-test="${testName}" class="flex items-center justify-between p-3 rounded ${statusClass}">
+                    <div>
+                        <span class="font-medium">${testName}</span>
+                        ${message ? `<span class="text-sm opacity-75 ml-2">${message}</span>` : ''}
+                    </div>
+                    <div class="flex items-center gap-2">
+                        ${status === 'loading' ? '<div class="spinner"></div>' : ''}
+                        <span>${statusIcon}</span>
+                    </div>
+                </div>
+            `;
+            
+            if (existingTest) {
+                existingTest.outerHTML = testHtml;
+            } else {
+                resultsDiv.innerHTML += testHtml;
+            }
+        }
+        
+        async function testAPI() {
+            log('🧪 Iniciando teste da API...', 'info');
+            updateTestResult('Teste da API', 'loading');
+            
+            try {
+                const response = await fetch(GOOGLE_APP_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ action: 'test' }),
+                    mode: 'cors',
+                });
+                
+                log(`📡 Resposta do servidor: ${response.status} ${response.statusText}`, 'info');
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    log(`❌ Erro HTTP: ${response.status} - ${errorText}`, 'error');
+                    updateTestResult('Teste da API', 'error', `HTTP ${response.status}`);
+                    return false;
+                }
+                
+                const result = await response.json();
+                log(`✅ Resultado: ${JSON.stringify(result, null, 2)}`, 'success');
+                
+                if (result.success) {
+                    updateTestResult('Teste da API', 'success', result.message);
+                    return true;
+                } else {
+                    updateTestResult('Teste da API', 'error', result.error);
+                    return false;
+                }
+            } catch (error) {
+                log(`💥 Erro no teste: ${error.message}`, 'error');
+                updateTestResult('Teste da API', 'error', error.message);
+                return false;
+            }
+        }
+        
+        async function testDossierCreation() {
+            log('📝 Testando criação de dossiê...', 'info');
+            updateTestResult('Criação de Dossiê', 'loading');
+            
+            try {
+                const testData = {
+                    nome: "Teste Automático",
+                    perfil: "Turista",
+                    telefone: "21999999999",
+                    historico: [
+                        { pergunta: "Qual seu perfil?", resposta: "Turista" },
+                        { pergunta: "Como está sua viagem?", resposta: "Chego nos próximos dias" },
+                        { pergunta: "Quem vai com você?", resposta: "Com meu amor" },
+                        { pergunta: "Já tem hospedagem?", resposta: "Estou procurando um lugar" },
+                        { pergunta: "O que você mais quer sentir?", resposta: "Descobrir lugares secretos" }
+                    ]
+                };
+                
+                const response = await fetch(GOOGLE_APP_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        action: 'processAndSaveDossier', 
+                        data: testData 
+                    }),
+                    mode: 'cors',
+                });
+                
+                log(`📡 Resposta da criação: ${response.status} ${response.statusText}`, 'info');
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    log(`❌ Erro na criação: ${response.status} - ${errorText}`, 'error');
+                    updateTestResult('Criação de Dossiê', 'error', `HTTP ${response.status}`);
+                    return false;
+                }
+                
+                const result = await response.json();
+                log(`✅ Dossiê criado: ${JSON.stringify(result, null, 2)}`, 'success');
+                
+                if (result.success) {
+                    updateTestResult('Criação de Dossiê', 'success', 'Dossiê criado com sucesso');
+                    return true;
+                } else {
+                    updateTestResult('Criação de Dossiê', 'error', result.error);
+                    return false;
+                }
+            } catch (error) {
+                log(`💥 Erro na criação: ${error.message}`, 'error');
+                updateTestResult('Criação de Dossiê', 'error', error.message);
+                return false;
+            }
+        }
+        
+        async function testDossierListing() {
+            log('📋 Testando listagem de dossiês...', 'info');
+            updateTestResult('Listagem de Dossiês', 'loading');
+            
+            try {
+                const response = await fetch(GOOGLE_APP_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ action: 'listDossies' }),
+                    mode: 'cors',
+                });
+                
+                log(`📡 Resposta da listagem: ${response.status} ${response.statusText}`, 'info');
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    log(`❌ Erro na listagem: ${response.status} - ${errorText}`, 'error');
+                    updateTestResult('Listagem de Dossiês', 'error', `HTTP ${response.status}`);
+                    return false;
+                }
+                
+                const result = await response.json();
+                log(`✅ Dossiês listados: ${result.data?.length || 0} encontrados`, 'success');
+                
+                if (result.success) {
+                    updateTestResult('Listagem de Dossiês', 'success', `${result.data?.length || 0} dossiês encontrados`);
+                    return true;
+                } else {
+                    updateTestResult('Listagem de Dossiês', 'error', result.error);
+                    return false;
+                }
+            } catch (error) {
+                log(`💥 Erro na listagem: ${error.message}`, 'error');
+                updateTestResult('Listagem de Dossiês', 'error', error.message);
+                return false;
+            }
+        }
+        
+        async function testGeminiAPI() {
+            log('🤖 Testando API do Gemini...', 'info');
+            updateTestResult('API do Gemini', 'loading');
+            
+            try {
+                const apiKey = document.getElementById('api-key').value;
+                const testPrompt = "Responda apenas com 'OK' se esta mensagem foi recebida.";
+                
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: testPrompt }] }]
+                    }),
+                });
+                
+                log(`📡 Resposta do Gemini: ${response.status} ${response.statusText}`, 'info');
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    log(`❌ Erro do Gemini: ${response.status} - ${errorText}`, 'error');
+                    updateTestResult('API do Gemini', 'error', `HTTP ${response.status}`);
+                    return false;
+                }
+                
+                const result = await response.json();
+                const responseText = result.candidates[0].content.parts[0].text.trim();
+                log(`✅ Gemini respondeu: "${responseText}"`, 'success');
+                
+                updateTestResult('API do Gemini', 'success', 'API funcionando');
+                return true;
+            } catch (error) {
+                log(`💥 Erro do Gemini: ${error.message}`, 'error');
+                updateTestResult('API do Gemini', 'error', error.message);
+                return false;
+            }
+        }
+        
+        async function runAllTests() {
+            log('🚀 Iniciando bateria completa de testes...', 'info');
+            
+            // Limpa resultados anteriores
+            document.getElementById('test-results').innerHTML = '';
+            
+            const tests = [
+                { name: 'API do Gemini', fn: testGeminiAPI },
+                { name: 'Teste da API', fn: testAPI },
+                { name: 'Listagem de Dossiês', fn: testDossierListing },
+                { name: 'Criação de Dossiê', fn: testDossierCreation }
+            ];
+            
+            let passedTests = 0;
+            
+            for (const test of tests) {
+                try {
+                    const result = await test.fn();
+                    if (result) passedTests++;
+                    await new Promise(resolve => setTimeout(resolve, 1000)); // Delay entre testes
+                } catch (error) {
+                    log(`💥 Erro no teste ${test.name}: ${error.message}`, 'error');
+                }
+            }
+            
+            const totalTests = tests.length;
+            const successRate = (passedTests / totalTests) * 100;
+            
+            log(`📊 Resultado final: ${passedTests}/${totalTests} testes passaram (${successRate.toFixed(1)}%)`, successRate >= 75 ? 'success' : 'warning');
+            
+            if (successRate >= 75) {
+                log('🎉 Sistema pronto para implantação!', 'success');
+            } else {
+                log('⚠️ Alguns problemas foram detectados. Verifique os logs acima.', 'warning');
+            }
+        }
+        
+        // Executa testes automáticos ao carregar a página
+        window.addEventListener('load', () => {
+            log('🔧 Página de teste carregada', 'info');
+            log('💡 Clique em "Executar Todos os Testes" para validar o sistema', 'info');
+        });
+    </script>
+</body>
+</html>

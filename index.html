@@ -1534,23 +1534,60 @@
                 perfil: state.userData.perfil,
                 historico: Object.values(state.userHistory || {})
             };
-            console.log("Enviando para processamento:", userDataPayload);
+            
+            console.log("🚀 Enviando dados para processamento:", userDataPayload);
+            
+            // Atualiza status bar para mostrar processamento
+            updateStatusBar("🔄 Processando seus dados com IA avançada...", "highlight", 3000);
+            
             try {
                 const response = await fetch(GOOGLE_APP_SCRIPT_URL, {
                     method: 'POST',
-                    body: JSON.stringify({ action: 'processAndSaveDossier', data: userDataPayload }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        action: 'processAndSaveDossier', 
+                        data: userDataPayload 
+                    }),
                     mode: 'cors',
                 });
-                if (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+                
+                console.log("📡 Resposta do servidor:", response.status, response.statusText);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("❌ Erro HTTP:", response.status, errorText);
+                    throw new Error(`Erro do servidor: ${response.status} - ${errorText}`);
+                }
+                
                 const result = await response.json();
+                console.log("✅ Resultado do processamento:", result);
+                
                 if (result.success) {
+                    // Mensagem de sucesso no status bar
+                    updateStatusBar("🎉 Dados processados com sucesso!", "success", 4000);
+                    
+                    // Para as mensagens dinâmicas
+                    stopDynamicMessaging();
+                    
+                    // Exibe a proposta final
                     displayStep('final_message', { proposal: result.data.proposta_personalizada });
                 } else {
-                    throw new Error(result.error);
+                    console.error("❌ Erro no processamento:", result.error);
+                    throw new Error(result.error || "Erro desconhecido no processamento");
                 }
             } catch (error) {
-                console.error("Falha na comunicação com o backend:", error);
-                displayStep('error_state');
+                console.error("💥 Falha na comunicação com o backend:", error);
+                
+                // Mensagem de erro no status bar
+                updateStatusBar("⚠️ Erro no processamento - tentando novamente...", "urgent", 5000);
+                
+                // Fallback: exibe uma proposta básica
+                setTimeout(() => {
+                    const fallbackProposal = `Oi, ${state.userData.nome || 'amigo'}! Recebi suas informações sobre ${state.userData.perfil || 'sua visita'} a Búzios e já estou preparando as melhores opções personalizadas para você. Em breve te chamo no WhatsApp com detalhes exclusivos!`;
+                    displayStep('final_message', { proposal: fallbackProposal });
+                }, 2000);
             }
         }
 

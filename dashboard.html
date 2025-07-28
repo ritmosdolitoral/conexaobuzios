@@ -1575,12 +1575,38 @@
         
         async function fetchFromAPI(payload) {
             try {
-                const response = await fetch(GOOGLE_APP_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload), redirect: 'follow' });
-                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                console.log("🚀 Enviando requisição para API:", payload.action);
+                
+                const response = await fetch(GOOGLE_APP_SCRIPT_URL, { 
+                    method: 'POST', 
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload), 
+                    redirect: 'follow' 
+                });
+                
+                console.log("📡 Resposta do servidor:", response.status, response.statusText);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("❌ Erro HTTP:", response.status, errorText);
+                    throw new Error(`Erro do servidor: ${response.status} - ${errorText}`);
+                }
+                
                 const result = await response.json();
-                if (result.success === false) throw new Error(`API Error: ${result.error}`);
+                console.log("✅ Resultado da API:", result);
+                
+                if (result.success === false) {
+                    console.error("❌ Erro da API:", result.error);
+                    throw new Error(`Erro da API: ${result.error}`);
+                }
+                
                 return result.data;
-            } catch (error) { console.error('Fetch API Error:', error); throw error; }
+            } catch (error) { 
+                console.error('💥 Fetch API Error:', error); 
+                throw error; 
+            }
         }
 
         const loadDossiers = async () => {
