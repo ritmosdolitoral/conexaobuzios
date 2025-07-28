@@ -363,6 +363,7 @@
             background: rgba(255, 255, 255, 0.6) !important;
             backdrop-filter: blur(12px) !important;
             flex-shrink: 0 !important;
+            min-height: 4rem !important;
         }
         
         /* Footer/controles responsivos */
@@ -372,6 +373,7 @@
             background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%) !important;
             border-top: 1px solid rgba(229, 231, 235, 0.8) !important;
             flex-shrink: 0 !important;
+            min-height: 5rem !important;
         }
         
         /* Chat redesenhado - mais responsivo e intuitivo */
@@ -838,14 +840,20 @@
                 border-radius: 1rem !important;
             }
             
-            .chat-bubble {
-                max-width: min(88%, calc(100vw - 4rem)) !important;
-                padding: 0.75rem 1rem !important;
+            .chat-container {
+                max-height: calc(100vh - 8rem) !important;
             }
             
             .chat-messages {
+                max-height: calc(100vh - 12rem) !important;
                 padding: 0.75rem 1rem !important;
                 gap: 0.75rem !important;
+                overflow-y: auto !important;
+            }
+            
+            .chat-bubble {
+                max-width: min(88%, calc(100vw - 4rem)) !important;
+                padding: 0.75rem 1rem !important;
             }
             
             .chat-options {
@@ -877,10 +885,12 @@
             
             #chat-main-container header {
                 padding: 0.75rem !important;
+                min-height: 3.5rem !important;
             }
             
             #session-controls {
                 padding: 0.75rem !important;
+                min-height: 4.5rem !important;
             }
         }
         
@@ -896,14 +906,20 @@
                 border-radius: 0.75rem !important;
             }
             
-            .chat-bubble {
-                max-width: min(92%, calc(100vw - 2rem)) !important;
-                padding: 0.5rem 0.75rem !important;
+            .chat-container {
+                max-height: calc(100vh - 7rem) !important;
             }
             
             .chat-messages {
+                max-height: calc(100vh - 11rem) !important;
                 padding: 0.5rem !important;
                 gap: 0.5rem !important;
+                overflow-y: auto !important;
+            }
+            
+            .chat-bubble {
+                max-width: min(92%, calc(100vw - 2rem)) !important;
+                padding: 0.5rem 0.75rem !important;
             }
             
             .chat-options {
@@ -965,46 +981,65 @@
         /* Media queries adicionais para zoom e telas muito pequenas */
         @media (max-width: 360px) {
             .chat-container {
-                max-height: calc(100vh - 3rem);
-                min-height: calc(100vh - 5rem);
+                max-height: calc(100vh - 6rem) !important;
             }
             
             .chat-messages {
-                max-height: calc(100vh - 10rem);
-                padding: 0.375rem;
-                overflow-y: auto;
+                max-height: calc(100vh - 10rem) !important;
+                padding: 0.375rem !important;
+                overflow-y: auto !important;
             }
             
             .chat-bubble {
-                max-width: min(98%, calc(100vw - 1.5rem));
-                padding: 0.375rem 0.5rem;
-                font-size: clamp(0.75rem, 3vw, 0.875rem);
+                max-width: min(98%, calc(100vw - 1.5rem)) !important;
+                padding: 0.375rem 0.5rem !important;
+                font-size: clamp(0.75rem, 3vw, 0.875rem) !important;
             }
             
             .options-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr !important;
             }
             
             .proposal-success {
-                max-height: min(10rem, 25vh);
-                margin: 0.125rem;
-                padding: 0.375rem;
+                max-height: min(10rem, 25vh) !important;
+                margin: 0.125rem !important;
+                padding: 0.375rem !important;
+            }
+            
+            #chat-main-container header {
+                min-height: 3rem !important;
+                padding: 0.5rem !important;
+            }
+            
+            #session-controls {
+                min-height: 4rem !important;
+                padding: 0.5rem !important;
             }
         }
         
         /* Suporte a paisagem em celulares */
         @media (max-height: 500px) and (orientation: landscape) {
             .chat-container {
-                max-height: calc(100vh - 2rem);
+                max-height: calc(100vh - 6rem) !important;
             }
             
             .chat-messages {
-                max-height: calc(100vh - 8rem);
-                overflow-y: auto;
+                max-height: calc(100vh - 10rem) !important;
+                overflow-y: auto !important;
             }
             
             .proposal-success {
-                max-height: min(8rem, 60vh);
+                max-height: min(8rem, 60vh) !important;
+            }
+            
+            #chat-main-container header {
+                min-height: 2.5rem !important;
+                padding: 0.5rem !important;
+            }
+            
+            #session-controls {
+                min-height: 3.5rem !important;
+                padding: 0.5rem !important;
             }
         }
         
@@ -1385,6 +1420,7 @@
             setTimeout(() => {
                 scrollToBottom();
                 ensureChatResponsiveness(); // Garante responsividade após adicionar mensagem
+                ensureLastMessageVisible(); // Garante que a última mensagem seja visível
             }, 150);
         }
         
@@ -1473,6 +1509,13 @@
                         chatMessages.scrollTop = chatMessages.scrollHeight;
                     }
                 }, 300);
+                
+                // Final verification after all animations
+                setTimeout(() => {
+                    if (chatMessages.scrollTop < chatMessages.scrollHeight - chatMessages.clientHeight - 2) {
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }
+                }, 500);
             }
         }
         
@@ -1494,6 +1537,20 @@
                 // Força scroll para o final se necessário
                 if (chatMessages.scrollHeight > chatMessages.clientHeight) {
                     scrollToBottom();
+                }
+            }
+        }
+        
+        // Função para garantir que a última mensagem seja sempre visível
+        function ensureLastMessageVisible() {
+            if (chatMessages && chatMessages.children.length > 0) {
+                const lastMessage = chatMessages.children[chatMessages.children.length - 1];
+                if (lastMessage) {
+                    lastMessage.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'end',
+                        inline: 'nearest'
+                    });
                 }
             }
         }
@@ -2024,15 +2081,31 @@
             // Adiciona listener para redimensionamento da janela
             window.addEventListener('resize', () => {
                 setTimeout(ensureChatResponsiveness, 100);
+                setTimeout(ensureLastMessageVisible, 200);
             });
             
             // Adiciona listener para mudanças de orientação em dispositivos móveis
             window.addEventListener('orientationchange', () => {
                 setTimeout(ensureChatResponsiveness, 300);
+                setTimeout(ensureLastMessageVisible, 400);
             });
             
             // Garante responsividade inicial
             setTimeout(ensureChatResponsiveness, 500);
+            setTimeout(ensureLastMessageVisible, 600);
+            
+            // Adiciona listener para mudanças no DOM que possam afetar o layout
+            const observer = new MutationObserver(() => {
+                setTimeout(ensureChatResponsiveness, 100);
+                setTimeout(ensureLastMessageVisible, 200);
+            });
+            
+            if (chatMessages) {
+                observer.observe(chatMessages, { 
+                    childList: true, 
+                    subtree: true 
+                });
+            }
         });
     </script>
 </body>
