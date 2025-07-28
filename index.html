@@ -379,10 +379,11 @@
             display: flex !important;
             flex-direction: column !important;
             height: 100% !important;
-            max-height: none !important;
+            max-height: 100% !important;
             min-height: 0 !important;
             flex: 1 !important;
             overflow: hidden !important;
+            position: relative !important;
         }
         
         .chat-messages {
@@ -397,6 +398,7 @@
             max-height: none !important;
             scroll-behavior: smooth !important;
             height: auto !important;
+            position: relative !important;
         }
         
         .chat-bubble { 
@@ -412,6 +414,7 @@
             word-wrap: break-word;
             overflow-wrap: break-word;
             position: relative;
+            box-sizing: border-box;
         }
         
         .chat-bubble.ai { 
@@ -969,11 +972,13 @@
             .chat-messages {
                 max-height: calc(100vh - 10rem);
                 padding: 0.375rem;
+                overflow-y: auto;
             }
             
             .chat-bubble {
                 max-width: min(98%, calc(100vw - 1.5rem));
                 padding: 0.375rem 0.5rem;
+                font-size: clamp(0.75rem, 3vw, 0.875rem);
             }
             
             .options-grid {
@@ -995,10 +1000,63 @@
             
             .chat-messages {
                 max-height: calc(100vh - 8rem);
+                overflow-y: auto;
             }
             
             .proposal-success {
                 max-height: min(8rem, 60vh);
+            }
+        }
+        
+        /* Ajustes específicos para zoom */
+        @media (max-width: 320px) {
+            .chat-container {
+                max-height: calc(100vh - 2rem);
+            }
+            
+            .chat-messages {
+                max-height: calc(100vh - 8rem);
+                padding: 0.25rem;
+            }
+            
+            .chat-bubble {
+                max-width: min(99%, calc(100vw - 1rem));
+                padding: 0.25rem 0.5rem;
+                font-size: clamp(0.7rem, 3.5vw, 0.8rem);
+            }
+        }
+        
+        /* Ajustes para telas muito grandes */
+        @media (min-width: 1200px) {
+            .chat-container {
+                max-height: calc(100vh - 3rem);
+            }
+            
+            .chat-messages {
+                max-height: calc(100vh - 12rem);
+            }
+            
+            .chat-bubble {
+                max-width: min(70%, calc(100vw - 6rem));
+                font-size: clamp(0.9rem, 1.5vw, 1rem);
+            }
+        }
+        
+        /* Ajustes para zoom alto (200%+) */
+        @media (max-width: 600px) and (min-resolution: 2dppx) {
+            .chat-container {
+                max-height: calc(100vh - 4rem);
+            }
+            
+            .chat-messages {
+                max-height: calc(100vh - 12rem);
+                padding: 0.5rem;
+            }
+            
+            .chat-bubble {
+                max-width: min(95%, calc(100vw - 2rem));
+                padding: 0.5rem 0.75rem;
+                font-size: clamp(0.8rem, 4vw, 0.9rem);
             }
         }
         
@@ -1033,6 +1091,26 @@
         .proposal-success::-webkit-scrollbar-thumb {
             background: rgba(148, 163, 184, 0.4);
             border-radius: 0.1875rem;
+        }
+        
+        /* Garantias adicionais de responsividade */
+        #chat-main-container {
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+            max-height: 100% !important;
+            overflow: hidden !important;
+        }
+        
+        #input-area {
+            flex-shrink: 0 !important;
+            min-height: auto !important;
+            max-height: none !important;
+        }
+        
+        #session-controls {
+            flex-shrink: 0 !important;
+            min-height: auto !important;
         }
         
         /* Melhorias adicionais para acessibilidade */
@@ -1306,6 +1384,7 @@
             // Always scroll to bottom when new message is added
             setTimeout(() => {
                 scrollToBottom();
+                ensureChatResponsiveness(); // Garante responsividade após adicionar mensagem
             }, 150);
         }
         
@@ -1387,6 +1466,35 @@
                         chatMessages.scrollTop = chatMessages.scrollHeight;
                     }
                 }, 100);
+                
+                // Additional check for mobile devices
+                setTimeout(() => {
+                    if (chatMessages.scrollTop < chatMessages.scrollHeight - chatMessages.clientHeight - 5) {
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }
+                }, 300);
+            }
+        }
+        
+        // Função adicional para garantir responsividade
+        function ensureChatResponsiveness() {
+            if (chatMessages) {
+                // Garante que a área de mensagens tenha altura adequada
+                const containerHeight = chatMessages.parentElement.clientHeight;
+                const inputAreaHeight = document.getElementById('input-area')?.clientHeight || 0;
+                const sessionControlsHeight = document.getElementById('session-controls')?.clientHeight || 0;
+                const headerHeight = document.querySelector('#chat-main-container header')?.clientHeight || 0;
+                
+                const availableHeight = containerHeight - inputAreaHeight - sessionControlsHeight - headerHeight - 2; // 2px de margem
+                
+                if (availableHeight > 0) {
+                    chatMessages.style.maxHeight = `${availableHeight}px`;
+                }
+                
+                // Força scroll para o final se necessário
+                if (chatMessages.scrollHeight > chatMessages.clientHeight) {
+                    scrollToBottom();
+                }
             }
         }
 
@@ -1912,6 +2020,19 @@
                 updateStatusBar("🎯 Descobrindo experiências únicas para você...", "highlight", 3000);
                 setTimeout(startDynamicMessaging, 3000);
             }, 1000);
+            
+            // Adiciona listener para redimensionamento da janela
+            window.addEventListener('resize', () => {
+                setTimeout(ensureChatResponsiveness, 100);
+            });
+            
+            // Adiciona listener para mudanças de orientação em dispositivos móveis
+            window.addEventListener('orientationchange', () => {
+                setTimeout(ensureChatResponsiveness, 300);
+            });
+            
+            // Garante responsividade inicial
+            setTimeout(ensureChatResponsiveness, 500);
         });
     </script>
 </body>
