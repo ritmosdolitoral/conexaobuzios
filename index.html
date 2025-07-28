@@ -30,8 +30,14 @@
         .text-glow {
             text-shadow: 0 0 8px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
         }
-        .cursor { animation: blink 1s step-end infinite; }
-        @keyframes blink { 50% { color: transparent; } }
+        /* Animação de cursor modernizada - transição suave com opacity para efeito orgânico */
+        .cursor { 
+            animation: pulse-cursor 1.5s ease-in-out infinite; 
+        }
+        @keyframes pulse-cursor { 
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
         
         /* Animação de pulso para os botões */
         @keyframes pulse-light {
