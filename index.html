@@ -673,7 +673,7 @@
             font-size: 0.85rem;
         }
         
-        /* Status Bar Dinâmico e Persuasivo */
+        /* Status Bar Simples */
         .status-bar {
             background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%);
             border-bottom: 1px solid #e2e8f0;
@@ -687,38 +687,6 @@
             flex-wrap: wrap;
             font-weight: 500;
             margin-bottom: 8px;
-            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        
-        .status-icon {
-            font-size: 16px;
-            animation: pulse 2s infinite;
-        }
-        
-        .status-text {
-            font-weight: 600;
-            color: #1e293b;
-            text-align: center;
-            line-height: 1.4;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        
-        .status-bar.highlight {
-            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
-            border-color: #0ea5e9;
-            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.1);
-        }
-        
-        .status-bar.urgent {
-            background: linear-gradient(135deg, #fef3c7 0%, #fefce8 100%);
-            border-color: #f59e0b;
-            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
-        }
-        
-        .status-bar.success {
-            background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
-            border-color: #22c55e;
-            box-shadow: 0 2px 8px rgba(34, 197, 94, 0.1);
         }
         
         /* Responsividade melhorada */
@@ -813,6 +781,13 @@
                 font-size: 10px;
                 padding: 0.5rem 0.75rem;
             }
+            
+            /* Banner superior responsivo */
+            .fixed.top-4.right-4 {
+                top: 1rem;
+                right: 1rem;
+                max-width: 200px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -905,6 +880,14 @@
                 font-size: 9px;
                 padding: 0.4rem 0.6rem;
             }
+            
+            /* Banner superior em telas muito pequenas */
+            .fixed.top-4.right-4 {
+                top: 0.5rem;
+                right: 0.5rem;
+                max-width: 150px;
+                font-size: 10px;
+            }
         }
     </style>
 </head>
@@ -947,33 +930,14 @@
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                     </svg>
                 </div>
-                
-                <!-- Botão de Divulgação - Canto inferior esquerdo -->
-                <button id="promote-btn" class="absolute -bottom-2 -left-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 z-10 text-xs font-medium flex items-center gap-2">
-                    <span>📢</span>
-                    <span class="hidden sm:inline">Quer seu serviço indicado aqui?</span>
-                    <span class="sm:hidden">Divulgar</span>
-                </button>
-                
-                <!-- Banner Superior Direito -->
-                <div class="absolute -top-2 -right-2 bg-white/95 backdrop-blur-sm border border-blue-200 rounded-lg shadow-md px-3 py-2 z-10 max-w-xs">
-                    <p class="text-xs text-gray-700 font-medium leading-tight">
-                        <span class="text-blue-600">💡</span> IA treinada com as melhores experiências de Búzios – descubra a sua agora.
-                    </p>
-                </div>
-                
-                <!-- Botão de Mapa - Canto inferior direito -->
-                <button id="map-btn" class="absolute -bottom-2 -right-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 z-10 text-xs font-medium flex items-center gap-2">
-                    <span>🗺️</span>
-                    <span class="hidden sm:inline">Ver locais por categoria</span>
-                    <span class="sm:hidden">Categorias</span>
-                </button>
-            <!-- Status Bar Dinâmico e Persuasivo -->
-            <div id="dynamic-status-bar" class="status-bar">
-                <div id="status-content" class="flex items-center justify-center gap-2">
-                    <span class="status-icon">🤖</span>
-                    <span id="status-message" class="status-text">Conectando com a IA da Conexão Búzios...</span>
-                </div>
+            <!-- Status Bar Simples -->
+            <div class="status-bar">
+                <span>🤖</span>
+                <span>Você está conversando com a IA da Conexão Búzios</span>
+                <span>•</span>
+                <span>Atendimento 24h</span>
+                <span>•</span>
+                <span>Respostas Personalizadas</span>
             </div>
             
             <header class="flex items-center justify-between p-4 border-b border-gray-200/80 bg-white/60 backdrop-blur-sm">
@@ -1005,11 +969,34 @@
         </div>
     </div>
     
-    <!-- Carrossel de Avaliações -->
-    <div id="testimonials-carousel" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-lg shadow-lg px-4 py-3 z-20 max-w-sm">
+    <!-- ELEMENTOS EXTERNOS AO CHAT -->
+    
+    <!-- Botão de Divulgação - Canto inferior esquerdo da tela -->
+    <button id="promote-btn" class="fixed bottom-4 left-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 z-30 text-xs font-medium flex items-center gap-2">
+        <span>📢</span>
+        <span class="hidden sm:inline">Quer seu serviço indicado aqui?</span>
+        <span class="sm:hidden">Divulgar</span>
+    </button>
+    
+    <!-- Botão de Mapa - Canto inferior direito da tela -->
+    <button id="map-btn" class="fixed bottom-4 right-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 z-30 text-xs font-medium flex items-center gap-2">
+        <span>🗺️</span>
+        <span class="hidden sm:inline">Ver locais por categoria</span>
+        <span class="sm:hidden">Categorias</span>
+    </button>
+    
+    <!-- Banner Superior Direito da tela -->
+    <div class="fixed top-4 right-4 bg-white/95 backdrop-blur-sm border border-blue-200 rounded-lg shadow-md px-3 py-2 z-30 max-w-xs">
+        <p class="text-xs text-gray-700 font-medium leading-tight">
+            <span class="text-blue-600">💡</span> IA treinada com as melhores experiências de Búzios – descubra a sua agora.
+        </p>
+    </div>
+    
+    <!-- Carrossel de Avaliações - Centro inferior da tela -->
+    <div id="testimonials-carousel" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-lg shadow-lg px-4 py-3 z-20 max-w-sm">
         <div id="testimonial-content" class="text-center">
             <p id="testimonial-text" class="text-sm text-gray-700 font-medium leading-tight transition-all duration-300">
-                "Me ajudou a montar meu roteiro em 5 minutos!" – Juliana (SP)
+                "Me ajudou a montar meu roteiro em 5 minutos! - Juliana (SP)"
             </p>
         </div>
     </div>
@@ -1123,7 +1110,6 @@
 
         // --- ESTADO DA APLICAÇÃO ---
         let state = {};
-        let messageInterval;
 
         const initialState = {
             history: [],
@@ -1134,7 +1120,7 @@
             userHistory: {}
         };
         
-        // --- SISTEMA DE AVALIAÇÕES ---
+        // --- SISTEMA DE AVALIAÇÕES SIMPLES ---
         const testimonials = [
             "Me ajudou a montar meu roteiro em 5 minutos! - Juliana (SP)",
             "Encontrei restaurantes incríveis que não conhecia! - Carlos (RJ)",
@@ -1163,87 +1149,10 @@
         }
         
         function startTestimonialCarousel() {
-            // Verifica se o elemento existe antes de iniciar
             if (document.getElementById('testimonial-text')) {
                 testimonialInterval = setInterval(updateTestimonial, 6000);
             }
         }
-        
-        // --- SISTEMA DE MENSAGENS DINÂMICAS ---
-        const dynamicMessages = {
-            turista: {
-                initial: [
-                    "🏖️ Descobrindo os segredos de Búzios para você...",
-                    "🌊 Analisando as melhores experiências da cidade...",
-                    "✨ Preparando um roteiro personalizado exclusivo..."
-                ],
-                engaging: [
-                    "💡 Dica: Búzios tem 23 praias! Qual será sua favorita?",
-                    "🌅 O pôr do sol em Búzios é mágico. Já escolheu onde assistir?",
-                    "🦞 A gastronomia local é incrível. Quer descobrir os melhores restaurantes?",
-                    "🎭 A vida noturna é vibrante! Qual seu estilo: tranquilo ou animado?",
-                    "🏄‍♂️ Temos surf, mergulho, passeios de barco... O que te interessa?"
-                ],
-                urgent: [
-                    "⚡ Oportunidade única: Descontos especiais para turistas!",
-                    "🔥 Hotéis com melhor custo-benefício estão lotando rapidamente!",
-                    "💎 Experiências exclusivas disponíveis por tempo limitado!"
-                ],
-                success: [
-                    "🎉 Parabéns! Seu roteiro personalizado está pronto!",
-                    "✨ Você vai amar o que preparei para você em Búzios!",
-                    "🌟 Sua viagem dos sonhos está a um passo de acontecer!"
-                ]
-            },
-            morador: {
-                initial: [
-                    "🏠 Conectando você com a comunidade local...",
-                    "🤝 Descobrindo oportunidades exclusivas para moradores...",
-                    "💼 Analisando o ecossistema de negócios da região..."
-                ],
-                engaging: [
-                    "💡 Conhece todos os eventos locais? Temos uma lista atualizada!",
-                    "🤝 Networking é tudo! Quer conectar com outros moradores?",
-                    "💼 Oportunidades de negócio aparecem todos os dias. Está preparado?",
-                    "🏘️ A comunidade está crescendo! Quer fazer parte ativa?",
-                    "🎯 Temos dicas exclusivas para quem mora aqui. Quer saber mais?"
-                ],
-                urgent: [
-                    "⚡ Evento exclusivo para moradores esta semana!",
-                    "🔥 Oportunidade de negócio com prazo limitado!",
-                    "💎 Descontos especiais para a comunidade local!"
-                ],
-                success: [
-                    "🎉 Perfeito! Suas oportunidades locais estão mapeadas!",
-                    "✨ Você vai se surpreender com o que descobri para você!",
-                    "🌟 Sua conexão com Búzios vai ficar ainda mais forte!"
-                ]
-            },
-            divulgador: {
-                initial: [
-                    "📢 Analisando o mercado de Búzios para seu negócio...",
-                    "🎯 Identificando seu público-alvo ideal...",
-                    "💼 Preparando estratégias de divulgação personalizadas..."
-                ],
-                engaging: [
-                    "💡 Sabia que Búzios recebe 2 milhões de turistas por ano?",
-                    "🎯 Seu público ideal está aqui! Quer saber como alcançá-los?",
-                    "📈 O mercado local está em expansão. Quer aproveitar?",
-                    "🤝 Networking com outros empreendedores? Temos a lista!",
-                    "💼 Estratégias que funcionam em Búzios. Quer conhecer?"
-                ],
-                urgent: [
-                    "⚡ Oportunidade de parceria com prazo limitado!",
-                    "🔥 Vagas para divulgação estão se esgotando!",
-                    "💎 Descontos especiais para empreendedores!"
-                ],
-                success: [
-                    "🎉 Excelente! Sua estratégia de divulgação está pronta!",
-                    "✨ Você vai se destacar no mercado de Búzios!",
-                    "🌟 Seu negócio vai decolar com essas dicas!"
-                ]
-            }
-        };
         
         // --- LÓGICA DO PORTAL ---
         const portalPhrases = [
@@ -1469,32 +1378,7 @@
             const targetContainer = isPortalStep ? portalActions : inputArea;
             targetContainer.innerHTML = '';
             
-            // Atualiza mensagem dinâmica baseada no progresso
-            if (!isPortalStep && messageInterval) {
-                try {
-                    const profile = state.userData.perfil?.toLowerCase() || 'turista';
-                    const progressMessages = {
-                        'turista_1': '🏖️ Analisando seu perfil de turista...',
-                        'turista_2': '🌊 Descobrindo experiências únicas...',
-                        'turista_3': '🏨 Identificando suas preferências...',
-                        'turista_4': '🎯 Personalizando seu roteiro...',
-                        'morador_1': '🏠 Conectando com a comunidade local...',
-                        'morador_2': '🤝 Descobrindo oportunidades exclusivas...',
-                        'morador_3': '💼 Mapeando o ecossistema local...',
-                        'divulgador_1': '📢 Analisando o mercado de Búzios...',
-                        'divulgador_2': '🎯 Identificando seu público-alvo...',
-                        'divulgador_3': '💼 Preparando estratégias personalizadas...',
-                        'generate_proposal': '✨ Criando sua proposta personalizada...'
-                    };
-                    
-                    const progressMessage = progressMessages[stepId];
-                    if (progressMessage) {
-                        updateStatusBar(progressMessage, 'highlight', 3000);
-                    }
-                } catch (error) {
-                    console.warn('Erro ao atualizar mensagem de progresso:', error);
-                }
-            }
+
             
             if (isPortalStep) {
                 if(state.chatLog.length === 0) addMessageToChat(step.message, 'ai', false, true);
@@ -1592,11 +1476,6 @@
                     try {
                         addMessageToChat(context.proposal, 'ai');
                         
-                        // Atualiza status bar com mensagem de sucesso
-                        const profile = state.userData.perfil?.toLowerCase() || 'turista';
-                        const successMessage = getDynamicMessage(profile, 'success');
-                        updateStatusBar(successMessage, 'success', 0);
-                        
                         container.innerHTML = `
                             <div id="proposal-success" class="proposal-success animate-pop-in">
                                 <div class="proposal-header">
@@ -1661,10 +1540,6 @@
                     introPortal.style.display = 'none';
                     appContainer.classList.remove('hidden');
                     appContainer.classList.add('flex');
-                    
-                    // Inicia o sistema de mensagens dinâmicas
-                    if (messageInterval) clearInterval(messageInterval);
-                    messageInterval = startDynamicMessaging();
                     
                     // Inicia o carrossel de avaliações se ainda não estiver rodando
                     if (!testimonialInterval && document.getElementById('testimonial-text')) {
@@ -1745,90 +1620,7 @@
             backBtn.disabled = state.history.length < 2;
         }
         
-        // --- FUNÇÕES PARA MENSAGENS DINÂMICAS ---
-        function updateStatusBar(message, type = 'normal', duration = 3000) {
-            try {
-                const statusBar = document.getElementById('dynamic-status-bar');
-                const statusMessage = document.getElementById('status-message');
-                
-                if (!statusBar || !statusMessage) return;
-                
-                // Remove classes anteriores
-                statusBar.classList.remove('highlight', 'urgent', 'success');
-                
-                // Adiciona nova classe baseada no tipo
-                if (type !== 'normal') {
-                    statusBar.classList.add(type);
-                }
-                
-                // Atualiza a mensagem com animação
-                statusMessage.style.opacity = '0';
-                statusMessage.style.transform = 'translateY(-10px)';
-                
-                setTimeout(() => {
-                    statusMessage.textContent = message;
-                    statusMessage.style.opacity = '1';
-                    statusMessage.style.transform = 'translateY(0)';
-                }, 200);
-                
-                // Volta ao normal após a duração
-                if (duration > 0) {
-                    setTimeout(() => {
-                        if (statusBar) {
-                            statusBar.classList.remove('highlight', 'urgent', 'success');
-                        }
-                    }, duration);
-                }
-            } catch (error) {
-                console.warn('Erro ao atualizar status bar:', error);
-            }
-        }
-        
-        function getDynamicMessage(profile, type = 'engaging') {
-            try {
-                const messages = dynamicMessages[profile] || dynamicMessages.turista;
-                const messageArray = messages[type] || messages.engaging;
-                if (messageArray && messageArray.length > 0) {
-                    return messageArray[Math.floor(Math.random() * messageArray.length)];
-                }
-                return "Conectando com a IA da Conexão Búzios...";
-            } catch (error) {
-                console.warn('Erro ao obter mensagem dinâmica:', error);
-                return "Conectando com a IA da Conexão Búzios...";
-            }
-        }
-        
-        function startDynamicMessaging() {
-            try {
-                const profile = state.userData.perfil?.toLowerCase() || 'turista';
-                let messageIndex = 0;
-                
-                // Mensagem inicial
-                updateStatusBar(getDynamicMessage(profile, 'initial'), 'highlight', 4000);
-                
-                // Ciclo de mensagens engajantes
-                const interval = setInterval(() => {
-                    if (state.currentStepId === 'final_message') {
-                        clearInterval(interval);
-                        updateStatusBar(getDynamicMessage(profile, 'success'), 'success', 0);
-                        return;
-                    }
-                    
-                    // Alterna entre tipos de mensagem
-                    const types = ['engaging', 'urgent'];
-                    const currentType = types[messageIndex % types.length];
-                    const message = getDynamicMessage(profile, currentType);
-                    
-                    updateStatusBar(message, currentType === 'urgent' ? 'urgent' : 'highlight', 5000);
-                    messageIndex++;
-                }, 8000); // Muda a cada 8 segundos
-                
-                return interval;
-            } catch (error) {
-                console.warn('Erro ao iniciar mensagens dinâmicas:', error);
-                return null;
-            }
-        }
+
         
         // --- FUNÇÕES DOS MODAIS ---
         function showModal(modalId) {
@@ -1857,10 +1649,6 @@
             if (testimonialInterval) {
                 clearInterval(testimonialInterval);
                 testimonialInterval = null;
-            }
-            if (messageInterval) {
-                clearInterval(messageInterval);
-                messageInterval = null;
             }
         }
 
@@ -1911,10 +1699,7 @@
                 rebuildUIFromState();
                 displayStep(state.currentStepId);
                 
-                // Inicia mensagens dinâmicas se não estiver na tela final
-                if (state.currentStepId !== 'final_message' && !messageInterval) {
-                    messageInterval = startDynamicMessaging();
-                }
+
             } else {
                 state = JSON.parse(JSON.stringify(initialState)); // Deep copy
                 saveState();
@@ -1933,14 +1718,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             init();
             
-            // Inicia o carrossel de avaliações com verificação de segurança
+            // Inicia o carrossel de avaliações
             setTimeout(() => {
                 if (document.getElementById('testimonial-text')) {
                     startTestimonialCarousel();
                 }
             }, 1000);
             
-            // Event listeners para os botões externos com verificação de segurança
+            // Event listeners para os botões externos
             setTimeout(() => {
                 const promoteBtn = document.getElementById('promote-btn');
                 const mapBtn = document.getElementById('map-btn');
