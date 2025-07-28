@@ -1,0 +1,39 @@
+/* 
+ * Animação de cursor com efeito pulsar suave
+ * Usa opacity com timing function ease-in-out para transições orgânicas
+ * em vez de step-end que causa mudanças abruptas
+ */
+.cursor {
+    animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* 
+ * Versão alternativa com timing mais refinado para um efeito ainda mais suave
+ * Descomente para usar esta variação:
+ */
+/*
+.cursor {
+    animation: smoothPulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes smoothPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.1;
+    }
+}
+*/
