@@ -1528,11 +1528,24 @@
         }
 
         async function callBackendForProcessing() {
+            // MONTA O HISTÓRICO CORRETAMENTE
+            const historico = [];
+            // Percorre o fluxo de conversa e pega as perguntas e respostas do usuário
+            for (const stepId in conversationFlow) {
+                const step = conversationFlow[stepId];
+                if (step && step.variable && state.userData[step.variable]) {
+                    historico.push({
+                        pergunta: step.message ? step.message.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim() : step.variable,
+                        resposta: state.userData[step.variable]
+                    });
+                }
+            }
+
             const userDataPayload = {
                 nome: state.userData.nome,
                 telefone: state.userData.telefone,
                 perfil: state.userData.perfil,
-                historico: Object.values(state.userHistory || {})
+                historico: historico
             };
             
             console.log("🚀 Enviando dados para processamento:", userDataPayload);
