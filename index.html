@@ -447,6 +447,23 @@
             box-shadow: 0 8px 25px rgba(0, 119, 182, 0.4);
         }
         
+        /* Cards de Categoria */
+        .category-card {
+            background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #3b82f6;
+        }
+        
         /* Botões redesenhados - mais compactos e intuitivos */
         .chat-options {
             padding: 16px 20px;
@@ -782,6 +799,22 @@
             }
         }
         
+        @media (max-width: 768px) {
+            /* Elementos externos responsivos */
+            #testimonials-carousel {
+                bottom: 2rem;
+                left: 1rem;
+                right: 1rem;
+                transform: none;
+                max-width: none;
+            }
+            
+            #promote-btn, #map-btn {
+                font-size: 10px;
+                padding: 0.5rem 0.75rem;
+            }
+        }
+        
         @media (max-width: 480px) {
             #app-container {
                 padding: 4px;
@@ -859,6 +892,19 @@
             .portal-option-description {
                 font-size: 0.7rem;
             }
+            
+            /* Elementos externos em telas muito pequenas */
+            #testimonials-carousel {
+                bottom: 1rem;
+                left: 0.5rem;
+                right: 0.5rem;
+                padding: 0.5rem;
+            }
+            
+            #promote-btn, #map-btn {
+                font-size: 9px;
+                padding: 0.4rem 0.6rem;
+            }
         }
     </style>
 </head>
@@ -901,6 +947,27 @@
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                     </svg>
                 </div>
+                
+                <!-- Botão de Divulgação - Canto inferior esquerdo -->
+                <button id="promote-btn" class="absolute -bottom-2 -left-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 z-10 text-xs font-medium flex items-center gap-2">
+                    <span>📢</span>
+                    <span class="hidden sm:inline">Quer seu serviço indicado aqui?</span>
+                    <span class="sm:hidden">Divulgar</span>
+                </button>
+                
+                <!-- Banner Superior Direito -->
+                <div class="absolute -top-2 -right-2 bg-white/95 backdrop-blur-sm border border-blue-200 rounded-lg shadow-md px-3 py-2 z-10 max-w-xs">
+                    <p class="text-xs text-gray-700 font-medium leading-tight">
+                        <span class="text-blue-600">💡</span> IA treinada com as melhores experiências de Búzios – descubra a sua agora.
+                    </p>
+                </div>
+                
+                <!-- Botão de Mapa - Canto inferior direito -->
+                <button id="map-btn" class="absolute -bottom-2 -right-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 z-10 text-xs font-medium flex items-center gap-2">
+                    <span>🗺️</span>
+                    <span class="hidden sm:inline">Ver locais por categoria</span>
+                    <span class="sm:hidden">Categorias</span>
+                </button>
             <!-- Status Bar Dinâmico e Persuasivo -->
             <div id="dynamic-status-bar" class="status-bar">
                 <div id="status-content" class="flex items-center justify-center gap-2">
@@ -938,6 +1005,105 @@
         </div>
     </div>
     
+    <!-- Carrossel de Avaliações -->
+    <div id="testimonials-carousel" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-lg shadow-lg px-4 py-3 z-20 max-w-sm">
+        <div id="testimonial-content" class="text-center">
+            <p id="testimonial-text" class="text-sm text-gray-700 font-medium leading-tight transition-all duration-300">
+                "Me ajudou a montar meu roteiro em 5 minutos!" – Juliana (SP)
+            </p>
+        </div>
+    </div>
+    
+    <!-- Modal de Divulgação -->
+    <div id="promote-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800">📢 Divulgue seu Serviço</h3>
+                <button id="close-promote-modal" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Seja visto por milhares de turistas e moradores de Búzios! Nosso sistema de recomendações personalizadas inclui seu serviço nas sugestões da IA.
+                </p>
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-blue-800 mb-2">✨ Benefícios:</h4>
+                    <ul class="text-sm text-blue-700 space-y-1">
+                        <li>• Apareça nas recomendações personalizadas</li>
+                        <li>• Alcance turistas qualificados</li>
+                        <li>• Destaque para moradores locais</li>
+                        <li>• Suporte completo da nossa equipe</li>
+                    </ul>
+                </div>
+                <div class="flex gap-3">
+                    <a href="https://wa.me/5521999999999?text=Olá! Quero divulgar meu serviço no Conexão Búzios" target="_blank" class="flex-1 bg-green-500 text-white text-center py-3 px-4 rounded-lg font-medium hover:bg-green-600 transition-colors">
+                        💬 Falar no WhatsApp
+                    </a>
+                    <button id="close-promote-modal-2" class="px-4 py-3 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors">
+                        Fechar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Categorias -->
+    <div id="categories-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800">🗺️ Locais por Categoria</h3>
+                <button id="close-categories-modal" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="category-card">
+                    <div class="text-2xl mb-2">🏖️</div>
+                    <h4 class="font-semibold text-gray-800">Praias</h4>
+                    <p class="text-xs text-gray-600">23 praias únicas</p>
+                </div>
+                <div class="category-card">
+                    <div class="text-2xl mb-2">🦞</div>
+                    <h4 class="font-semibold text-gray-800">Gastronomia</h4>
+                    <p class="text-xs text-gray-600">Restaurantes locais</p>
+                </div>
+                <div class="category-card">
+                    <div class="text-2xl mb-2">🏃‍♂️</div>
+                    <h4 class="font-semibold text-gray-800">Trilhas</h4>
+                    <p class="text-xs text-gray-600">Aventuras na natureza</p>
+                </div>
+                <div class="category-card">
+                    <div class="text-2xl mb-2">⛵</div>
+                    <h4 class="font-semibold text-gray-800">Passeios de Barco</h4>
+                    <p class="text-xs text-gray-600">Experiências no mar</p>
+                </div>
+                <div class="category-card">
+                    <div class="text-2xl mb-2">🎭</div>
+                    <h4 class="font-semibold text-gray-800">Vida Noturna</h4>
+                    <p class="text-xs text-gray-600">Bares e baladas</p>
+                </div>
+                <div class="category-card">
+                    <div class="text-2xl mb-2">🏄‍♂️</div>
+                    <h4 class="font-semibold text-gray-800">Esportes</h4>
+                    <p class="text-xs text-gray-600">Surf, mergulho, etc</p>
+                </div>
+            </div>
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600 mb-4">
+                    💡 Use o chat da IA para descobrir os melhores locais de cada categoria!
+                </p>
+                <button id="close-categories-modal-2" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                    Entendi!
+                </button>
+            </div>
+        </div>
+    </div>
+    
     <script>
         // --- ELEMENTOS DA DOM ---
         const introPortal = document.getElementById('ai-intro-portal');
@@ -967,6 +1133,38 @@
             userData: {},
             userHistory: {}
         };
+        
+        // --- SISTEMA DE AVALIAÇÕES ---
+        const testimonials = [
+            "Me ajudou a montar meu roteiro em 5 minutos!" – Juliana (SP),
+            "Encontrei restaurantes incríveis que não conhecia!" – Carlos (RJ),
+            "A IA me deu dicas perfeitas para minha viagem!" – Ana (MG),
+            "Superou todas as minhas expectativas!" – Pedro (DF),
+            "Recomendações personalizadas que funcionaram!" – Maria (RS),
+            "Economizei tempo e dinheiro com as dicas!" – João (BA)
+        ];
+        
+        let currentTestimonialIndex = 0;
+        let testimonialInterval;
+        
+        function updateTestimonial() {
+            const testimonialText = document.getElementById('testimonial-text');
+            if (testimonialText) {
+                testimonialText.style.opacity = '0';
+                testimonialText.style.transform = 'translateY(10px)';
+                
+                setTimeout(() => {
+                    testimonialText.textContent = testimonials[currentTestimonialIndex];
+                    testimonialText.style.opacity = '1';
+                    testimonialText.style.transform = 'translateY(0)';
+                    currentTestimonialIndex = (currentTestimonialIndex + 1) % testimonials.length;
+                }, 300);
+            }
+        }
+        
+        function startTestimonialCarousel() {
+            testimonialInterval = setInterval(updateTestimonial, 6000);
+        }
         
         // --- SISTEMA DE MENSAGENS DINÂMICAS ---
         const dynamicMessages = {
@@ -1579,6 +1777,28 @@
             // Limpa o intervalo quando o chat é fechado
             return messageInterval;
         }
+        
+        // --- FUNÇÕES DOS MODAIS ---
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.style.opacity = '0';
+                setTimeout(() => {
+                    modal.style.opacity = '1';
+                }, 10);
+            }
+        }
+        
+        function hideModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.opacity = '0';
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+        }
 
         // --- INICIALIZAÇÃO E LÓGICA PRINCIPAL ---
         function rebuildUIFromState() {
@@ -1643,7 +1863,58 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+            
+            // Inicia o carrossel de avaliações
+            startTestimonialCarousel();
+            
+            // Event listeners para os botões externos
+            const promoteBtn = document.getElementById('promote-btn');
+            const mapBtn = document.getElementById('map-btn');
+            
+            if (promoteBtn) {
+                promoteBtn.addEventListener('click', () => showModal('promote-modal'));
+            }
+            
+            if (mapBtn) {
+                mapBtn.addEventListener('click', () => showModal('categories-modal'));
+            }
+            
+            // Event listeners para fechar modais
+            const closePromoteBtns = document.querySelectorAll('#close-promote-modal, #close-promote-modal-2');
+            const closeCategoriesBtns = document.querySelectorAll('#close-categories-modal, #close-categories-modal-2');
+            
+            closePromoteBtns.forEach(btn => {
+                btn.addEventListener('click', () => hideModal('promote-modal'));
+            });
+            
+            closeCategoriesBtns.forEach(btn => {
+                btn.addEventListener('click', () => hideModal('categories-modal'));
+            });
+            
+            // Fechar modais clicando fora
+            const modals = document.querySelectorAll('#promote-modal, #categories-modal');
+            modals.forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        hideModal(modal.id);
+                    }
+                });
+            });
+            
+            // Fechar modais com ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (!document.getElementById('promote-modal').classList.contains('hidden')) {
+                        hideModal('promote-modal');
+                    }
+                    if (!document.getElementById('categories-modal').classList.contains('hidden')) {
+                        hideModal('categories-modal');
+                    }
+                }
+            });
+        });
     </script>
 </body>
 </html>
