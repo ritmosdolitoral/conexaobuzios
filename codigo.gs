@@ -1,13 +1,13 @@
 /**
- * API Unificada para o Ecossistema Conexão Búzios v19.0 (Arquitetura de Resiliência Avançada)
+ * API Unificada para o Ecossistema Conexão Búzios v20.0 (Sistema de Histórico Completo)
  *
  * MELHORIAS IMPLEMENTADAS:
- * 1. Configurações atualizadas com API Key e ID da pasta corretos
- * 2. Sistema de logs detalhados para rastreamento de erros
- * 3. Função de teste integrada para validação prévia
- * 4. Tratamento de erros robusto com fallbacks
- * 5. Validação de dados aprimorada
- * 6. Sistema de monitoramento de performance
+ * 1. Sistema completo de histórico de conversa
+ * 2. Salvamento estruturado do chat completo
+ * 3. Função getDossierContent corrigida
+ * 4. Integração perfeita entre frontend e backend
+ * 5. Estrutura de dados consistente
+ * 6. Sistema de logs aprimorado
  */
 
 // === CONFIGURAÇÕES ATUALIZADAS ===
@@ -165,7 +165,12 @@ function doPost(e) {
       case 'processAndSaveDossier':
         if (!data) throw new Error("Dados do lead ausentes para a ação 'processAndSaveDossier'.");
         
-        log(LOG_LEVELS.INFO, "Iniciando processamento de dossiê", { nome: data.nome, perfil: data.perfil });
+        log(LOG_LEVELS.INFO, "Iniciando processamento de dossiê", { 
+          nome: data.nome, 
+          perfil: data.perfil,
+          temHistorico: !!data.historico,
+          temChatCompleto: !!data.chatCompleto
+        });
         
         const analiseCompleta = gerarAnaliseCompletaComGemini(data);
         data.resumo_perfil = analiseCompleta.resumo_perfil;
@@ -198,7 +203,8 @@ function doPost(e) {
       case 'getDossierContent':
         if (!id) throw new Error("ID do arquivo não fornecido para 'getDossierContent'.");
         log(LOG_LEVELS.INFO, "Obtendo conteúdo do dossiê", { id });
-        result = { success: true, data: { content: getDossierContent(id) } };
+        const dossierData = getDossierContent(id);
+        result = { success: true, data: { content: dossierData } };
         break;
 
       case 'test':
@@ -242,7 +248,18 @@ function gerarAnaliseCompletaComGemini(dados) {
   
   const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
   const nomeLead = dados.nome || 'cliente';
-  const historicoCompleto = JSON.stringify(dados, null, 2);
+  
+  // Prepara dados completos para análise
+  const dadosCompletos = {
+    nome: dados.nome,
+    telefone: dados.telefone,
+    perfil: dados.perfil,
+    historico: dados.historico || [],
+    chatCompleto: dados.chatCompleto || [],
+    userData: dados.userData || {}
+  };
+  
+  const historicoCompleto = JSON.stringify(dadosCompletos, null, 2);
 
   const masterPrompt = `
     Você é um concierge de luxo em Búzios e um estrategista de vendas de elite. Sua especialidade é transformar informações em experiências irresistíveis.
@@ -435,6 +452,22 @@ function criarDossieFormatado(dados) {
     body.appendHorizontalRule();
     body.appendParagraph("Status do Lead: ✅ Lead Qualificado | Potencial de Conversão: Alto").setAlignment(DocumentApp.HorizontalAlignment.CENTER).setAttributes(estilos.status);
 
+    // --- SEÇÃO DE METADADOS E DADOS ESTRUTURADOS (NOVA) ---
+    body.appendParagraph("\n🔧 DADOS ESTRUTURADOS DO SISTEMA").setAttributes(estilos.tituloSecao);
+    
+    // Adiciona dados estruturados para facilitar a extração posteriormente
+    const metadados = {
+      telefone: dados.telefone || 'N/A',
+      chatCompleto: dados.chatCompleto || [],
+      timestamp: agora.toISOString(),
+      conteudoOriginal: body.getText()
+    };
+    
+    // Salva os dados como uma seção oculta/comentário para recuperação posterior
+    body.appendParagraph(`\n--- DADOS_ESTRUTURADOS_INICIO ---`).setAttributes(estilos.subtitulo);
+    body.appendParagraph(JSON.stringify(metadados, null, 2)).setAttributes(estilos.subtitulo);
+    body.appendParagraph(`--- DADOS_ESTRUTURADOS_FIM ---`).setAttributes(estilos.subtitulo);
+
     doc.saveAndClose();
     const arquivo = DriveApp.getFileById(doc.getId());
     pastaLeads.addFile(arquivo);
@@ -507,23 +540,27 @@ function listDossies() {
       if (match) {
         try {
           const interesse = extractInterest(arquivo.getId());
+          const telefone = extractTelefone(arquivo.getId());
+          
           dossies.push({ 
             id: arquivo.getId(), 
             name: match[1].trim(), 
             profile: match[2].trim(), 
             timestamp: arquivo.getDateCreated().toISOString(), 
             url: arquivo.getUrl(), 
-            interest: interesse 
+            interest: interesse,
+            telefone: telefone || 'N/A'
           });
         } catch (extractError) {
-          log(LOG_LEVELS.WARN, "Erro ao extrair interesse", { arquivo: nomeArquivo, erro: extractError.toString() });
+          log(LOG_LEVELS.WARN, "Erro ao extrair dados", { arquivo: nomeArquivo, erro: extractError.toString() });
           dossies.push({ 
             id: arquivo.getId(), 
             name: match[1].trim(), 
             profile: match[2].trim(), 
             timestamp: arquivo.getDateCreated().toISOString(), 
             url: arquivo.getUrl(), 
-            interest: "Erro na extração" 
+            interest: "Erro na extração",
+            telefone: 'N/A'
           });
         }
       }
@@ -542,7 +579,7 @@ function listDossies() {
 
 function extractInterest(fileId) {
   try {
-    const content = getDossierContent(fileId);
+    const content = getDossierContentRaw(fileId);
     const regex = /Necessidades Reveladas\s*\n(.*?)\n/m;
     const match = content.match(regex);
     return (match && match[1]) ? match[1].replace(/[•\s*-]+/,'').trim() : 'Não especificado';
@@ -552,13 +589,75 @@ function extractInterest(fileId) {
   }
 }
 
+function extractTelefone(fileId) {
+  try {
+    const content = getDossierContentRaw(fileId);
+    const regex = /--- DADOS_ESTRUTURADOS_INICIO ---\s*([\s\S]*?)\s*--- DADOS_ESTRUTURADOS_FIM ---/;
+    const match = content.match(regex);
+    
+    if (match && match[1]) {
+      const dadosEstruturados = JSON.parse(match[1].trim());
+      return dadosEstruturados.telefone || 'N/A';
+    }
+    
+    // Fallback: busca por padrão de telefone no texto
+    const phoneRegex = /\b(?:\+55\s?)?(?:\(?0?[1-9]{2}\)?\s?)?(?:9\s?)?[1-9]\d{3}[-\s]?\d{4}\b/g;
+    const phoneMatch = content.match(phoneRegex);
+    return phoneMatch ? phoneMatch[0] : 'N/A';
+    
+  } catch (e) { 
+    log(LOG_LEVELS.WARN, `Erro ao extrair telefone do arquivo ${fileId}`, { erro: e.toString() });
+    return 'N/A'; 
+  }
+}
+
+function getDossierContentRaw(fileId) {
+  try {
+    const doc = DocumentApp.openById(fileId);
+    return doc.getBody().getText();
+  } catch (e) { 
+    throw new Error("Não foi possível abrir ou ler o dossiê: " + fileId); 
+  }
+}
+
 function getDossierContent(fileId) {
   try {
-    log(LOG_LEVELS.DEBUG, "Obtendo conteúdo do dossiê", { fileId });
-    const doc = DocumentApp.openById(fileId);
-    const content = doc.getBody().getText();
-    log(LOG_LEVELS.DEBUG, "Conteúdo obtido com sucesso", { contentLength: content.length });
-    return content;
+    log(LOG_LEVELS.DEBUG, "Obtendo conteúdo estruturado do dossiê", { fileId });
+    const content = getDossierContentRaw(fileId);
+    
+    // Tenta extrair dados estruturados primeiro
+    const regex = /--- DADOS_ESTRUTURADOS_INICIO ---\s*([\s\S]*?)\s*--- DADOS_ESTRUTURADOS_FIM ---/;
+    const match = content.match(regex);
+    
+    if (match && match[1]) {
+      try {
+        const dadosEstruturados = JSON.parse(match[1].trim());
+        log(LOG_LEVELS.DEBUG, "Dados estruturados encontrados", { 
+          temTelefone: !!dadosEstruturados.telefone,
+          temChatCompleto: !!dadosEstruturados.chatCompleto,
+          chatLength: dadosEstruturados.chatCompleto?.length || 0
+        });
+        
+        return {
+          conteudoOriginal: content,
+          telefone: dadosEstruturados.telefone || 'N/A',
+          chatCompleto: dadosEstruturados.chatCompleto || [],
+          timestamp: dadosEstruturados.timestamp
+        };
+      } catch (parseError) {
+        log(LOG_LEVELS.WARN, "Erro ao parsear dados estruturados", { erro: parseError.toString() });
+      }
+    }
+    
+    // Fallback: retorna apenas o conteúdo original
+    log(LOG_LEVELS.DEBUG, "Usando fallback para conteúdo", { contentLength: content.length });
+    return {
+      conteudoOriginal: content,
+      telefone: extractTelefone(fileId),
+      chatCompleto: [],
+      timestamp: new Date().toISOString()
+    };
+    
   } catch (e) { 
     log(LOG_LEVELS.ERROR, "Erro ao obter conteúdo do dossiê", { fileId, erro: e.toString() });
     throw new Error("Não foi possível abrir ou ler o dossiê: " + fileId); 
