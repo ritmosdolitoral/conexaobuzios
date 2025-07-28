@@ -658,7 +658,7 @@
             font-size: 0.85rem;
         }
         
-        /* Status Bar Simples */
+        /* Status Bar Melhorado */
         .status-bar {
             background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%);
             border-bottom: 1px solid #e2e8f0;
@@ -671,7 +671,33 @@
             gap: 10px;
             flex-wrap: wrap;
             font-weight: 500;
-            margin-bottom: 8px;
+            text-align: center;
+            line-height: 1.4;
+        }
+        
+        .status-icon {
+            animation: pulse 2s infinite;
+            font-size: 14px;
+        }
+        
+        .status-text {
+            font-weight: 600;
+            color: #475569;
+        }
+        
+        .status-divider {
+            color: #cbd5e1;
+            font-weight: 300;
+        }
+        
+        .status-feature {
+            color: #64748b;
+            font-weight: 500;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
         }
         
         /* Responsividade melhorada */
@@ -745,10 +771,23 @@
             }
             
             .status-bar {
-                padding: 6px 8px;
+                padding: 8px 12px;
                 font-size: 11px;
                 flex-direction: column;
-                gap: 3px;
+                gap: 4px;
+            }
+            
+            .status-icon {
+                font-size: 12px;
+            }
+            
+            .status-text {
+                font-size: 10px;
+                font-weight: 600;
+            }
+            
+            .status-feature {
+                font-size: 9px;
             }
         }
         
@@ -787,6 +826,21 @@
             .status-bar {
                 padding: 6px 8px;
                 font-size: 10px;
+                flex-direction: column;
+                gap: 3px;
+            }
+            
+            .status-icon {
+                font-size: 11px;
+            }
+            
+            .status-text {
+                font-size: 9px;
+                font-weight: 600;
+            }
+            
+            .status-feature {
+                font-size: 8px;
             }
             
             .proposal-success {
@@ -875,14 +929,14 @@
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                     </svg>
                 </div>
-            <!-- Status Bar Original -->
+            <!-- Status Bar Melhorado -->
             <div class="status-bar">
-                <span>🤖</span>
-                <span>Você está conversando com a IA da Conexão Búzios</span>
-                <span>•</span>
-                <span>Atendimento 24h</span>
-                <span>•</span>
-                <span>Respostas Personalizadas</span>
+                <span class="status-icon">🤖</span>
+                <span class="status-text">Você está conversando com a IA da Conexão Búzios</span>
+                <span class="status-divider">•</span>
+                <span class="status-feature">Atendimento 24h</span>
+                <span class="status-divider">•</span>
+                <span class="status-feature">Respostas Personalizadas</span>
             </div>
             
             <header class="flex items-center justify-between p-4 border-b border-gray-200/80 bg-white/60 backdrop-blur-sm">
@@ -1338,6 +1392,9 @@
                     
 
                 }, 800);
+                
+                // Melhora o status bar quando o chat é aberto
+                setTimeout(enhanceStatusBar, 1200);
             }
 
             let value;
@@ -1473,7 +1530,34 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', init);
+        // --- FUNÇÃO PARA MELHORAR O STATUS BAR ---
+        function enhanceStatusBar() {
+            const statusIcon = document.querySelector('.status-icon');
+            const statusText = document.querySelector('.status-text');
+            
+            if (statusIcon && statusText) {
+                // Adiciona um efeito sutil de destaque quando o chat está ativo
+                statusIcon.style.transition = 'all 0.3s ease';
+                statusText.style.transition = 'all 0.3s ease';
+                
+                // Efeito sutil de hover
+                statusIcon.addEventListener('mouseenter', () => {
+                    statusIcon.style.transform = 'scale(1.1)';
+                    statusIcon.style.filter = 'brightness(1.2)';
+                });
+                
+                statusIcon.addEventListener('mouseleave', () => {
+                    statusIcon.style.transform = 'scale(1)';
+                    statusIcon.style.filter = 'brightness(1)';
+                });
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+            // Melhora o status bar após a inicialização
+            setTimeout(enhanceStatusBar, 1000);
+        });
     </script>
 </body>
 </html>
