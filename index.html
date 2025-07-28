@@ -399,54 +399,107 @@
             padding: 4px 8px;
         }
         
-        /* Área de confirmação compacta */
-        .confirmation-area {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            border: 1px solid #bae6fd;
-            border-radius: 12px;
-            padding: 12px;
+        /* Área de proposta redesenhada - mais visual e adaptativa */
+        .proposal-success {
+            background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 16px;
             margin: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
             position: relative;
             transition: all 0.3s ease;
         }
         
-        .confirmation-area .close-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: none;
-            border: none;
+        .proposal-header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
+        .success-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .proposal-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        
+        .proposal-subtitle {
+            font-size: 0.9rem;
             color: #64748b;
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 50%;
-            transition: all 0.2s;
+            margin-bottom: 0;
         }
         
-        .confirmation-area .close-btn:hover {
-            background: rgba(0,0,0,0.05);
-            color: #374151;
+        .proposal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
         
-        .instagram-button {
-            background: linear-gradient(135deg, #0095f6 0%, #0081d6 100%);
+        .primary-action {
+            background: linear-gradient(135deg, #0077B6 0%, #005a8b 100%);
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 12px 16px;
             border-radius: 12px;
             font-weight: 600;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(0, 149, 246, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 119, 182, 0.3);
+            text-decoration: none;
+            font-size: 0.9rem;
         }
         
-        .instagram-button:hover {
-            background: linear-gradient(135deg, #0081d6 0%, #0066b3 100%);
+        .primary-action:hover {
+            background: linear-gradient(135deg, #005a8b 0%, #004a73 100%);
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 149, 246, 0.4);
+            box-shadow: 0 6px 16px rgba(0, 119, 182, 0.4);
+            color: white;
+        }
+        
+        .secondary-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .secondary-action {
+            flex: 1;
+            background: white;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        
+        .secondary-action:hover {
+            background: #f8faff;
+            border-color: #0077B6;
+            color: #0077B6;
+            transform: translateY(-1px);
+        }
+        
+        .action-icon {
+            font-size: 1rem;
+        }
+        
+        .action-text {
+            font-size: 0.85rem;
         }
         
         /* Resumo visual no topo */
@@ -494,9 +547,27 @@
                 font-size: 11px;
             }
             
-            .confirmation-area {
-                margin: 8px 6px;
-                padding: 12px;
+            .proposal-success {
+                margin: 6px 4px;
+                padding: 10px;
+            }
+            
+            .proposal-title {
+                font-size: 0.9rem;
+            }
+            
+            .proposal-subtitle {
+                font-size: 0.75rem;
+            }
+            
+            .primary-action {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .secondary-action {
+                padding: 6px 8px;
+                font-size: 0.75rem;
             }
             
             .instagram-button {
@@ -545,6 +616,29 @@
             .status-bar {
                 padding: 6px 8px;
                 font-size: 10px;
+            }
+            
+            .proposal-success {
+                margin: 4px 2px;
+                padding: 8px;
+            }
+            
+            .proposal-title {
+                font-size: 0.85rem;
+            }
+            
+            .proposal-subtitle {
+                font-size: 0.7rem;
+            }
+            
+            .primary-action {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+            }
+            
+            .secondary-action {
+                padding: 5px 6px;
+                font-size: 0.7rem;
             }
             
             .portal-container {
@@ -800,13 +894,13 @@
             scrollToBottom();
         }
         
-        function closeConfirmationArea() {
-            const confirmationArea = document.getElementById('confirmation-area');
-            if (confirmationArea) {
-                confirmationArea.style.opacity = '0';
-                confirmationArea.style.transform = 'translateY(-10px)';
+        function closeProposalSuccess() {
+            const proposalSuccess = document.getElementById('proposal-success');
+            if (proposalSuccess) {
+                proposalSuccess.style.opacity = '0';
+                proposalSuccess.style.transform = 'translateY(-10px)';
                 setTimeout(() => {
-                    confirmationArea.remove();
+                    proposalSuccess.remove();
                 }, 300);
             }
         }
@@ -921,27 +1015,32 @@
                 case 'final':
                     addMessageToChat(context.proposal, 'ai');
                     container.innerHTML = `
-                        <div id="confirmation-area" class="confirmation-area animate-pop-in">
-                            <button onclick="closeConfirmationArea()" class="close-btn">
-                                <i data-lucide="x" class="w-4 h-4"></i>
-                            </button>
-                            <div class="text-center mb-4">
-                                <h3 class="text-lg font-semibold text-gray-800 mb-2">✨ Proposta Gerada com Sucesso!</h3>
-                                <p class="text-sm text-gray-600">Sua proposta personalizada está pronta!</p>
+                        <div id="proposal-success" class="proposal-success animate-pop-in">
+                            <div class="proposal-header">
+                                <div class="success-icon">✨</div>
+                                <h3 class="proposal-title">Proposta Personalizada</h3>
+                                <p class="proposal-subtitle">Criada especialmente para você</p>
                             </div>
-                            <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                                <a href="https://www.instagram.com/conexao.buzios/" target="_blank" rel="noopener noreferrer" class="instagram-button flex-1 sm:flex-none">
-                                    <span>📲</span>
-                                    <span>Falar Agora pelo Instagram</span>
+                            
+                            <div class="proposal-actions">
+                                <a href="https://www.instagram.com/conexao.buzios/" target="_blank" rel="noopener noreferrer" class="primary-action">
+                                    <span class="action-icon">💬</span>
+                                    <span class="action-text">Conversar no Instagram</span>
                                 </a>
-                                <button onclick="handleRestart()" class="action-button bg-buzios-mar text-white font-bold px-6 py-3 rounded-lg hover:bg-buzios-mar/90 transition-all flex-1 sm:flex-none">
-                                    <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>
-                                    Reiniciar
-                                </button>
+                                
+                                <div class="secondary-actions">
+                                    <button onclick="handleRestart()" class="secondary-action">
+                                        <span class="action-icon">🔄</span>
+                                        <span class="action-text">Nova Conversa</span>
+                                    </button>
+                                    <button onclick="closeProposalSuccess()" class="secondary-action">
+                                        <span class="action-icon">✕</span>
+                                        <span class="action-text">Fechar</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     `;
-                    lucide.createIcons();
                     break;
             }
             if (!isPortalStep) scrollToBottom();
