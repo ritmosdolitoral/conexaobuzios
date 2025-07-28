@@ -1654,13 +1654,30 @@
                 }).filter(row => row && row.question && row.answer);
             };
 
+            // Se o content é um objeto (dados estruturados), usa os dados diretamente
+            if (typeof content === 'object' && content.conteudoOriginal) {
+                return { 
+                    ...baseDossier, 
+                    resumo: getMatch(/^Resumo do Perfil\n([\s\S]*?)(?=\n\n|$)/), 
+                    respostas: getTable(/HISTÓRICO DE INTERAÇÕES \(FUNIL COMPLETO\)\s*\n([\s\S]*?)(?=\n\s*💡 PROPOSTA PERSONALIZADA \(IA\)|$)/), 
+                    necessidades: getList(/Necessidades Reveladas\s*\n([\s\S]*?)(?=\n\n💡|$)/), 
+                    proposta: getMatch(/💡 PROPOSTA PERSONALIZADA \(IA\)\s*\n([\s\S]*?)(?=\n\nStatus do Lead:|$)/),
+                    objecoes: ["Pode ser sensível a preço devido ao orçamento informado.", "Busca por experiências autênticas, pode rejeitar opções muito turísticas."],
+                    telefone: content.telefone || 'N/A',
+                    chatCompleto: content.chatCompleto || []
+                };
+            }
+
+            // Fallback para conteúdo de texto simples
             return { 
                 ...baseDossier, 
                 resumo: getMatch(/^Resumo do Perfil\n([\s\S]*?)(?=\n\n|$)/), 
                 respostas: getTable(/HISTÓRICO DE INTERAÇÕES \(FUNIL COMPLETO\)\s*\n([\s\S]*?)(?=\n\s*💡 PROPOSTA PERSONALIZADA \(IA\)|$)/), 
                 necessidades: getList(/Necessidades Reveladas\s*\n([\s\S]*?)(?=\n\n💡|$)/), 
                 proposta: getMatch(/💡 PROPOSTA PERSONALIZADA \(IA\)\s*\n([\s\S]*?)(?=\n\nStatus do Lead:|$)/),
-                objecoes: ["Pode ser sensível a preço devido ao orçamento informado.", "Busca por experiências autênticas, pode rejeitar opções muito turísticas."]
+                objecoes: ["Pode ser sensível a preço devido ao orçamento informado.", "Busca por experiências autênticas, pode rejeitar opções muito turísticas."],
+                telefone: 'N/A',
+                chatCompleto: []
             };
         }
 
@@ -1728,11 +1745,20 @@
             const objecoesHTML = details.objecoes.length > 0 ? details.objecoes.map(obj => `<li class="flex items-start gap-3"><i data-lucide="shield-alert" class="w-5 h-5 mt-1 flex-shrink-0" style="color: var(--color-warning);"></i><span style="color: var(--color-sand-warm); font-weight: 500;">${sanitizeHTML(obj)}</span></li>`).join('') : '<li style="color: var(--color-sand-warm);">Nenhuma objeção provável identificada.</li>';
             const respostasHTML = details.respostas.length > 0 ? details.respostas.map((resp) => `<div class="py-3" style="border-bottom: 1px solid var(--color-border);"><dt class="text-xs font-medium" style="color: var(--color-text-muted);">${sanitizeHTML(resp.question)}</dt><dd class="text-base font-semibold mt-1" style="color: var(--color-white-warm);">— ${sanitizeHTML(resp.answer)}</dd></div>`).join('') : '<p style="color: var(--color-sand-warm);">Sem respostas registradas.</p>';
             
-            // Renderizar chat completo
+            // Renderizar chat completo - CORRIGIDO
             let chatCompletoHTML = '<p style="color: var(--color-sand-warm);">Chat não disponível.</p>';
+            
+            // Verifica se existe chatCompleto nos dados estruturados
             if (details.chatCompleto && details.chatCompleto !== 'N/A') {
                 try {
-                    const chatData = typeof details.chatCompleto === 'string' ? JSON.parse(details.chatCompleto) : details.chatCompleto;
+                    let chatData = details.chatCompleto;
+                    
+                    // Se for string, tenta fazer parse
+                    if (typeof chatData === 'string') {
+                        chatData = JSON.parse(chatData);
+                    }
+                    
+                    // Verifica se é array e tem mensagens
                     if (Array.isArray(chatData) && chatData.length > 0) {
                         chatCompletoHTML = chatData.map(msg => {
                             if (msg && msg.text && msg.sender) {
@@ -1750,6 +1776,13 @@
                             }
                             return '';
                         }).join('');
+                        
+                        // Se não gerou HTML, significa que não havia mensagens válidas
+                        if (!chatCompletoHTML.trim()) {
+                            chatCompletoHTML = '<p style="color: var(--color-sand-warm);">Nenhuma mensagem válida encontrada.</p>';
+                        }
+                    } else {
+                        chatCompletoHTML = '<p style="color: var(--color-sand-warm);">Histórico de conversa vazio.</p>';
                     }
                 } catch (e) {
                     console.error('Erro ao processar chat completo:', e);
