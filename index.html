@@ -436,6 +436,17 @@
         }
         @keyframes pop-in { to { opacity: 1; transform: translateY(0); } }
         
+        /* Botão flutuante para ver proposta */
+        #floating-proposal-btn {
+            animation: bounce 2s infinite;
+            transition: all 0.3s ease;
+        }
+        
+        #floating-proposal-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 119, 182, 0.4);
+        }
+        
         /* Botões redesenhados - mais compactos e intuitivos */
         .chat-options {
             padding: 16px 20px;
@@ -513,14 +524,16 @@
             background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%);
             border: 1px solid #e2e8f0;
             border-radius: 20px;
-            padding: 20px;
-            margin: 12px;
+            padding: 16px;
+            margin: 8px;
             box-shadow: 
                 0 8px 25px rgba(0,0,0,0.08),
                 0 16px 40px rgba(0,0,0,0.05);
             position: relative;
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            transform: scale(1.02);
+            transform: scale(1);
+            max-height: 300px;
+            overflow-y: auto;
         }
         
         .proposal-header {
@@ -529,8 +542,8 @@
         }
         
         .success-icon {
-            font-size: 2.5rem;
-            margin-bottom: 12px;
+            font-size: 2rem;
+            margin-bottom: 8px;
             display: block;
             animation: successPulse 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
@@ -542,7 +555,7 @@
         }
         
         .proposal-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             color: #1e293b;
             margin-bottom: 4px;
@@ -557,26 +570,27 @@
         .proposal-actions {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
+            margin-top: 8px;
         }
         
         .primary-action {
             background: linear-gradient(135deg, #0077B6 0%, #005a8b 100%);
             color: white;
             border: none;
-            padding: 14px 20px;
+            padding: 12px 16px;
             border-radius: 16px;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             box-shadow: 
                 0 4px 12px rgba(0, 119, 182, 0.3),
                 0 8px 20px rgba(0, 119, 182, 0.2);
             text-decoration: none;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             position: relative;
             overflow: hidden;
         }
@@ -615,7 +629,7 @@
             background: white;
             border: 1px solid #e2e8f0;
             color: #64748b;
-            padding: 10px 12px;
+            padding: 8px 10px;
             border-radius: 10px;
             font-weight: 500;
             display: flex;
@@ -623,7 +637,7 @@
             justify-content: center;
             gap: 6px;
             transition: all 0.2s;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
         }
         
@@ -665,7 +679,7 @@
             }
             
             .chat-container {
-                max-width: 600px;
+                max-width: 650px;
                 margin: 0 auto;
             }
         }
@@ -848,7 +862,7 @@
     
     <!-- Container do Chat (Carregado, mas escondido) -->
             <div id="app-container" class="w-full h-screen flex-col items-center justify-center p-4 bg-gray-100 hidden">
-            <div class="w-full max-w-lg h-full max-h-[650px] flex flex-col bg-gradient-to-br from-white via-blue-50/30 to-white/90 backdrop-blur-lg rounded-3xl shadow-2xl shadow-gray-300/60 overflow-hidden border border-gray-200/60 relative" style="min-height: 520px; box-shadow: 0 12px 40px rgba(0,0,0,0.08), 0 20px 60px rgba(0,0,0,0.05);">
+            <div class="w-full max-w-xl h-full max-h-[700px] flex flex-col bg-gradient-to-br from-white via-blue-50/30 to-white/90 backdrop-blur-lg rounded-3xl shadow-2xl shadow-gray-300/60 overflow-hidden border border-gray-200/60 relative" style="min-height: 580px; box-shadow: 0 12px 40px rgba(0,0,0,0.08), 0 20px 60px rgba(0,0,0,0.05);">
                 <!-- Elemento gráfico sutil de identidade visual -->
                 <div class="absolute top-4 right-4 w-16 h-16 opacity-5 pointer-events-none">
                     <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full text-blue-600">
@@ -1062,7 +1076,50 @@
                 proposalSuccess.style.transform = 'translateY(-10px)';
                 setTimeout(() => {
                     proposalSuccess.remove();
+                    // Scroll para o topo após fechar
+                    if (chatMessages) {
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }
                 }, 300);
+            }
+        }
+        
+        function scrollToProposal() {
+            const proposalSuccess = document.getElementById('proposal-success');
+            if (proposalSuccess) {
+                proposalSuccess.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }
+        }
+        
+        function showProposalButton() {
+            const proposalSuccess = document.getElementById('proposal-success');
+            if (proposalSuccess) {
+                // Verifica se a proposta está visível na tela
+                const rect = proposalSuccess.getBoundingClientRect();
+                const isVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
+                
+                if (!isVisible) {
+                    // Se não estiver visível, mostra um botão flutuante
+                    const floatingButton = document.createElement('button');
+                    floatingButton.id = 'floating-proposal-btn';
+                    floatingButton.className = 'fixed bottom-20 right-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-full shadow-lg z-50 animate-bounce';
+                    floatingButton.innerHTML = '✨ Ver Proposta';
+                    floatingButton.onclick = () => {
+                        scrollToProposal();
+                        floatingButton.remove();
+                    };
+                    document.body.appendChild(floatingButton);
+                    
+                    // Remove o botão após 5 segundos
+                    setTimeout(() => {
+                        if (floatingButton.parentNode) {
+                            floatingButton.remove();
+                        }
+                    }, 5000);
+                }
             }
         }
         
@@ -1211,6 +1268,14 @@
                             </div>
                         </div>
                     `;
+                    // Scroll automático para a proposta após um pequeno delay
+                    setTimeout(() => {
+                        scrollToProposal();
+                        // Verifica se precisa mostrar o botão flutuante
+                        setTimeout(() => {
+                            showProposalButton();
+                        }, 1000);
+                    }, 500);
                     break;
             }
             if (!isPortalStep) scrollToBottom();
