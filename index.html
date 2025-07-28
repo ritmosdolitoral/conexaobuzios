@@ -447,8 +447,6 @@
             box-shadow: 0 8px 25px rgba(0, 119, 182, 0.4);
         }
         
-
-        
         /* Botões redesenhados - mais compactos e intuitivos */
         .chat-options {
             padding: 16px 20px;
@@ -818,8 +816,6 @@
             }
         }
         
-
-        
         @media (max-width: 480px) {
             #app-container {
                 padding: 4px;
@@ -912,8 +908,6 @@
             .portal-option-description {
                 font-size: 0.7rem;
             }
-            
-
         }
     </style>
 </head>
@@ -948,14 +942,15 @@
     </div>
     
     <!-- Container do Chat (Carregado, mas escondido) -->
-            <div id="app-container" class="w-full h-screen flex-col items-center justify-center p-4 bg-gray-100 hidden">
-            <div class="w-full max-w-xl h-full max-h-[700px] flex flex-col bg-gradient-to-br from-white via-blue-50/30 to-white/90 backdrop-blur-lg rounded-3xl shadow-2xl shadow-gray-300/60 overflow-hidden border border-gray-200/60 relative" style="min-height: 580px; box-shadow: 0 12px 40px rgba(0,0,0,0.08), 0 20px 60px rgba(0,0,0,0.05);">
-                <!-- Elemento gráfico sutil de identidade visual -->
-                <div class="absolute top-4 right-4 w-16 h-16 opacity-5 pointer-events-none">
-                    <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full text-blue-600">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                    </svg>
-                </div>
+    <div id="app-container" class="w-full h-screen flex-col items-center justify-center p-4 bg-gray-100 hidden">
+        <div class="w-full max-w-xl h-full max-h-[700px] flex flex-col bg-gradient-to-br from-white via-blue-50/30 to-white/90 backdrop-blur-lg rounded-3xl shadow-2xl shadow-gray-300/60 overflow-hidden border border-gray-200/60 relative" style="min-height: 580px; box-shadow: 0 12px 40px rgba(0,0,0,0.08), 0 20px 60px rgba(0,0,0,0.05);">
+            <!-- Elemento gráfico sutil de identidade visual -->
+            <div class="absolute top-4 right-4 w-16 h-16 opacity-5 pointer-events-none">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full text-blue-600">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+            </div>
+            
             <!-- Status Bar Dinâmico com PNL -->
             <div id="dynamic-status-bar" class="status-bar">
                 <span class="status-icon">🤖</span>
@@ -975,10 +970,12 @@
                     </div>
                 </div>
             </header>
+            
             <main id="chat-window" class="chat-container" style="height: calc(100% - 120px);">
                 <div id="chat-messages" class="chat-messages"></div>
                 <div id="input-area" class="chat-options"></div>
             </main>
+            
             <div id="session-controls" class="p-4 text-center bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-200/80">
                 <p class="text-sm text-gray-600 mb-3 font-medium">Você está conversando com a IA Gemini</p>
                 <div class="flex justify-center items-center space-x-4">
@@ -992,10 +989,6 @@
             </div>
         </div>
     </div>
-    
-
-    
-
     
     <script>
         // --- ELEMENTOS DA DOM ---
@@ -1023,10 +1016,9 @@
             currentStepId: 'start',
             isWaitingForResponse: false,
             userData: {},
-            userHistory: {}
+            userHistory: {},
+            chatCompleto: []
         };
-        
-
         
         // --- LÓGICA DO PORTAL ---
         const portalPhrases = [
@@ -1154,8 +1146,14 @@
             const welcomeClass = isWelcomeMessage ? 'welcome-message' : '';
             const sanitizedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
             chatMessages.insertAdjacentHTML('beforeend', `<div class="chat-bubble ${sender} ${animationClass} ${welcomeClass}">${sanitizedText}</div>`);
+            
             if (!isRestored) {
-                setState({ chatLog: [...state.chatLog, { text, sender, isWelcomeMessage }] });
+                // Adiciona mensagem ao chatLog e chatCompleto
+                const chatEntry = { text, sender, isWelcomeMessage, timestamp: new Date().toISOString() };
+                setState({ 
+                    chatLog: [...state.chatLog, chatEntry],
+                    chatCompleto: [...(state.chatCompleto || []), chatEntry]
+                });
             }
             scrollToBottom();
         }
@@ -1251,9 +1249,7 @@
             const isPortalStep = stepId === 'start';
             const targetContainer = isPortalStep ? portalActions : inputArea;
             targetContainer.innerHTML = '';
-            
 
-            
             if (isPortalStep) {
                 if(state.chatLog.length === 0) addMessageToChat(step.message, 'ai', false, true);
             } else {
@@ -1433,8 +1429,6 @@
                     introPortal.style.display = 'none';
                     appContainer.classList.remove('hidden');
                     appContainer.classList.add('flex');
-                    
-
                 }, 800);
                 
                 // Inicia mensagens dinâmicas com o perfil correto
@@ -1478,6 +1472,7 @@
             }
             
             addMessageToChat(value, 'user');
+            
             if (data.variable) {
                 const cleanText = value.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').trim();
                 const lastQuestion = state.chatLog.filter(m => m.sender === 'ai').pop()?.text || 'N/A';
@@ -1514,10 +1509,6 @@
         function updateControls() {
             backBtn.disabled = state.history.length < 2;
         }
-        
-
-        
-
 
         // --- INICIALIZAÇÃO E LÓGICA PRINCIPAL ---
         function rebuildUIFromState() {
@@ -1528,21 +1519,33 @@
         }
 
         async function callBackendForProcessing() {
+            // Estrutura o histórico corretamente
+            const historicoEstruturado = Object.values(state.userHistory || {}).map(item => ({
+                pergunta: item.question,
+                resposta: item.answer
+            }));
+
             const userDataPayload = {
                 nome: state.userData.nome,
                 telefone: state.userData.telefone,
                 perfil: state.userData.perfil,
-                historico: Object.values(state.userHistory || {})
+                historico: historicoEstruturado,
+                chatCompleto: state.chatCompleto || [],
+                userData: state.userData
             };
+            
             console.log("Enviando para processamento:", userDataPayload);
+            
             try {
                 const response = await fetch(GOOGLE_APP_SCRIPT_URL, {
                     method: 'POST',
                     body: JSON.stringify({ action: 'processAndSaveDossier', data: userDataPayload }),
                     mode: 'cors',
                 });
+                
                 if (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);
                 const result = await response.json();
+                
                 if (result.success) {
                     displayStep('final_message', { proposal: result.data.proposta_personalizada });
                 } else {
@@ -1554,7 +1557,7 @@
             }
         }
 
-                function init() {
+        function init() {
             if (restoreState() && state.currentStepId !== 'start') {
                 introPortal.style.display = 'none';
                 appContainer.classList.remove('hidden');
