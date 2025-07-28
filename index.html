@@ -700,6 +700,33 @@
             50% { opacity: 0.7; transform: scale(1.1); }
         }
         
+        /* Animações do Status Bar Dinâmico */
+        .status-bar.highlight {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+            border-color: #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.1);
+        }
+        
+        .status-bar.urgent {
+            background: linear-gradient(135deg, #fef3c7 0%, #fefce8 100%);
+            border-color: #f59e0b;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
+        }
+        
+        .status-bar.success {
+            background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+            border-color: #22c55e;
+            box-shadow: 0 2px 8px rgba(34, 197, 94, 0.1);
+        }
+        
+        .status-text {
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .status-feature {
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
         /* Responsividade melhorada */
         @media (min-width: 1024px) {
             #app-container {
@@ -929,14 +956,12 @@
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                     </svg>
                 </div>
-            <!-- Status Bar Melhorado -->
-            <div class="status-bar">
+            <!-- Status Bar Dinâmico com PNL -->
+            <div id="dynamic-status-bar" class="status-bar">
                 <span class="status-icon">🤖</span>
-                <span class="status-text">Você está conversando com a IA da Conexão Búzios</span>
+                <span id="status-message" class="status-text">Conectando com a IA da Conexão Búzios...</span>
                 <span class="status-divider">•</span>
-                <span class="status-feature">Atendimento 24h</span>
-                <span class="status-divider">•</span>
-                <span class="status-feature">Respostas Personalizadas</span>
+                <span id="status-feature" class="status-feature">Atendimento 24h</span>
             </div>
             
             <header class="flex items-center justify-between p-4 border-b border-gray-200/80 bg-white/60 backdrop-blur-sm">
@@ -1243,6 +1268,9 @@
                         const humanDelay = Math.random() * 800 + 400; // 400-1200ms
                         setTimeout(() => {
                             addMessageToChat(step.message, 'ai');
+                            // Atualiza status bar com mensagem contextual
+                            const contextualMessage = getDynamicMessage(currentProfile, 'engaging');
+                            updateStatusBar(contextualMessage, 'highlight', 4000);
                         }, humanDelay);
                     }
                 }
@@ -1352,6 +1380,13 @@
                                 </div>
                             </div>
                         `;
+                        // Mensagem de sucesso no status bar
+                        const successMessage = getDynamicMessage(currentProfile, 'success');
+                        updateStatusBar(successMessage, 'success', 6000);
+                        
+                        // Para as mensagens dinâmicas após o sucesso
+                        stopDynamicMessaging();
+                        
                         // Scroll automático para a proposta após um pequeno delay
                         setTimeout(() => {
                             scrollToProposal();
@@ -1381,6 +1416,15 @@
             pushHistory();
 
             if (state.currentStepId === 'start' && type === 'button') {
+                // Detecta o perfil baseado na escolha do usuário
+                if (data.text.includes('Turista')) {
+                    currentProfile = 'turista';
+                } else if (data.text.includes('Morador')) {
+                    currentProfile = 'morador';
+                } else if (data.text.includes('Divulgar')) {
+                    currentProfile = 'divulgador';
+                }
+                
                 // Aciona a animação da assinatura
                 animatedSignature.classList.add('visible');
 
@@ -1393,8 +1437,10 @@
 
                 }, 800);
                 
-                // Melhora o status bar quando o chat é aberto
-                setTimeout(enhanceStatusBar, 1200);
+                // Inicia mensagens dinâmicas com o perfil correto
+                setTimeout(() => {
+                    startDynamicMessaging();
+                }, 1200);
             }
 
             let value;
@@ -1444,6 +1490,7 @@
 
         // --- CONTROLES DE SESSÃO ---
         function handleRestart() {
+            stopDynamicMessaging();
             localStorage.removeItem(SESSION_KEY);
             init();
         }
@@ -1515,6 +1562,12 @@
                 animatedSignature.classList.add('visible'); // Garante que a assinatura seja visível se a sessão for restaurada
                 rebuildUIFromState();
                 displayStep(state.currentStepId);
+                
+                // Restaura o sistema dinâmico se necessário
+                if (state.userData.perfil) {
+                    currentProfile = state.userData.perfil;
+                    setTimeout(startDynamicMessaging, 2000);
+                }
             } else {
                 state = JSON.parse(JSON.stringify(initialState)); // Deep copy
                 saveState();
@@ -1530,33 +1583,170 @@
             }
         }
 
-        // --- FUNÇÃO PARA MELHORAR O STATUS BAR ---
-        function enhanceStatusBar() {
-            const statusIcon = document.querySelector('.status-icon');
-            const statusText = document.querySelector('.status-text');
+        // --- SISTEMA DE MENSAGENS DINÂMICAS COM PNL ---
+        const dynamicMessages = {
+            turista: {
+                initial: [
+                    "🎯 Descobrindo experiências únicas para você...",
+                    "✨ Analisando os melhores roteiros de Búzios...",
+                    "🌟 Personalizando sua aventura perfeita...",
+                    "💫 Conectando com os segredos da cidade..."
+                ],
+                engaging: [
+                    "🔥 Você está a um passo de descobrir Búzios como nunca antes!",
+                    "💎 Experiências exclusivas esperando por você...",
+                    "🚀 Sua jornada personalizada está sendo criada...",
+                    "⭐ Cada resposta te aproxima da viagem dos sonhos!"
+                ],
+                urgent: [
+                    "⏰ Oportunidades únicas não esperam - continue explorando!",
+                    "🎯 Você está quase lá - não pare agora!",
+                    "💫 A experiência perfeita está se revelando...",
+                    "🔥 Mantenha o foco - o melhor está por vir!"
+                ],
+                success: [
+                    "🎉 Parabéns! Você descobriu o poder da IA personalizada!",
+                    "✨ Sua experiência única está pronta - aproveite!",
+                    "🌟 Você fez a escolha certa - Búzios te espera!",
+                    "💎 Sua jornada personalizada foi criada com sucesso!"
+                ]
+            },
+            morador: {
+                initial: [
+                    "🏠 Conectando com os tesouros locais de Búzios...",
+                    "💎 Descobrindo os segredos da sua cidade...",
+                    "🌟 Analisando experiências exclusivas para moradores...",
+                    "✨ Personalizando sua jornada local..."
+                ],
+                engaging: [
+                    "🔥 Como morador, você tem acesso a experiências únicas!",
+                    "💎 Descubra lugares que nem todos conhecem...",
+                    "🚀 Sua conexão local está sendo fortalecida...",
+                    "⭐ Você merece o melhor que Búzios tem a oferecer!"
+                ],
+                urgent: [
+                    "⏰ Não perca as oportunidades exclusivas para moradores!",
+                    "🎯 Continue explorando - há muito mais para descobrir!",
+                    "💫 Sua experiência local está se revelando...",
+                    "🔥 Mantenha-se conectado - o melhor está por vir!"
+                ],
+                success: [
+                    "🎉 Parabéns! Você descobriu o poder da IA local!",
+                    "✨ Sua experiência como morador está completa!",
+                    "🌟 Você conhece Búzios como ninguém - aproveite!",
+                    "💎 Sua jornada local foi personalizada com sucesso!"
+                ]
+            },
+            divulgador: {
+                initial: [
+                    "📢 Conectando com oportunidades de divulgação...",
+                    "💼 Analisando estratégias para seu negócio...",
+                    "🌟 Descobrindo formas de alcançar mais clientes...",
+                    "✨ Personalizando sua presença digital..."
+                ],
+                engaging: [
+                    "🔥 Sua oportunidade de crescer está aqui!",
+                    "💎 Descubra como alcançar milhares de turistas!",
+                    "🚀 Sua estratégia de divulgação está sendo criada...",
+                    "⭐ Você merece ser visto por quem realmente importa!"
+                ],
+                urgent: [
+                    "⏰ Oportunidades de negócio não esperam - continue!",
+                    "🎯 Você está quase conectando com seu público ideal!",
+                    "💫 Sua estratégia está se revelando...",
+                    "🔥 Mantenha o foco - o sucesso está por vir!"
+                ],
+                success: [
+                    "🎉 Parabéns! Você descobriu como crescer seu negócio!",
+                    "✨ Sua estratégia de divulgação está pronta!",
+                    "🌟 Você está conectado com seu público ideal!",
+                    "💎 Sua presença digital foi otimizada com sucesso!"
+                ]
+            }
+        };
+        
+        let currentProfile = 'turista';
+        let messageInterval;
+        
+        function updateStatusBar(message, type = 'normal', duration = 4000) {
+            const statusBar = document.getElementById('dynamic-status-bar');
+            const statusMessage = document.getElementById('status-message');
+            const statusFeature = document.getElementById('status-feature');
             
-            if (statusIcon && statusText) {
-                // Adiciona um efeito sutil de destaque quando o chat está ativo
-                statusIcon.style.transition = 'all 0.3s ease';
-                statusText.style.transition = 'all 0.3s ease';
+            if (statusBar && statusMessage && statusFeature) {
+                // Remove classes anteriores
+                statusBar.classList.remove('highlight', 'urgent', 'success');
                 
-                // Efeito sutil de hover
-                statusIcon.addEventListener('mouseenter', () => {
-                    statusIcon.style.transform = 'scale(1.1)';
-                    statusIcon.style.filter = 'brightness(1.2)';
-                });
+                // Adiciona nova classe baseada no tipo
+                if (type !== 'normal') {
+                    statusBar.classList.add(type);
+                }
                 
-                statusIcon.addEventListener('mouseleave', () => {
-                    statusIcon.style.transform = 'scale(1)';
-                    statusIcon.style.filter = 'brightness(1)';
-                });
+                // Atualiza mensagem com fade
+                statusMessage.style.opacity = '0';
+                statusMessage.style.transform = 'translateY(-5px)';
+                
+                setTimeout(() => {
+                    statusMessage.textContent = message;
+                    statusMessage.style.opacity = '1';
+                    statusMessage.style.transform = 'translateY(0)';
+                }, 250);
+                
+                // Atualiza feature baseada no tipo
+                const features = {
+                    normal: 'Atendimento 24h',
+                    highlight: 'IA Personalizada',
+                    urgent: 'Oportunidade Única',
+                    success: 'Experiência Completa'
+                };
+                
+                statusFeature.textContent = features[type] || 'Atendimento 24h';
+                
+                // Remove classe após duração
+                if (type !== 'normal') {
+                    setTimeout(() => {
+                        statusBar.classList.remove(type);
+                    }, duration);
+                }
+            }
+        }
+        
+        function getDynamicMessage(profile, type) {
+            const messages = dynamicMessages[profile] || dynamicMessages.turista;
+            const typeMessages = messages[type] || messages.initial;
+            return typeMessages[Math.floor(Math.random() * typeMessages.length)];
+        }
+        
+        function startDynamicMessaging() {
+            if (messageInterval) {
+                clearInterval(messageInterval);
+            }
+            
+            messageInterval = setInterval(() => {
+                const types = ['initial', 'engaging', 'urgent'];
+                const randomType = types[Math.floor(Math.random() * types.length)];
+                const message = getDynamicMessage(currentProfile, randomType);
+                const typeClass = randomType === 'urgent' ? 'urgent' : 
+                                 randomType === 'engaging' ? 'highlight' : 'normal';
+                
+                updateStatusBar(message, typeClass, 5000);
+            }, 8000); // Muda a cada 8 segundos
+        }
+        
+        function stopDynamicMessaging() {
+            if (messageInterval) {
+                clearInterval(messageInterval);
+                messageInterval = null;
             }
         }
         
         document.addEventListener('DOMContentLoaded', () => {
             init();
-            // Melhora o status bar após a inicialização
-            setTimeout(enhanceStatusBar, 1000);
+            // Inicia o sistema de mensagens dinâmicas
+            setTimeout(() => {
+                updateStatusBar("🎯 Descobrindo experiências únicas para você...", "highlight", 3000);
+                setTimeout(startDynamicMessaging, 3000);
+            }, 1000);
         });
     </script>
 </body>
