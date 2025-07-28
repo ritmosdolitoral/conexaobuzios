@@ -15,6 +15,9 @@
             background-color: #020617; 
             overflow: hidden; 
             line-height: 1.6;
+            -webkit-text-size-adjust: 100%;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
         /* Estilos do Portal de IA - Melhorado */
@@ -310,38 +313,104 @@
         /* Estilos do Chat */
         .bg-buzios-mar { background-color: #0077B6; }
         
+        /* Container principal do app - sobrescreve Tailwind */
+        #app-container {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background-color: #f3f4f6 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 1rem !important;
+            z-index: 1000 !important;
+        }
+        
+        #app-container.hidden {
+            display: none !important;
+        }
+        
+        #app-container.flex {
+            display: flex !important;
+        }
+        
+        #chat-main-container {
+            width: 100% !important;
+            max-width: 40rem !important;
+            height: 100% !important;
+            max-height: calc(100vh - 2rem) !important;
+            display: flex !important;
+            flex-direction: column !important;
+            background: linear-gradient(135deg, #ffffff 0%, rgba(219, 234, 254, 0.3) 50%, rgba(255, 255, 255, 0.9) 100%) !important;
+            backdrop-filter: blur(16px) !important;
+            border-radius: 1.5rem !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 12px 40px rgba(0,0,0,0.08), 0 20px 60px rgba(0,0,0,0.05) !important;
+            overflow: hidden !important;
+            border: 1px solid rgba(229, 231, 235, 0.6) !important;
+            position: relative !important;
+        }
+        
+        /* Header responsivo */
+        #chat-main-container header {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 1rem !important;
+            border-bottom: 1px solid rgba(229, 231, 235, 0.8) !important;
+            background: rgba(255, 255, 255, 0.6) !important;
+            backdrop-filter: blur(12px) !important;
+            flex-shrink: 0 !important;
+        }
+        
+        /* Footer/controles responsivos */
+        #session-controls {
+            padding: 1rem !important;
+            text-align: center !important;
+            background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%) !important;
+            border-top: 1px solid rgba(229, 231, 235, 0.8) !important;
+            flex-shrink: 0 !important;
+        }
+        
         /* Chat redesenhado - mais responsivo e intuitivo */
         .chat-container {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            max-height: 100%;
-            min-height: 0;
-            flex: 1;
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+            max-height: none !important;
+            min-height: 0 !important;
+            flex: 1 !important;
+            overflow: hidden !important;
         }
         
         .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            min-height: 0;
-            max-height: 100%;
+            flex: 1 !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            padding: 1rem 1.25rem !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 1rem !important;
+            min-height: 0 !important;
+            max-height: none !important;
+            scroll-behavior: smooth !important;
+            height: auto !important;
         }
         
         .chat-bubble { 
-            max-width: 82%; 
-            padding: 14px 18px; 
-            border-radius: 20px; 
+            max-width: min(82%, calc(100vw - 4rem)); 
+            padding: 0.875rem 1.125rem; 
+            border-radius: 1.25rem; 
             opacity: 0; 
-            transform: translateY(20px); 
+            transform: translateY(1.25rem); 
             animation: pop-in 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; 
             line-height: 1.6; 
-            font-size: 15px;
+            font-size: clamp(0.875rem, 2.5vw, 0.9375rem);
             letter-spacing: 0.01em;
             word-wrap: break-word;
+            overflow-wrap: break-word;
             position: relative;
         }
         
@@ -449,25 +518,28 @@
         
         /* Botões redesenhados - mais compactos e intuitivos */
         .chat-options {
-            padding: 16px 20px;
-            background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%);
-            border-top: 1px solid #e2e8f0;
-            margin-top: 8px;
+            padding: 1rem 1.25rem !important;
+            background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%) !important;
+            border-top: 1px solid #e2e8f0 !important;
+            margin-top: 0 !important;
+            min-height: auto !important;
+            flex-shrink: 0 !important;
+            overflow: visible !important;
         }
         
         .options-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(min(160px, 45vw), 1fr));
+            gap: 0.75rem;
             max-width: 100%;
         }
         
         .option-button { 
             background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
             border: 1px solid rgba(0, 90, 139, 0.2);
-            border-radius: 18px;
-            padding: 14px 18px;
-            font-size: 13px;
+            border-radius: 1.125rem;
+            padding: 0.875rem 1.125rem;
+            font-size: clamp(0.75rem, 2vw, 0.8125rem);
             font-weight: 400;
             color: #1e293b;
             text-align: center;
@@ -478,8 +550,13 @@
                 0 4px 12px rgba(0,0,0,0.04);
             line-height: 1.5;
             word-wrap: break-word;
+            overflow-wrap: break-word;
             position: relative;
             overflow: hidden;
+            min-height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .option-button::before {
@@ -523,27 +600,28 @@
         .proposal-success {
             background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%);
             border: 1px solid #e2e8f0;
-            border-radius: 20px;
-            padding: 16px;
-            margin: 8px;
+            border-radius: 1.25rem;
+            padding: 1rem;
+            margin: 0.5rem;
             box-shadow: 
                 0 8px 25px rgba(0,0,0,0.08),
                 0 16px 40px rgba(0,0,0,0.05);
             position: relative;
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             transform: scale(1);
-            max-height: 300px;
+            max-height: min(18.75rem, 40vh);
             overflow-y: auto;
+            scroll-behavior: smooth;
         }
         
         .proposal-header {
             text-align: center;
-            margin-bottom: 16px;
+            margin-bottom: 1rem;
         }
         
         .success-icon {
-            font-size: 2rem;
-            margin-bottom: 8px;
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            margin-bottom: 0.5rem;
             display: block;
             animation: successPulse 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
@@ -555,14 +633,14 @@
         }
         
         .proposal-title {
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 3vw, 1rem);
             font-weight: 600;
             color: #1e293b;
-            margin-bottom: 4px;
+            margin-bottom: 0.25rem;
         }
         
         .proposal-subtitle {
-            font-size: 0.9rem;
+            font-size: clamp(0.75rem, 2.5vw, 0.9rem);
             color: #64748b;
             margin-bottom: 0;
         }
@@ -570,29 +648,30 @@
         .proposal-actions {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: 8px;
+            gap: 0.625rem;
+            margin-top: 0.5rem;
         }
         
         .primary-action {
             background: linear-gradient(135deg, #0077B6 0%, #005a8b 100%);
             color: white;
             border: none;
-            padding: 12px 16px;
-            border-radius: 16px;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 0.5rem;
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             box-shadow: 
                 0 4px 12px rgba(0, 119, 182, 0.3),
                 0 8px 20px rgba(0, 119, 182, 0.2);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
             position: relative;
             overflow: hidden;
+            min-height: 2.75rem;
         }
         
         .primary-action::before {
@@ -621,24 +700,27 @@
         
         .secondary-actions {
             display: flex;
-            gap: 8px;
+            gap: 0.5rem;
+            flex-wrap: wrap;
         }
         
         .secondary-action {
             flex: 1;
+            min-width: 0;
             background: white;
             border: 1px solid #e2e8f0;
             color: #64748b;
-            padding: 8px 10px;
-            border-radius: 10px;
+            padding: 0.5rem 0.625rem;
+            border-radius: 0.625rem;
             font-weight: 500;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 0.375rem;
             transition: all 0.2s;
-            font-size: 0.8rem;
+            font-size: clamp(0.7rem, 2vw, 0.8rem);
             cursor: pointer;
+            min-height: 2.25rem;
         }
         
         .secondary-action:hover {
@@ -660,17 +742,18 @@
         .status-bar {
             background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%);
             border-bottom: 1px solid #e2e8f0;
-            padding: 12px 20px;
-            font-size: 13px;
+            padding: 0.75rem 1.25rem;
+            font-size: clamp(0.75rem, 2vw, 0.8125rem);
             color: #64748b;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 0.625rem;
             flex-wrap: wrap;
             font-weight: 500;
             text-align: center;
             line-height: 1.4;
+            min-height: 2.5rem;
         }
         
         .status-icon {
@@ -725,188 +808,252 @@
             transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         
-        /* Responsividade melhorada */
+        /* Responsividade melhorada com unidades flexíveis */
         @media (min-width: 1024px) {
             #app-container {
-                padding: 2rem;
+                padding: 2rem !important;
             }
             
-            .chat-container {
-                max-width: 650px;
-                margin: 0 auto;
+            #chat-main-container {
+                max-width: 42rem !important;
             }
         }
         
         @media (max-width: 768px) {
+            body {
+                overflow-x: hidden !important;
+            }
+            
             #app-container {
-                padding: 8px;
+                padding: 0.5rem !important;
+                height: 100vh !important;
+                max-height: 100vh !important;
+            }
+            
+            #chat-main-container {
+                max-height: calc(100vh - 1rem) !important;
+                border-radius: 1rem !important;
             }
             
             .chat-bubble {
-                max-width: 90%;
-                padding: 12px 16px;
-                font-size: 14px;
+                max-width: min(88%, calc(100vw - 4rem)) !important;
+                padding: 0.75rem 1rem !important;
             }
             
             .chat-messages {
-                padding: 12px 16px;
-                gap: 12px;
+                padding: 0.75rem 1rem !important;
+                gap: 0.75rem !important;
             }
             
             .chat-options {
-                padding: 12px 16px;
+                padding: 0.75rem 1rem !important;
             }
             
             .options-grid {
-                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-                gap: 10px;
+                grid-template-columns: repeat(auto-fit, minmax(min(140px, 40vw), 1fr)) !important;
+                gap: 0.625rem !important;
             }
             
             .option-button {
-                padding: 12px 16px;
-                font-size: 12px;
+                padding: 0.75rem 1rem !important;
+                min-height: 2.25rem !important;
             }
             
             .proposal-success {
-                margin: 6px 4px;
-                padding: 10px;
-            }
-            
-            .proposal-title {
-                font-size: 0.9rem;
-            }
-            
-            .proposal-subtitle {
-                font-size: 0.75rem;
-            }
-            
-            .primary-action {
-                padding: 8px 12px;
-                font-size: 0.8rem;
-            }
-            
-            .secondary-action {
-                padding: 6px 8px;
-                font-size: 0.75rem;
-            }
-            
-            .instagram-button {
-                padding: 12px 14px;
-                font-size: 13px;
+                margin: 0.375rem 0.25rem !important;
+                padding: 0.625rem !important;
+                max-height: min(15rem, 35vh) !important;
             }
             
             .status-bar {
-                padding: 8px 12px;
-                font-size: 11px;
-                flex-direction: column;
-                gap: 4px;
+                padding: 0.5rem 0.75rem !important;
+                flex-direction: column !important;
+                gap: 0.25rem !important;
+                min-height: 2rem !important;
             }
             
-            .status-icon {
-                font-size: 12px;
+            #chat-main-container header {
+                padding: 0.75rem !important;
             }
             
-            .status-text {
-                font-size: 10px;
-                font-weight: 600;
-            }
-            
-            .status-feature {
-                font-size: 9px;
+            #session-controls {
+                padding: 0.75rem !important;
             }
         }
         
         @media (max-width: 480px) {
             #app-container {
-                padding: 4px;
+                padding: 0.25rem !important;
+                height: 100vh !important;
+                max-height: 100vh !important;
+            }
+            
+            #chat-main-container {
+                max-height: calc(100vh - 0.5rem) !important;
+                border-radius: 0.75rem !important;
             }
             
             .chat-bubble {
-                max-width: 94%;
-                padding: 6px 10px;
-                font-size: 11px;
+                max-width: min(92%, calc(100vw - 2rem)) !important;
+                padding: 0.5rem 0.75rem !important;
             }
             
             .chat-messages {
-                padding: 6px;
-                gap: 4px;
+                padding: 0.5rem !important;
+                gap: 0.5rem !important;
             }
             
             .chat-options {
-                padding: 6px;
+                padding: 0.5rem !important;
             }
             
             .options-grid {
-                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-                gap: 4px;
+                grid-template-columns: repeat(auto-fit, minmax(min(120px, 45vw), 1fr)) !important;
+                gap: 0.5rem !important;
             }
             
             .option-button {
-                padding: 6px 8px;
-                font-size: 10px;
+                padding: 0.5rem 0.75rem !important;
+                min-height: 2rem !important;
             }
             
             .status-bar {
-                padding: 6px 8px;
-                font-size: 10px;
-                flex-direction: column;
-                gap: 3px;
-            }
-            
-            .status-icon {
-                font-size: 11px;
-            }
-            
-            .status-text {
-                font-size: 9px;
-                font-weight: 600;
-            }
-            
-            .status-feature {
-                font-size: 8px;
+                padding: 0.375rem 0.5rem !important;
+                flex-direction: column !important;
+                gap: 0.1875rem !important;
+                min-height: 1.75rem !important;
             }
             
             .proposal-success {
-                margin: 4px 2px;
-                padding: 8px;
-            }
-            
-            .proposal-title {
-                font-size: 0.85rem;
-            }
-            
-            .proposal-subtitle {
-                font-size: 0.7rem;
-            }
-            
-            .primary-action {
-                padding: 6px 10px;
-                font-size: 0.75rem;
-            }
-            
-            .secondary-action {
-                padding: 5px 6px;
-                font-size: 0.7rem;
+                margin: 0.25rem 0.125rem !important;
+                padding: 0.5rem !important;
+                max-height: min(12rem, 30vh) !important;
             }
             
             .portal-container {
-                padding: 0.5rem;
+                padding: 0.5rem !important;
             }
             
             .portal-option {
-                padding: 1rem 0.5rem;
+                padding: 1rem 0.5rem !important;
             }
             
             .portal-option-icon {
-                font-size: 1.5rem;
+                font-size: 1.5rem !important;
             }
             
             .portal-option-title {
-                font-size: 0.8rem;
+                font-size: 0.8rem !important;
             }
             
             .portal-option-description {
-                font-size: 0.7rem;
+                font-size: 0.7rem !important;
+            }
+            
+            #chat-main-container header {
+                padding: 0.5rem !important;
+            }
+            
+            #session-controls {
+                padding: 0.5rem !important;
+            }
+        }
+        
+        /* Media queries adicionais para zoom e telas muito pequenas */
+        @media (max-width: 360px) {
+            .chat-container {
+                max-height: calc(100vh - 3rem);
+                min-height: calc(100vh - 5rem);
+            }
+            
+            .chat-messages {
+                max-height: calc(100vh - 10rem);
+                padding: 0.375rem;
+            }
+            
+            .chat-bubble {
+                max-width: min(98%, calc(100vw - 1.5rem));
+                padding: 0.375rem 0.5rem;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .proposal-success {
+                max-height: min(10rem, 25vh);
+                margin: 0.125rem;
+                padding: 0.375rem;
+            }
+        }
+        
+        /* Suporte a paisagem em celulares */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .chat-container {
+                max-height: calc(100vh - 2rem);
+            }
+            
+            .chat-messages {
+                max-height: calc(100vh - 8rem);
+            }
+            
+            .proposal-success {
+                max-height: min(8rem, 60vh);
+            }
+        }
+        
+        /* Estilos para scroll suave e responsivo */
+        .chat-messages::-webkit-scrollbar {
+            width: 0.5rem;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(241, 245, 249, 0.5);
+            border-radius: 0.25rem;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.5);
+            border-radius: 0.25rem;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.7);
+        }
+        
+        .proposal-success::-webkit-scrollbar {
+            width: 0.375rem;
+        }
+        
+        .proposal-success::-webkit-scrollbar-track {
+            background: rgba(241, 245, 249, 0.3);
+            border-radius: 0.1875rem;
+        }
+        
+        .proposal-success::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.4);
+            border-radius: 0.1875rem;
+        }
+        
+        /* Melhorias adicionais para acessibilidade */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+        
+        /* Ajustes para dispositivos com notch */
+        @supports (padding: max(0px)) {
+            .chat-container {
+                padding-left: max(1rem, env(safe-area-inset-left));
+                padding-right: max(1rem, env(safe-area-inset-right));
+            }
+            
+            .status-bar {
+                padding-top: max(0.75rem, env(safe-area-inset-top));
             }
         }
     </style>
@@ -942,11 +1089,11 @@
     </div>
     
     <!-- Container do Chat (Carregado, mas escondido) -->
-    <div id="app-container" class="w-full h-screen flex-col items-center justify-center p-4 bg-gray-100 hidden">
-        <div class="w-full max-w-xl h-full max-h-[700px] flex flex-col bg-gradient-to-br from-white via-blue-50/30 to-white/90 backdrop-blur-lg rounded-3xl shadow-2xl shadow-gray-300/60 overflow-hidden border border-gray-200/60 relative" style="min-height: 580px; box-shadow: 0 12px 40px rgba(0,0,0,0.08), 0 20px 60px rgba(0,0,0,0.05);">
+    <div id="app-container" class="hidden">
+        <div id="chat-main-container">
             <!-- Elemento gráfico sutil de identidade visual -->
-            <div class="absolute top-4 right-4 w-16 h-16 opacity-5 pointer-events-none">
-                <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full text-blue-600">
+            <div style="position: absolute; top: 1rem; right: 1rem; width: 4rem; height: 4rem; opacity: 0.05; pointer-events: none;">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 100%; height: 100%; color: #2563eb;">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                 </svg>
             </div>
@@ -959,31 +1106,31 @@
                 <span id="status-feature" class="status-feature">Atendimento 24h</span>
             </div>
             
-            <header class="flex items-center justify-between p-4 border-b border-gray-200/80 bg-white/60 backdrop-blur-sm">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3"/><circle cx="12" cy="10" r="3"/><circle cx="12" cy="12" r="10"/></svg>
+            <header>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="height: 1.5rem; width: 1.5rem; color: white;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3"/><circle cx="12" cy="10" r="3"/><circle cx="12" cy="12" r="10"/></svg>
                     </div>
                     <div>
-                        <h1 class="text-base font-bold text-gray-800">Conexão Búzios</h1>
-                        <p class="text-sm text-gray-600 flex items-center"><span class="h-2 w-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>Online • IA Ativa</p>
+                        <h1 style="font-size: 1rem; font-weight: 700; color: #1f2937;">Conexão Búzios</h1>
+                        <p style="font-size: 0.875rem; color: #4b5563; display: flex; align-items: center;"><span style="height: 0.5rem; width: 0.5rem; background-color: #10b981; border-radius: 50%; margin-right: 0.5rem; animation: pulse 2s infinite;"></span>Online • IA Ativa</p>
                     </div>
                 </div>
             </header>
             
-            <main id="chat-window" class="chat-container" style="height: calc(100% - 120px);">
+            <main id="chat-window" class="chat-container">
                 <div id="chat-messages" class="chat-messages"></div>
                 <div id="input-area" class="chat-options"></div>
             </main>
             
-            <div id="session-controls" class="p-4 text-center bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-200/80">
-                <p class="text-sm text-gray-600 mb-3 font-medium">Você está conversando com a IA Gemini</p>
-                <div class="flex justify-center items-center space-x-4">
-                    <button onclick="handleGoBack()" id="back-btn" class="control-button text-sm text-gray-600 font-medium flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all duration-300">
-                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar
+            <div id="session-controls">
+                <p style="font-size: 0.875rem; color: #4b5563; margin-bottom: 0.75rem; font-weight: 500;">Você está conversando com a IA Gemini</p>
+                <div style="display: flex; justify-content: center; align-items: center; gap: 1rem;">
+                    <button onclick="handleGoBack()" id="back-btn" class="control-button" style="font-size: 0.875rem; color: #4b5563; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 0.5rem; background-color: white; border: 1px solid #e5e7eb; transition: all 0.3s;">
+                        <i data-lucide="arrow-left" style="width: 1rem; height: 1rem;"></i> Voltar
                     </button>
-                    <button onclick="handleRestart()" class="control-button text-sm text-white font-medium flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-md hover:shadow-lg">
-                        <i data-lucide="refresh-cw" class="w-4 h-4"></i> Reiniciar
+                    <button onclick="handleRestart()" class="control-button" style="font-size: 0.875rem; color: white; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 0.5rem; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); transition: all 0.3s; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                        <i data-lucide="refresh-cw" style="width: 1rem; height: 1rem;"></i> Reiniciar
                     </button>
                 </div>
             </div>
@@ -1155,7 +1302,11 @@
                     chatCompleto: [...(state.chatCompleto || []), chatEntry]
                 });
             }
-            scrollToBottom();
+            
+            // Always scroll to bottom when new message is added
+            setTimeout(() => {
+                scrollToBottom();
+            }, 150);
         }
         
         function closeProposalSuccess() {
@@ -1228,7 +1379,14 @@
         
         function scrollToBottom() { 
             if (chatMessages) {
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+                // Force scroll to bottom with a slight delay to ensure DOM is updated
+                setTimeout(() => {
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    // Double check to ensure it scrolled
+                    if (chatMessages.scrollTop < chatMessages.scrollHeight - chatMessages.clientHeight - 10) {
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }
+                }, 100);
             }
         }
 
@@ -1403,7 +1561,11 @@
                     }
                     break;
             }
-            if (!isPortalStep) scrollToBottom();
+            if (!isPortalStep) {
+                setTimeout(() => {
+                    scrollToBottom();
+                }, 200);
+            }
         }
 
         function handleUserAction(type, data) {
