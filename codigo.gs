@@ -12,7 +12,16 @@
 
 // === CONFIGURAÇÕES ATUALIZADAS ===
 const ID_DA_PASTA_DOSSIES = "1iyZXYcdDrr41wM1GEvyEdl_3kgZFafUA";
-const GEMINI_API_KEY = "AIzaSyBlOiC0sqSE-CjJ4wDBIj34DKit1NgoAV4";
+
+// Configuração segura da API Key - deve ser definida nas propriedades do script
+function getGeminiApiKey() {
+  const apiKey = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
+  if (!apiKey) {
+    throw new Error('GEMINI_API_KEY não configurada. Configure usando PropertiesService.getScriptProperties().setProperty("GEMINI_API_KEY", "sua_chave_aqui")');
+  }
+  return apiKey;
+}
+
 const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHC3bAoL_c5rscJV2xbwVi9KMedM3QHbWCZ3bo64w0DbiMGOtnahL9BynJ5ADao63I/exec";
 
 // === SISTEMA DE LOGS AVANÇADO ===
@@ -97,7 +106,7 @@ function testarAPI() {
 }
 
 function testarGeminiAPI(prompt) {
-  const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+  const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${getGeminiApiKey()}`;
   const payload = { contents: [{ parts: [{ text: prompt }] }] };
   const options = { 
     method: 'post', 
@@ -113,6 +122,14 @@ function testarGeminiAPI(prompt) {
     }
     
     const result = JSON.parse(response.getContentText());
+    
+    // Validate response structure before accessing nested properties
+    if (!result.candidates || !result.candidates[0] || 
+        !result.candidates[0].content || !result.candidates[0].content.parts ||
+        !result.candidates[0].content.parts[0] || !result.candidates[0].content.parts[0].text) {
+      throw new Error('Resposta da API Gemini em formato inesperado');
+    }
+    
     return result.candidates[0].content.parts[0].text.trim();
   } catch (error) {
     log(LOG_LEVELS.ERROR, "Erro ao testar Gemini API", { erro: error.toString() });
@@ -246,7 +263,7 @@ function doPost(e) {
 function gerarAnaliseCompletaComGemini(dados) {
   log(LOG_LEVELS.INFO, "Iniciando análise com Gemini", { nome: dados.nome, perfil: dados.perfil });
   
-  const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+  const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${getGeminiApiKey()}`;
   const nomeLead = dados.nome || 'cliente';
   
   // Prepara dados completos para análise
@@ -322,11 +339,28 @@ function gerarAnaliseCompletaComGemini(dados) {
     }
     
     const result = JSON.parse(response.getContentText());
+    
+    // Validate Gemini response structure
+    if (!result.candidates || !result.candidates[0] || 
+        !result.candidates[0].content || !result.candidates[0].content.parts ||
+        !result.candidates[0].content.parts[0] || !result.candidates[0].content.parts[0].text) {
+      throw new Error('Resposta da API Gemini em formato inesperado');
+    }
+    
     let jsonString = result.candidates[0].content.parts[0].text.replace(/```json/g, '').replace(/```/g, '').trim();
     
     log(LOG_LEVELS.DEBUG, "Resposta bruta do Gemini", { jsonString: jsonString.substring(0, 200) + "..." });
     
-    const analise = JSON.parse(jsonString);
+    let analise;
+    try {
+      analise = JSON.parse(jsonString);
+    } catch (parseError) {
+      log(LOG_LEVELS.ERROR, "Erro ao parsear JSON da resposta do Gemini", { 
+        erro: parseError.toString(), 
+        jsonString: jsonString.substring(0, 500) 
+      });
+      throw new Error('Falha ao interpretar resposta da IA: JSON inválido');
+    }
 
     if (analise.resumo_perfil && analise.necessidades_reveladas && analise.proposta_personalizada) {
       log(LOG_LEVELS.INFO, "Análise Gemini gerada com sucesso", {
@@ -580,9 +614,25 @@ function listDossies() {
 function extractInterest(fileId) {
   try {
     const content = getDossierContentRaw(fileId);
-    const regex = /Necessidades Reveladas\s*\n(.*?)\n/m;
+    // Fixed regex to capture multi-line content after "Necessidades Reveladas"
+    const regex = /Necessidades Reveladas\s*\n([\s\S]*?)(?:\n\n|\n[A-Z]|$)/;
     const match = content.match(regex);
-    return (match && match[1]) ? match[1].replace(/[•\s*-]+/,'').trim() : 'Não especificado';
+    
+    if (match && match[1]) {
+      // Extract the first meaningful line from the captured content
+      const lines = match[1].split('\n').filter(line => line.trim());
+      const firstMeaningfulLine = lines.find(line => 
+        line.trim() && 
+        !line.match(/^[•\s*-]+$/) && // Skip lines with only bullets/dashes
+        line.length > 5 // Skip very short lines
+      );
+      
+      if (firstMeaningfulLine) {
+        return firstMeaningfulLine.replace(/^[•\s*-]+/, '').trim();
+      }
+    }
+    
+    return 'Não especificado';
   } catch (e) { 
     log(LOG_LEVELS.WARN, `Erro ao extrair interesse do arquivo ${fileId}`, { erro: e.toString() });
     return 'Erro na extração'; 
@@ -596,14 +646,26 @@ function extractTelefone(fileId) {
     const match = content.match(regex);
     
     if (match && match[1]) {
-      const dadosEstruturados = JSON.parse(match[1].trim());
-      return dadosEstruturados.telefone || 'N/A';
+      try {
+        const dadosEstruturados = JSON.parse(match[1].trim());
+        return dadosEstruturados.telefone || 'N/A';
+      } catch (jsonError) {
+        log(LOG_LEVELS.WARN, `Erro ao parsear dados estruturados para telefone ${fileId}`, { erro: jsonError.toString() });
+        // Continue to fallback method
+      }
     }
     
-    // Fallback: busca por padrão de telefone no texto
-    const phoneRegex = /\b(?:\+55\s?)?(?:\(?0?[1-9]{2}\)?\s?)?(?:9\s?)?[1-9]\d{3}[-\s]?\d{4}\b/g;
+    // Fallback: busca por padrão de telefone no texto com regex mais robusta
+    // Updated regex to properly validate Brazilian phone numbers
+    const phoneRegex = /\b(?:\+55\s?)?(?:\(?(?:1[1-9]|[2-9][0-9])\)?\s?)?(?:9\s?)?[1-9]\d{3}[-\s]?\d{4}\b/g;
     const phoneMatch = content.match(phoneRegex);
-    return phoneMatch ? phoneMatch[0] : 'N/A';
+    
+    if (phoneMatch) {
+      // Return the first valid phone number found
+      return phoneMatch[0];
+    }
+    
+    return 'N/A';
     
   } catch (e) { 
     log(LOG_LEVELS.WARN, `Erro ao extrair telefone do arquivo ${fileId}`, { erro: e.toString() });
