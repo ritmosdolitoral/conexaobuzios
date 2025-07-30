@@ -221,13 +221,16 @@
         }
         
         .portal-signature a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
+            color: rgba(255, 255, 255, 0.9); /* Melhor contraste */
+            text-decoration: underline; /* Melhor identificação de links */
             transition: color 0.3s;
         }
         
-        .portal-signature a:hover {
+        .portal-signature a:hover,
+        .portal-signature a:focus {
             color: white;
+            outline: 2px solid rgba(255, 255, 255, 0.5);
+            outline-offset: 2px;
         }
         
         /* Responsividade do portal - Melhorada */
@@ -975,6 +978,46 @@
                 max-width: min(98%, calc(100vw - 1.5rem));
                 padding: 0.375rem 0.5rem;
             }
+        }
+        
+        /* Melhorias para touch e interação mobile */
+        @media (hover: none) and (pointer: coarse) {
+            .option-button, .portal-option, .control-button {
+                min-height: 44px; /* Tamanho mínimo recomendado para touch */
+                padding: 0.75rem 1rem;
+            }
+            
+            .option-button:active, .portal-option:active {
+                transform: scale(0.98);
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+            
+            /* Remove hover effects em dispositivos touch */
+            .portal-option:hover {
+                transform: translateY(-8px) scale(1.02); /* Reduzido para mobile */
+                box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+            }
+        }
+        
+        /* Orientação landscape em mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .portal-container {
+                padding: 0.5rem;
+            }
+            
+            .portal-content {
+                max-width: 90%;
+            }
+            
+            .portal-options {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.75rem;
+            }
+            
+            #chat-main-container {
+                max-height: calc(100vh - 1rem);
+            }
+        }
             
             .options-grid {
                 grid-template-columns: 1fr;
@@ -1119,18 +1162,22 @@
             </header>
             
             <main id="chat-window" class="chat-container">
-                <div id="chat-messages" class="chat-messages"></div>
-                <div id="input-area" class="chat-options"></div>
+                <div id="chat-messages" class="chat-messages" role="log" aria-live="polite" aria-label="Histórico da conversa"></div>
+                <div id="input-area" class="chat-options" role="region" aria-label="Área de interação"></div>
             </main>
             
             <div id="session-controls">
                 <p style="font-size: 0.875rem; color: #4b5563; margin-bottom: 0.75rem; font-weight: 500;">Você está conversando com a IA Gemini</p>
                 <div style="display: flex; justify-content: center; align-items: center; gap: 1rem;">
-                    <button onclick="handleGoBack()" id="back-btn" class="control-button" style="font-size: 0.875rem; color: #4b5563; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 0.5rem; background-color: white; border: 1px solid #e5e7eb; transition: all 0.3s;">
-                        <i data-lucide="arrow-left" style="width: 1rem; height: 1rem;"></i> Voltar
+                    <button onclick="handleGoBack()" id="back-btn" class="control-button" 
+                        style="font-size: 0.875rem; color: #4b5563; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 0.5rem; background-color: white; border: 1px solid #e5e7eb; transition: all 0.3s;"
+                        aria-label="Voltar ao passo anterior" tabindex="0">
+                        <i data-lucide="arrow-left" style="width: 1rem; height: 1rem;" aria-hidden="true"></i> Voltar
                     </button>
-                    <button onclick="handleRestart()" class="control-button" style="font-size: 0.875rem; color: white; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 0.5rem; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); transition: all 0.3s; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                        <i data-lucide="refresh-cw" style="width: 1rem; height: 1rem;"></i> Reiniciar
+                    <button onclick="handleRestart()" class="control-button" 
+                        style="font-size: 0.875rem; color: white; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 0.5rem; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); transition: all 0.3s; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);"
+                        aria-label="Reiniciar conversa do início" tabindex="0">
+                        <i data-lucide="refresh-cw" style="width: 1rem; height: 1rem;" aria-hidden="true"></i> Reiniciar
                     </button>
                 </div>
             </div>
@@ -1156,6 +1203,11 @@
 
         // --- ESTADO DA APLICAÇÃO ---
         let state = {};
+        
+        // Sistema de lock para prevenir condições de corrida
+        let actionLock = false;
+        let lockTimeoutId = null;
+        const lockTimeout = 3000; // 3 segundos de timeout máximo
 
         const initialState = {
             history: [],
@@ -1244,11 +1296,28 @@
             setState({ history: newHistory });
         }
 
+        // --- FUNÇÃO DE SANITIZAÇÃO ---
+        function sanitizeHTML(str) {
+            if (!str) return '';
+            
+            const temp = document.createElement('div');
+            temp.textContent = str;
+            let sanitized = temp.innerHTML;
+            
+            // Remove conteúdo perigoso
+            sanitized = sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+            sanitized = sanitized.replace(/javascript:/gi, '');
+            sanitized = sanitized.replace(/on\w+\s*=/gi, '');
+            sanitized = sanitized.replace(/data:/gi, '');
+            
+            return sanitized;
+        }
+
         // --- FUNÇÕES DE UI E ANIMAÇÃO ---
         function typeWriter(text, i = 0, onComplete) {
             clearTimeout(typingTimeout);
             if (i < text.length) {
-                typingTextEl.innerHTML = text.substring(0, i + 1);
+                typingTextEl.innerHTML = sanitizeHTML(text.substring(0, i + 1));
                 // Velocidade mais natural e variável
                 const speed = Math.random() * 30 + 50; // Entre 50-80ms
                 typingTimeout = setTimeout(() => typeWriter(text, i + 1, onComplete), speed);
@@ -1268,18 +1337,40 @@
 
         function createParticles() {
             const container = document.getElementById('particle-container');
-            if (container.children.length > 0) return;
+            if (!container) return;
+            
+            // Limpa partículas existentes para evitar acúmulo
+            container.innerHTML = '';
+            
             for (let i = 0; i < 30; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 const size = Math.random() * 5 + 1;
+                const duration = Math.random() * 15 + 10;
+                
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
                 particle.style.left = `${Math.random() * 100}%`;
                 particle.style.top = `${Math.random() * 100}%`;
-                particle.style.animationDuration = `${Math.random() * 15 + 10}s`;
+                particle.style.animationDuration = `${duration}s`;
                 particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                // Remove a partícula automaticamente após a animação
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, (duration + 5) * 1000); // 5s de delay máximo + duração da animação
+                
                 container.appendChild(particle);
+            }
+        }
+        
+        // Função para limpar todas as partículas
+        function clearParticles() {
+            const container = document.getElementById('particle-container');
+            if (container) {
+                container.innerHTML = '';
             }
         }
 
@@ -1575,7 +1666,23 @@
         }
 
         function handleUserAction(type, data) {
-            if (state.isWaitingForResponse) return;
+            // Previne condições de corrida com sistema de lock
+            if (actionLock || state.isWaitingForResponse) {
+                console.warn('Ação ignorada: sistema ocupado');
+                return;
+            }
+            
+            // Ativa o lock
+            actionLock = true;
+            
+            // Define timeout para liberar o lock automaticamente
+            if (lockTimeoutId) clearTimeout(lockTimeoutId);
+            lockTimeoutId = setTimeout(() => {
+                actionLock = false;
+                disableAllInputs(false);
+                console.warn('Lock liberado por timeout');
+            }, lockTimeout);
+            
             disableAllInputs(true);
             pushHistory();
 
@@ -1657,10 +1764,22 @@
                 setState({ userData, userHistory });
             }
             displayStep(data.nextStep);
+            
+            // Libera o lock após completar a ação
+            setTimeout(() => {
+                releaseLock();
+            }, 500);
+        }
+        
+        // Função auxiliar para liberar o lock de forma segura
+        function releaseLock() {
+            if (lockTimeoutId) clearTimeout(lockTimeoutId);
+            actionLock = false;
         }
 
         // --- CONTROLES DE SESSÃO ---
         function handleRestart() {
+            releaseLock(); // Libera o lock antes de reiniciar
             stopDynamicMessaging();
             localStorage.removeItem(SESSION_KEY);
             init();
@@ -1668,6 +1787,9 @@
         
         function handleGoBack() {
             if (state.history.length < 2) return; // Não pode voltar do primeiro passo
+            
+            releaseLock(); // Libera o lock antes de navegar
+            
             const previousState = state.history[state.history.length - 2];
             
             // Sincroniza o estado global com o estado anterior

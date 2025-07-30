@@ -279,42 +279,49 @@ function gerarAnaliseCompletaComGemini(dados) {
   const historicoCompleto = JSON.stringify(dadosCompletos, null, 2);
 
   const masterPrompt = `
-    Você é um concierge de luxo em Búzios e um estrategista de vendas de elite. Sua especialidade é transformar informações em experiências irresistíveis.
-    Analise os dados brutos deste lead: ${historicoCompleto}.
+INSTRUÇÕES PARA ANÁLISE DE LEAD - CONEXÃO BÚZIOS
 
-    Sua missão é gerar uma resposta JSON com TRÊS chaves: "resumo_perfil", "necessidades_reveladas" e "proposta_personalizada".
+CONTEXTO: Você é um concierge especialista em Búzios e estrategista de vendas. Analise os dados do lead e gere uma resposta JSON estruturada.
 
-    1.  **"resumo_perfil":**
-        Crie um parágrafo denso e perspicaz (2-3 linhas) que capture a essência psicológica e o objetivo latente do lead. Vá além do óbvio.
+DADOS DO LEAD:
+${historicoCompleto}
 
-    2.  **"necessidades_reveladas":**
-        Liste de 3 a 5 oportunidades de negócio em formato de tópicos. Transforme as respostas do lead em dores ou desejos claros que podemos resolver.
+TAREFA: Gere um JSON válido com exatamente 3 chaves. Siga as especificações abaixo:
 
-    3.  **"proposta_personalizada" (MODELO DE ALTA PERSUASÃO):**
-        Crie uma mensagem de WhatsApp que seja impossível de ignorar. O tom deve ser exclusivo, pessoal e magnético. Siga esta estrutura com precisão militar:
-        
-        - **Gancho Específico (1 linha):** Comece com o nome do lead e cite a resposta MAIS IMPORTANTE que ele deu, mostrando que você prestou atenção.
-            - Exemplo: "Oi, ${nomeLead}! Vi que você quer descobrir os 'lugares secretos' de Búzios, e isso me chamou a atenção..."
-        
-        - **Validação e Exclusividade (2 linhas):** Valide o desejo dele e posicione sua oferta como única.
-            - Exemplo: "Essa é a melhor forma de sentir a verdadeira alma da cidade, algo que 99% dos turistas nunca encontram. Pensando nisso, desenhei um roteiro preliminar que foge completamente do óbvio."
-        
-        - **A Oferta Irresistível (2 itens em lista com emojis):** Apresente duas opções ultra-específicas e sensoriais que ataquem diretamente o desejo principal. Crie curiosidade.
-            - Exemplo 1: "🌅 Um pôr do sol em um deck escondido na Praia da Foca, com um drink de boas-vindas que só é servido lá."
-            - Exemplo 2: "🎶 Acesso a um luau com músicos locais que acontece em uma praia quase deserta, sem nenhuma placa indicando o caminho."
-        
-        - **CTA de Baixa Fricção (1-2 linhas):** Faça uma pergunta aberta, que seja fácil de responder "sim" e que passe o controle para o lead.
-            - Exemplo: "Alguma dessas ideias faz seu coração bater mais forte? Se sim, me diga qual que eu te passo os próximos detalhes, sem compromisso."
+1. "resumo_perfil" (string):
+   - Máximo 200 caracteres
+   - Capture a essência psicológica do lead
+   - Identifique motivações e objetivos principais
 
-    FORMATO OBRIGATÓRIO DA RESPOSTA (APENAS O JSON):
-    {
-      "resumo_perfil": "Texto do resumo aqui.",
-      "necessidades_reveladas": [
-        "Insight comercial 1.",
-        "Insight comercial 2."
-      ],
-      "proposta_personalizada": "Texto da proposta aqui..."
-    }
+2. "necessidades_reveladas" (array de strings):
+   - Exatamente 3 a 5 itens
+   - Cada item: máximo 100 caracteres
+   - Transforme respostas em oportunidades comerciais específicas
+
+3. "proposta_personalizada" (string):
+   - Mensagem de WhatsApp personalizada
+   - Estrutura obrigatória:
+     * Gancho pessoal com nome do lead
+     * Validação do desejo principal
+     * 2 ofertas específicas com emojis
+     * Pergunta de baixa fricção
+   - Máximo 500 caracteres
+   - Tom: exclusivo, pessoal, magnético
+
+FORMATO DE RESPOSTA OBRIGATÓRIO:
+Responda APENAS com o JSON válido, sem markdown, sem explicações adicionais.
+
+{
+  "resumo_perfil": "Análise psicológica do lead em até 200 caracteres",
+  "necessidades_reveladas": [
+    "Oportunidade comercial 1",
+    "Oportunidade comercial 2",
+    "Oportunidade comercial 3"
+  ],
+  "proposta_personalizada": "Mensagem WhatsApp personalizada seguindo a estrutura especificada"
+}
+
+IMPORTANTE: Substitua ${nomeLead} pelo nome real do lead. Evite aspas duplas desnecessárias no conteúdo.
   `;
 
   const payload = { contents: [{ parts: [{ text: masterPrompt }] }] };

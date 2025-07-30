@@ -1200,6 +1200,57 @@
                 width: 18px;
                 height: 18px;
             }
+            
+            /* Melhorias para cards em mobile */
+            .dossier-card {
+                min-height: 44px; /* Touch target mínimo */
+                padding: 0.75rem;
+            }
+            
+            .card-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 0.75rem;
+            }
+            
+            .card-title {
+                font-size: 0.875rem;
+            }
+            
+            /* Modal responsivo */
+            .modal-overlay .modal-content {
+                margin: 0.5rem;
+                max-height: calc(100vh - 1rem);
+                border-radius: 12px;
+            }
+            
+            .modal-header {
+                padding: 0.75rem;
+            }
+            
+            .modal-body {
+                padding: 0.75rem;
+                max-height: calc(100vh - 8rem);
+            }
+        }
+        
+        /* Melhorias para dispositivos touch */
+        @media (hover: none) and (pointer: coarse) {
+            .dossier-card {
+                min-height: 44px;
+            }
+            
+            .dossier-card:active {
+                transform: scale(0.98);
+                background: rgba(255, 255, 255, 0.2);
+            }
+            
+            .refresh-btn, .back-to-top {
+                min-width: 44px;
+                min-height: 44px;
+            }
+                height: 18px;
+            }
 
             .feature-text {
                 font-size: 0.75rem;
@@ -1484,7 +1535,28 @@
         const profileIcons = { 'Turista': 'sun-moon', 'Morador': 'home', 'Divulgador': 'megaphone', 'N/A': 'help-circle' };
         
         // --- FUNÇÕES UTILITÁRIAS ---
-        const sanitizeHTML = (str) => { const temp = document.createElement('div'); temp.textContent = str || ''; return temp.innerHTML; };
+        // Função de sanitização robusta contra XSS
+        const sanitizeHTML = (str) => {
+            if (!str) return '';
+            
+            // Cria elemento temporário para escape básico
+            const temp = document.createElement('div');
+            temp.textContent = str;
+            let sanitized = temp.innerHTML;
+            
+            // Remove scripts e event handlers perigosos
+            sanitized = sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+            sanitized = sanitized.replace(/javascript:/gi, '');
+            sanitized = sanitized.replace(/on\w+\s*=/gi, '');
+            sanitized = sanitized.replace(/data:/gi, '');
+            sanitized = sanitized.replace(/vbscript:/gi, '');
+            
+            // Remove tags perigosas
+            const dangerousTags = /<(iframe|object|embed|form|input|button|script|style|link|meta)[^>]*>/gi;
+            sanitized = sanitized.replace(dangerousTags, '');
+            
+            return sanitized;
+        };
         const formatRelativeTime = (isoString) => {
             try {
                 const date = new Date(isoString);
@@ -1506,18 +1578,34 @@
             return name[0].toUpperCase();
         };
 
-        // --- LÓGICA PRINCIPAL DA APLICAÇÃO ---
-        const renderDossiers = () => {
-            grid.innerHTML = '';
+        // --- VARIÁVEIS DE PAGINAÇÃO VIRTUAL ---
+        let currentPage = 0;
+        const itemsPerPage = 20; // Renderiza apenas 20 itens por vez
+        let filteredDossiers = [];
+        
+        // --- LÓGICA PRINCIPAL DA APLICAÇÃO OTIMIZADA ---
+        const renderDossiers = (loadMore = false) => {
+            if (!loadMore) {
+                grid.innerHTML = '';
+                currentPage = 0;
+            }
             emptyState.classList.add('hidden');
             
             const profileFiltered = currentProfileFilter === 'all' ? allDossiers : allDossiers.filter(d => d && d.profile === currentProfileFilter);
-            const filteredDossiers = currentStatusFilter === 'all' ? profileFiltered : profileFiltered.filter(d => d && d.status === currentStatusFilter);
+            filteredDossiers = currentStatusFilter === 'all' ? profileFiltered : profileFiltered.filter(d => d && d.status === currentStatusFilter);
             
             dossierCountEl.textContent = `${filteredDossiers.length} Oportunidades`;
             if (filteredDossiers.length === 0) { emptyState.classList.remove('hidden'); return; }
 
-            filteredDossiers.forEach((dossier, index) => {
+            // Renderização paginada para melhor performance
+            const startIndex = currentPage * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredDossiers.length);
+            const dossiersToRender = filteredDossiers.slice(startIndex, endIndex);
+
+            // Fragment para melhor performance DOM
+            const fragment = document.createDocumentFragment();
+
+            dossiersToRender.forEach((dossier, index) => {
                 const card = document.createElement('button');
                 card.className = 'dossier-card';
                 card.style.animationDelay = `${index * 100}ms`;
@@ -1568,8 +1656,36 @@
                         </span>
                     </div>`;
                 card.addEventListener('click', () => openModal(dossier));
-                grid.appendChild(card);
+                fragment.appendChild(card);
             });
+            
+            grid.appendChild(fragment);
+            currentPage++;
+            
+            // Adiciona botão "Carregar Mais" se houver mais itens
+            if (endIndex < filteredDossiers.length) {
+                const loadMoreBtn = document.createElement('button');
+                loadMoreBtn.className = 'load-more-btn';
+                loadMoreBtn.textContent = `Carregar mais (${filteredDossiers.length - endIndex} restantes)`;
+                loadMoreBtn.style.cssText = `
+                    grid-column: 1 / -1;
+                    padding: 1rem 2rem;
+                    margin: 1rem 0;
+                    background: linear-gradient(135deg, var(--color-ocean-light), var(--color-turquoise));
+                    color: white;
+                    border: none;
+                    border-radius: 12px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                `;
+                loadMoreBtn.addEventListener('click', () => {
+                    loadMoreBtn.remove();
+                    renderDossiers(true);
+                });
+                grid.appendChild(loadMoreBtn);
+            }
+            
             lucide.createIcons();
         };
         
