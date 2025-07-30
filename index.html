@@ -1216,8 +1216,14 @@
             try {
                 const savedState = localStorage.getItem(SESSION_KEY);
                 if (savedState) {
-                    state = JSON.parse(savedState);
-                    return true;
+                    try {
+                        state = JSON.parse(savedState);
+                        return true;
+                    } catch (parseError) {
+                        console.warn("Sessão salva contém dados inválidos:", parseError);
+                        localStorage.removeItem(SESSION_KEY);
+                        return false;
+                    }
                 }
                 return false;
             } catch (e) {
@@ -1615,9 +1621,17 @@
                     isValid = false;
                     errorMessage = 'Por favor, insira um nome válido.';
                 }
-                if (validationType === 'phone' && value.replace(/\D/g, '').length < 9) {
-                    isValid = false;
-                    errorMessage = 'Por favor, insira um telefone válido.';
+                if (validationType === 'phone') {
+                    // More robust phone validation for Brazilian numbers
+                    const cleanPhone = value.replace(/\D/g, '');
+                    // Brazilian phone: 11 digits (with 9) or 10 digits (without 9) + area code
+                    // Must start with valid area code (11-99) and have valid mobile/landline format
+                    const phoneRegex = /^(?:\+55\s?)?(?:\(?(?:1[1-9]|[2-9][0-9])\)?\s?)?(?:9\s?)?[1-9]\d{3}[-\s]?\d{4}$/;
+                    
+                    if (cleanPhone.length < 10 || cleanPhone.length > 13 || !phoneRegex.test(value)) {
+                        isValid = false;
+                        errorMessage = 'Por favor, insira um telefone válido (ex: 21999887766).';
+                    }
                 }
 
                 if (!isValid) {
@@ -1695,8 +1709,6 @@
                 chatCompleto: state.chatCompleto || [],
                 userData: state.userData
             };
-            
-            console.log("Enviando para processamento:", userDataPayload);
             
             try {
                 const response = await fetch(GOOGLE_APP_SCRIPT_URL, {
