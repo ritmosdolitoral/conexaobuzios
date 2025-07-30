@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conexão Búzios - Seu Concierge Virtual</title>
+    <title>Conexão Búzios - Seu Concierge Virtual de IA</title>
+    <meta name="description" content="Descubra Búzios com nossa IA personalizada. Encontre as melhores experiências, restaurantes e atrações da cidade.">
+    <meta name="keywords" content="Búzios, turismo, IA, concierge virtual, praias, restaurantes, hospedagem">
+    <meta name="author" content="Conexão Búzios">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Conexão Búzios - Seu Concierge Virtual de IA">
+    <meta property="og:description" content="Descubra Búzios com nossa IA personalizada">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://conexaobuzios.com">
+    <link rel="canonical" href="https://conexaobuzios.com">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,13 +20,17 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body { 
-            font-family: 'Poppins', sans-serif; 
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
             background-color: #020617; 
-            overflow: hidden; 
+            overflow-x: hidden; 
+            overflow-y: auto;
             line-height: 1.6;
+            margin: 0;
+            padding: 0;
             -webkit-text-size-adjust: 100%;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
         }
         
         /* Estilos do Portal de IA - Melhorado */
@@ -237,37 +250,46 @@
         @media (max-width: 768px) {
             .portal-container {
                 padding: 1rem;
+                min-height: 100vh;
+                min-height: 100dvh; /* Suporte para dispositivos com notch */
             }
             
             .portal-content {
                 max-width: 100%;
+                padding: 0 0.5rem;
             }
             
             .portal-options {
                 grid-template-columns: 1fr;
                 gap: 1rem;
                 max-width: 100%;
+                width: 100%;
             }
             
             .portal-option {
-                padding: 1.5rem 1rem;
+                padding: 1.25rem 1rem;
+                min-height: 44px; /* Tamanho mínimo para touch */
+                touch-action: manipulation; /* Melhora responsividade touch */
             }
             
             .portal-option-icon {
-                font-size: 2rem;
+                font-size: 1.75rem;
             }
             
             .portal-option-title {
-                font-size: 1rem;
+                font-size: 0.95rem;
+                line-height: 1.3;
             }
             
             .portal-option-description {
                 font-size: 0.8rem;
+                line-height: 1.4;
             }
             
             .portal-signature {
-                bottom: 1rem;
+                bottom: max(1rem, env(safe-area-inset-bottom));
                 font-size: 0.75rem;
+                padding: 0 1rem;
             }
         }
         
@@ -1502,49 +1524,52 @@
 </head>
 <body class="antialiased text-gray-800">
 
+    <!-- Skip Links para Acessibilidade -->
+    <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+    
     <!-- Portal de IA (Camada de Introdução) -->
-    <div id="ai-intro-portal" class="portal-container">
-        <div id="particle-container" class="absolute inset-0"></div>
+    <main id="ai-intro-portal" class="portal-container" role="main" aria-label="Portal de entrada do Conexão Búzios">
+        <div id="particle-container" class="absolute inset-0" aria-hidden="true"></div>
         
         <div class="portal-content">
-            <h1 class="portal-title">
-                <span id="intro-typing-text"></span><span class="cursor">|</span>
+            <h1 class="portal-title" id="main-title">
+                <span id="intro-typing-text" aria-live="polite"></span><span class="cursor" aria-hidden="true">|</span>
             </h1>
-            <p class="portal-subtitle">
+            <p class="portal-subtitle" role="banner">
                 Você está falando com a <strong>IA do Conexão Búzios</strong>. Suas respostas me guiam até a proposta perfeita para você.
             </p>
             
-            <div id="portal-actions" class="portal-options">
+            <div id="portal-actions" class="portal-options" role="group" aria-labelledby="main-title">
                 <!-- Os botões serão inseridos aqui via JavaScript -->
             </div>
         </div>
         
         <!-- Assinatura Animada (Inicialmente Oculta) -->
-        <div id="animated-signature" class="portal-signature">
+        <footer id="animated-signature" class="portal-signature" role="contentinfo">
             <span class="sig-part sig-part-1">
-                Um projeto <a href="https://www.instagram.com/conexao.buzios/" target="_blank" rel="noopener noreferrer">Conexão Búzios</a>
+                Um projeto <a href="https://www.instagram.com/conexao.buzios/" target="_blank" rel="noopener noreferrer" aria-label="Visite nosso Instagram">Conexão Búzios</a>
             </span>
             <span class="sig-part sig-part-2">
                 • Potencializado pela IA Gemini
             </span>
-        </div>
-    </div>
+        </footer>
+    </main>
     
     <!-- Container do Chat (Carregado, mas escondido) -->
-    <div id="app-container" class="hidden">
-        <div id="chat-main-container">
+    <div id="app-container" class="hidden" role="application" aria-label="Interface de chat do Conexão Búzios">
+        <div id="chat-main-container" id="main-content">
             <!-- Elemento gráfico sutil de identidade visual -->
-            <div style="position: absolute; top: 1rem; right: 1rem; width: 4rem; height: 4rem; opacity: 0.05; pointer-events: none;">
-                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 100%; height: 100%; color: #2563eb;">
+            <div style="position: absolute; top: 1rem; right: 1rem; width: 4rem; height: 4rem; opacity: 0.05; pointer-events: none;" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 100%; height: 100%; color: #2563eb;" aria-hidden="true">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                 </svg>
             </div>
             
             <!-- Status Bar Dinâmico com PNL -->
-            <div id="dynamic-status-bar" class="status-bar">
-                <span class="status-icon">🤖</span>
+            <div id="dynamic-status-bar" class="status-bar" role="status" aria-live="polite" aria-label="Status da conexão">
+                <span class="status-icon" aria-hidden="true">🤖</span>
                 <span id="status-message" class="status-text">Conectando com a IA da Conexão Búzios...</span>
-                <span class="status-divider">•</span>
+                <span class="status-divider" aria-hidden="true">•</span>
                 <span id="status-feature" class="status-feature">Atendimento 24h</span>
             </div>
             
@@ -1603,9 +1628,43 @@
         let typingTimeout = null;
         let activeRequest = null;
         
+        // Inicialização segura de elementos DOM
+        function initializeDOMElements() {
+            try {
+                introPortal = document.getElementById('ai-intro-portal');
+                appContainer = document.getElementById('app-container');
+                portalActions = document.getElementById('portal-actions');
+                typingTextEl = document.getElementById('intro-typing-text');
+                chatWindow = document.getElementById('chat-window');
+                chatMessages = document.getElementById('chat-messages');
+                inputArea = document.getElementById('input-area');
+                backBtn = document.getElementById('back-btn');
+                animatedSignature = document.getElementById('animated-signature');
+                
+                // Verifica se elementos críticos existem
+                if (!introPortal || !appContainer || !portalActions || !typingTextEl) {
+                    throw new Error('Elementos DOM críticos não encontrados');
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Erro na inicialização de elementos DOM:', error);
+                return false;
+            }
+        }
+        
         // Inicializa ícones Lucide quando disponível
-        if (typeof lucide !== 'undefined' && lucide.createIcons) {
-            lucide.createIcons();
+        function initializeLucideIcons() {
+            try {
+                if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                    lucide.createIcons();
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.warn('Erro ao inicializar ícones Lucide:', error);
+                return false;
+            }
         }
 
         // --- CONFIGURAÇÕES ---
@@ -1709,21 +1768,40 @@
 
         // --- SISTEMA DE VALIDAÇÃO E SANITIZAÇÃO ROBUSTO ---
         function sanitizeHTML(str) {
-            if (!str) return '';
+            if (!str || typeof str !== 'string') return '';
             
+            // Cria um elemento temporário para sanitização
             const temp = document.createElement('div');
             temp.textContent = str;
             let sanitized = temp.innerHTML;
             
-            // Remove conteúdo perigoso
-            sanitized = sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-            sanitized = sanitized.replace(/javascript:/gi, '');
-            sanitized = sanitized.replace(/on\w+\s*=/gi, '');
-            sanitized = sanitized.replace(/data:/gi, '');
-            sanitized = sanitized.replace(/vbscript:/gi, '');
-            sanitized = sanitized.replace(/expression\s*\(/gi, '');
+            // Remove conteúdo perigoso com regex mais robustos
+            const dangerousPatterns = [
+                /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+                /<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi,
+                /<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi,
+                /<embed[^>]*>/gi,
+                /<link[^>]*>/gi,
+                /<meta[^>]*>/gi,
+                /javascript:/gi,
+                /vbscript:/gi,
+                /data:(?!image\/(?:png|jpeg|jpg|gif|svg\+xml))/gi,
+                /on\w+\s*=/gi,
+                /expression\s*\(/gi,
+                /url\s*\(/gi,
+                /@import/gi,
+                /eval\s*\(/gi,
+                /Function\s*\(/gi
+            ];
             
-            return sanitized;
+            dangerousPatterns.forEach(pattern => {
+                sanitized = sanitized.replace(pattern, '');
+            });
+            
+            // Remove atributos perigosos
+            sanitized = sanitized.replace(/\s(style|class|id)\s*=\s*["'][^"']*["']/gi, '');
+            
+            return sanitized.trim();
         }
 
         // Validação robusta de entrada
@@ -2368,28 +2446,40 @@
             // Limpa partículas existentes para evitar acúmulo
             container.innerHTML = '';
             
-            for (let i = 0; i < 30; i++) {
+            // Reduz número de partículas para melhor performance
+            const particleCount = window.innerWidth < 768 ? 15 : 25;
+            
+            // Usa DocumentFragment para melhor performance
+            const fragment = document.createDocumentFragment();
+            
+            for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
-                const size = Math.random() * 5 + 1;
-                const duration = Math.random() * 15 + 10;
+                particle.setAttribute('aria-hidden', 'true'); // Acessibilidade
                 
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.top = `${Math.random() * 100}%`;
-                particle.style.animationDuration = `${duration}s`;
-                particle.style.animationDelay = `${Math.random() * 5}s`;
+                const size = Math.random() * 4 + 2;
+                const duration = Math.random() * 12 + 8;
+                
+                particle.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    animation-duration: ${duration}s;
+                    animation-delay: ${Math.random() * 3}s;
+                `;
+                
+                fragment.appendChild(particle);
                 
                 // Remove a partícula automaticamente após a animação
                 setTimeout(() => {
                     if (particle.parentNode) {
                         particle.parentNode.removeChild(particle);
                     }
-                }, (duration + 5) * 1000); // 5s de delay máximo + duração da animação
-                
-                container.appendChild(particle);
+                }, (duration + 3) * 1000);
             }
+            
+            container.appendChild(fragment);
         }
         
         // Função para limpar todas as partículas
@@ -2410,26 +2500,38 @@
         }
 
         function addMessageToChat(text, sender, isRestored = false, isWelcomeMessage = false) {
-            if (!chatMessages) return;
+            if (!chatMessages || !text) return;
             
             const animationClass = isRestored ? '' : 'animate-pop-in';
             const welcomeClass = isWelcomeMessage ? 'welcome-message' : '';
-            const sanitizedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
-            chatMessages.insertAdjacentHTML('beforeend', `<div class="chat-bubble ${sender} ${animationClass} ${welcomeClass}">${sanitizedText}</div>`);
+            const sanitizedText = sanitizeHTML(text).replace(/\n/g, "<br>");
+            
+            // Cria elemento de forma mais segura
+            const messageElement = document.createElement('div');
+            messageElement.className = `chat-bubble ${sender} ${animationClass} ${welcomeClass}`;
+            messageElement.innerHTML = sanitizedText;
+            
+            // Adiciona elemento ao DOM
+            chatMessages.appendChild(messageElement);
             
             if (!isRestored) {
                 // Adiciona mensagem ao chatLog e chatCompleto
-                const chatEntry = { text, sender, isWelcomeMessage, timestamp: new Date().toISOString() };
+                const chatEntry = { 
+                    text: text.substring(0, 1000), // Limita tamanho
+                    sender, 
+                    isWelcomeMessage, 
+                    timestamp: new Date().toISOString() 
+                };
                 setState({ 
-                    chatLog: [...state.chatLog, chatEntry],
-                    chatCompleto: [...(state.chatCompleto || []), chatEntry]
+                    chatLog: [...(state.chatLog || []).slice(-50), chatEntry], // Mantém apenas 50 mensagens
+                    chatCompleto: [...(state.chatCompleto || []).slice(-100), chatEntry] // Mantém apenas 100 mensagens
                 });
             }
             
-            // Always scroll to bottom when new message is added
-            setTimeout(() => {
+            // Scroll otimizado
+            requestAnimationFrame(() => {
                 scrollToBottom();
-            }, 150);
+            });
         }
         
         function closeProposalSuccess() {
@@ -2501,16 +2603,23 @@
         }
         
         function scrollToBottom() { 
-            if (chatMessages) {
-                // Force scroll to bottom with a slight delay to ensure DOM is updated
-                setTimeout(() => {
+            if (!chatMessages) return;
+            
+            // Usa requestAnimationFrame para melhor performance
+            requestAnimationFrame(() => {
+                try {
                     chatMessages.scrollTop = chatMessages.scrollHeight;
-                    // Double check to ensure it scrolled
+                    
+                    // Verifica se precisa tentar novamente
                     if (chatMessages.scrollTop < chatMessages.scrollHeight - chatMessages.clientHeight - 10) {
-                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                        requestAnimationFrame(() => {
+                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                        });
                     }
-                }, 100);
-            }
+                } catch (error) {
+                    console.warn('Erro ao fazer scroll:', error);
+                }
+            });
         }
 
         function disableAllInputs(shouldDisable) {
@@ -2915,28 +3024,41 @@
         }
 
         function init() {
+            // Verifica se elementos DOM foram inicializados
+            if (!initializeDOMElements()) {
+                console.error('Falha na inicialização dos elementos DOM');
+                showFallbackInterface();
+                return;
+            }
+            
             if (restoreState() && state.currentStepId !== 'start') {
-                introPortal.style.display = 'none';
-                appContainer.classList.remove('hidden');
-                appContainer.classList.add('flex');
-                animatedSignature.classList.add('visible'); // Garante que a assinatura seja visível se a sessão for restaurada
+                if (introPortal) introPortal.style.display = 'none';
+                if (appContainer) {
+                    appContainer.classList.remove('hidden');
+                    appContainer.classList.add('flex');
+                }
+                if (animatedSignature) animatedSignature.classList.add('visible');
                 rebuildUIFromState();
                 displayStep(state.currentStepId);
                 
                 // Restaura o sistema dinâmico se necessário
-                if (state.userData.perfil) {
+                if (state.userData && state.userData.perfil) {
                     currentProfile = state.userData.perfil;
                     setTimeout(startDynamicMessaging, 2000);
                 }
             } else {
                 state = JSON.parse(JSON.stringify(initialState)); // Deep copy
                 saveState();
-                chatMessages.innerHTML = '';
-                appContainer.classList.add('hidden');
-                appContainer.classList.remove('flex');
-                introPortal.style.display = 'flex';
-                introPortal.style.opacity = '1';
-                animatedSignature.classList.remove('visible'); // Garante que a assinatura comece invisível
+                if (chatMessages) chatMessages.innerHTML = '';
+                if (appContainer) {
+                    appContainer.classList.add('hidden');
+                    appContainer.classList.remove('flex');
+                }
+                if (introPortal) {
+                    introPortal.style.display = 'flex';
+                    introPortal.style.opacity = '1';
+                }
+                if (animatedSignature) animatedSignature.classList.remove('visible');
                 createParticles();
                 cyclePhrases(); // Inicia o ciclo de frases
                 displayStep('start');
@@ -3197,23 +3319,15 @@
         // === INICIALIZAÇÃO ROBUSTA DO SISTEMA ===
         function initializeHomepage() {
             try {
-                // Verifica se elementos essenciais existem
-                const portalContainer = document.getElementById('ai-intro-portal');
-                const portalActions = document.getElementById('portal-actions');
-                const typingText = document.getElementById('intro-typing-text');
+                // Inicializa ícones Lucide primeiro
+                initializeLucideIcons();
                 
-                if (!portalContainer || !portalActions || !typingText) {
+                // Inicializa elementos DOM
+                if (!initializeDOMElements()) {
                     console.error('Elementos essenciais do portal não encontrados');
+                    showFallbackInterface();
                     return false;
                 }
-                
-                // Inicializa elementos globais
-                introPortal = portalContainer;
-                appContainer = document.getElementById('app-container');
-                chatMessages = document.getElementById('chat-messages');
-                backBtn = document.getElementById('back-btn');
-                animatedSignature = document.getElementById('animated-signature');
-                typingTextEl = typingText;
                 
                 // Cria botões do portal imediatamente
                 createPortalButtons();
