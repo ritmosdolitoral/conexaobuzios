@@ -27,15 +27,10 @@ O **Conexão Búzios** é uma plataforma que combina inteligência artificial co
 
 ### ✅ Migração do Tailwind CSS
 
-3. **Substituição do CDN por Instalação Local**
-   - **Problema**: Uso de `cdn.tailwindcss.com` inadequado para produção
-   - **Solução**: Configuração completa com PostCSS e build local
-   - **Arquivos criados**:
-     - `package.json` - Dependências e scripts
-     - `tailwind.config.js` - Configuração customizada
-     - `postcss.config.js` - Processamento CSS
-     - `src/input.css` - Arquivo fonte CSS
-     - `dist/output.css` - CSS compilado e minificado
+3. **Otimização do Tailwind CSS**
+   - **Problema**: Uso de `cdn.tailwindcss.com` sem comentários explicativos
+   - **Solução**: Mantido CDN com comentários documentados para simplicidade
+   - **Benefício**: Estrutura mais simples mantendo todas as funcionalidades
 
 ### ✅ Melhorias de Segurança
 
@@ -70,16 +65,15 @@ O **Conexão Búzios** é uma plataforma que combina inteligência artificial co
    - **Implementação**: Preconexões para recursos externos
    - **Benefício**: Carregamento mais rápido de fontes e scripts
 
-10. **CSS Minificado**
-    - **Build**: CSS compilado e minificado para produção
-    - **Redução**: Tamanho do arquivo CSS otimizado
+10. **Código Otimizado**
+    - **Limpeza**: Remoção de variáveis duplicadas e código desnecessário
+    - **Organização**: Estrutura mais limpa e bem documentada
 
 ## 🚀 Configuração e Uso
 
 ### Pré-requisitos
 
-- Node.js 16+ 
-- NPM ou Yarn
+Nenhum! O projeto é totalmente funcional usando apenas arquivos estáticos.
 
 ### Instalação
 
@@ -89,62 +83,42 @@ git clone https://github.com/ritmosedolitoral/conexaobuzios.git
 cd conexaobuzios
 ```
 
-2. **Instale as dependências**
-```bash
-npm install
-```
+2. **Abra os arquivos**
+- `index.html` - Portal principal do concierge
+- `dashboard.html` - Painel de oportunidades
+- `codigo.gs` - Script para Google Apps Script (backend)
 
-3. **Compile o CSS para desenvolvimento**
-```bash
-npm run dev
-```
+### Como Usar
 
-4. **Compile o CSS para produção**
-```bash
-npm run build
-```
-
-### Scripts Disponíveis
-
-- `npm run dev` - Compila CSS em modo watch para desenvolvimento
-- `npm run build` - Compila CSS minificado para produção  
-- `npm run build-css` - Compila CSS em modo watch
-- `npm run build-css-prod` - Compila CSS minificado
+1. **Desenvolvimento Local**: Abra os arquivos HTML diretamente no navegador
+2. **Produção**: Faça upload para qualquer servidor web ou GitHub Pages
+3. **Backend**: Configure o `codigo.gs` no Google Apps Script
 
 ### Estrutura do Projeto
 
 ```
 conexaobuzios/
-├── src/
-│   └── input.css          # Arquivo fonte CSS com Tailwind
-├── dist/
-│   └── output.css         # CSS compilado e minificado
-├── index.html             # Portal principal
-├── dashboard.html         # Painel de oportunidades
-├── codigo.gs              # Script Google Apps Script
-├── package.json           # Dependências e scripts
-├── tailwind.config.js     # Configuração Tailwind CSS
-├── postcss.config.js      # Configuração PostCSS
-└── README.md              # Documentação
+├── index.html             # Portal principal do concierge virtual
+├── dashboard.html         # Painel de oportunidades e leads
+├── codigo.gs              # Backend Google Apps Script
+└── README.md              # Documentação completa
 
 ```
 
-## 🎨 Personalização CSS
+## 🎨 Design e Estilo
 
-O projeto utiliza um sistema de design customizado baseado no Tailwind CSS:
+O projeto utiliza Tailwind CSS via CDN com estilos customizados:
 
-### Cores Customizadas
-- **Oceano Búzios**: `buzios-ocean-{deep|medium|light}`
-- **Turquesa**: `buzios-turquoise` 
-- **Areia**: `buzios-sand-{warm|medium}`
-- **Dourado**: `buzios-gold`
-- **Verde**: `buzios-green`
+### Paleta de Cores
+- **Azul Oceano**: Tons inspirados no mar de Búzios
+- **Turquesa**: Cor principal dos CTAs e elementos interativos
+- **Dourado**: Destaques e elementos premium
+- **Gradientes**: Efeitos suaves que remetem ao pôr do sol
 
-### Componentes Reutilizáveis
-- `.glass-card` - Efeito glassmorphism
-- `.btn-primary`, `.btn-secondary` - Botões estilizados
-- `.chat-bubble` - Bolhas de conversa
-- `.status-tag` - Tags de status
+### Efeitos Visuais
+- **Glassmorphism**: Elementos com transparência e blur
+- **Animações Suaves**: Transições que melhoram a experiência
+- **Responsividade**: Design que funciona em qualquer dispositivo
 
 ## 🔒 Segurança
 
