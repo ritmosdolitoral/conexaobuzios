@@ -1190,6 +1190,8 @@
             color: #374151;
         }
         
+        /* === DESIGN RESPONSIVO E ACESSÍVEL AVANÇADO === */
+        
         /* Animações Respeitam Preferências de Movimento */
         @media (prefers-reduced-motion: reduce) {
             * {
@@ -1197,6 +1199,203 @@
                 animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
             }
+        }
+        
+        /* Design Consistente e Intuitivo */
+        .visual-hierarchy {
+            --level-1: var(--font-size-3xl); /* Títulos principais */
+            --level-2: var(--font-size-2xl); /* Subtítulos */
+            --level-3: var(--font-size-xl);  /* Seções */
+            --level-4: var(--font-size-lg);  /* Conteúdo importante */
+            --level-5: var(--font-size-base); /* Texto normal */
+            --level-6: var(--font-size-sm);  /* Texto secundário */
+        }
+        
+        /* Interface Simplificada para Usuários Leigos */
+        .simple-ui {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--color-text-primary);
+        }
+        
+        .simple-button {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            min-height: 48px; /* Acessibilidade touch */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .simple-button:hover:not(:disabled) {
+            background: var(--color-primary-hover);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+        
+        .simple-button:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+        
+        .simple-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Cards Melhorados */
+        .enhanced-card {
+            background: var(--color-bg-primary);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-border);
+            transition: var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .enhanced-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+            opacity: 0;
+            transition: var(--transition-normal);
+        }
+        
+        .enhanced-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+        
+        .enhanced-card:hover::before {
+            opacity: 1;
+        }
+        
+        /* Feedback Visual Melhorado */
+        .status-message {
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .status-message.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #065f46;
+            border-left: 4px solid var(--color-success);
+        }
+        
+        .status-message.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #991b1b;
+            border-left: 4px solid var(--color-error);
+        }
+        
+        .status-message.info {
+            background: rgba(59, 130, 246, 0.1);
+            color: #1e40af;
+            border-left: 4px solid var(--color-info);
+        }
+        
+        /* Loading States Visuais */
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading-shimmer 2s infinite;
+            border-radius: var(--border-radius);
+        }
+        
+        @keyframes loading-shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        /* Responsividade Avançada */
+        @media (max-width: 768px) {
+            .portal-container {
+                padding: var(--spacing-md);
+                min-height: 100vh;
+            }
+            
+            .portal-options {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+            
+            .portal-option {
+                padding: var(--spacing-lg);
+                text-align: center;
+            }
+            
+            .simple-button {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .enhanced-card {
+                margin: var(--spacing-sm);
+                padding: var(--spacing-lg);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            :root {
+                --font-size-3xl: 1.5rem;
+                --font-size-2xl: 1.25rem;
+                --font-size-xl: 1.125rem;
+                --spacing-xl: 1.5rem;
+                --spacing-2xl: 2rem;
+            }
+            
+            .portal-title {
+                font-size: var(--font-size-2xl);
+            }
+            
+            .portal-subtitle {
+                font-size: var(--font-size-sm);
+            }
+        }
+        
+        /* Acessibilidade Avançada */
+        @media (prefers-contrast: high) {
+            :root {
+                --color-primary: #0066cc;
+                --color-text-primary: #000000;
+                --color-bg-primary: #ffffff;
+                --color-border: #666666;
+            }
+        }
+        
+        /* Focus visível para navegação por teclado */
+        *:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+        
+        /* Texto sempre legível */
+        .text-readable {
+            font-size: var(--font-size-base);
+            line-height: 1.6;
+            color: var(--color-text-primary);
+            max-width: 65ch; /* Largura ideal para leitura */
         }
         
         /* Orientação landscape em mobile */
@@ -1385,17 +1584,29 @@
     </div>
     
     <script>
-        // --- ELEMENTOS DA DOM ---
-        const introPortal = document.getElementById('ai-intro-portal');
-        const appContainer = document.getElementById('app-container');
-        const portalActions = document.getElementById('portal-actions');
-        const typingTextEl = document.getElementById('intro-typing-text');
-        const chatWindow = document.getElementById('chat-window');
-        const chatMessages = document.getElementById('chat-messages');
-        const inputArea = document.getElementById('input-area');
-        const backBtn = document.getElementById('back-btn');
-        const animatedSignature = document.getElementById('animated-signature');
-        lucide.createIcons();
+        // --- ELEMENTOS DOM GLOBAIS (INICIALIZADOS DINAMICAMENTE) ---
+        let introPortal = null;
+        let appContainer = null;
+        let portalActions = null;
+        let typingTextEl = null;
+        let chatWindow = null;
+        let chatMessages = null;
+        let inputArea = null;
+        let backBtn = null;
+        let animatedSignature = null;
+        
+        // Variáveis de controle global
+        let currentProfile = '';
+        let messageInterval = null;
+        let messageTimeout = null;
+        let statusBarTimeout = null;
+        let typingTimeout = null;
+        let activeRequest = null;
+        
+        // Inicializa ícones Lucide quando disponível
+        if (typeof lucide !== 'undefined' && lucide.createIcons) {
+            lucide.createIcons();
+        }
 
         // --- CONFIGURAÇÕES ---
         const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHC3bAoL_c5rscJV2xbwVi9KMedM3QHbWCZ3bo64w0DbiMGOtnahL9BynJ5ADao63I/exec";
@@ -1604,16 +1815,182 @@
             }
         };
 
-        // --- SISTEMA DE PROCESSAMENTO DE LINGUAGEM NATURAL ---
+        // === SISTEMA AVANÇADO DE PROCESSAMENTO DE LINGUAGEM NATURAL ===
         const nlpPatterns = {
-            urgencia: /\b(urgente|rápido|agora|hoje|amanhã|logo|imediato)\b/i,
-            orcamento: /\b(barato|caro|preço|valor|custo|orçamento|R\$|real|reais)\b/i,
-            grupo: /\b(família|casal|amigos|sozinho|grupo|galera|pessoal)\b/i,
-            tempo: /\b(fim de semana|feriado|férias|semana|dias|mês|ano)\b/i,
-            interesse: /\b(praia|restaurante|balada|cultura|história|natureza|aventura|relaxar)\b/i,
-            negativo: /\b(não|nunca|sem|nada|nenhum|ruim|péssimo|horrível)\b/i,
-            positivo: /\b(sim|ótimo|excelente|perfeito|adorei|maravilhoso|incrível)\b/i
+            urgencia: /\b(urgente|rápido|agora|hoje|amanhã|logo|imediato|pressa|já)\b/i,
+            orcamento: /\b(barato|caro|preço|valor|custo|orçamento|R\$|real|reais|dinheiro|grana|economico)\b/i,
+            grupo: /\b(família|casal|amigos|sozinho|grupo|galera|pessoal|crianças|filhos|pais)\b/i,
+            tempo: /\b(fim de semana|feriado|férias|semana|dias|mês|ano|manhã|tarde|noite)\b/i,
+            interesse: /\b(praia|restaurante|balada|cultura|história|natureza|aventura|relaxar|compras|festa)\b/i,
+            negativo: /\b(não|nunca|sem|nada|nenhum|ruim|péssimo|horrível|problema|difícil)\b/i,
+            positivo: /\b(sim|ótimo|excelente|perfeito|adorei|maravilhoso|incrível|legal|bom)\b/i,
+            localização: /\b(centro|praia|geribá|ferradura|tartaruga|joão fernandes|azeda|brava)\b/i,
+            atividade: /\b(comer|dormir|passear|conhecer|visitar|comprar|festa|relaxar|nadar)\b/i
         };
+        
+        // Sistema inteligente de análise contextual
+        class AdvancedNLP {
+            constructor() {
+                this.context = {
+                    previousResponses: [],
+                    userProfile: null,
+                    confidence: 0
+                };
+            }
+            
+            analyzeIntent(text, context = {}) {
+                if (!text || typeof text !== 'string') return this.getDefaultAnalysis();
+                
+                const cleanText = text.toLowerCase().trim();
+                const words = cleanText.split(/\s+/);
+                
+                const analysis = {
+                    urgency: this.detectUrgency(cleanText),
+                    budget: this.detectBudget(cleanText),
+                    groupType: this.detectGroup(cleanText),
+                    interests: this.detectInterests(cleanText),
+                    sentiment: this.analyzeSentiment(cleanText),
+                    location: this.detectLocation(cleanText),
+                    activity: this.detectActivity(cleanText),
+                    confidence: this.calculateConfidence(cleanText, words),
+                    suggestions: this.generateSuggestions(cleanText),
+                    tone: this.detectTone(cleanText)
+                };
+                
+                // Atualiza contexto
+                this.context.previousResponses.push(text);
+                if (this.context.previousResponses.length > 10) {
+                    this.context.previousResponses.shift();
+                }
+                
+                return analysis;
+            }
+            
+            detectUrgency(text) {
+                const urgentWords = text.match(nlpPatterns.urgencia);
+                if (urgentWords) {
+                    if (text.includes('agora') || text.includes('já')) return 'muito_alta';
+                    if (text.includes('hoje') || text.includes('amanhã')) return 'alta';
+                    return 'média';
+                }
+                return 'baixa';
+            }
+            
+            detectBudget(text) {
+                if (nlpPatterns.orcamento.test(text)) {
+                    if (text.includes('barato') || text.includes('econômico')) return 'baixo';
+                    if (text.includes('caro') || text.includes('luxo')) return 'alto';
+                    return 'médio';
+                }
+                return 'indefinido';
+            }
+            
+            detectGroup(text) {
+                if (/família|filhos|crianças/i.test(text)) return 'família';
+                if (/casal|namorado|marido|esposa/i.test(text)) return 'casal';
+                if (/amigos|galera|turma/i.test(text)) return 'amigos';
+                if (/sozinho|só|individual/i.test(text)) return 'solo';
+                return 'indefinido';
+            }
+            
+            detectInterests(text) {
+                const interests = [];
+                if (nlpPatterns.interesse.test(text)) {
+                    if (/praia|mar|sol|areia/i.test(text)) interests.push('praia');
+                    if (/comida|restaurante|comer/i.test(text)) interests.push('gastronomia');
+                    if (/festa|balada|noite/i.test(text)) interests.push('vida_noturna');
+                    if (/história|cultura|museu/i.test(text)) interests.push('cultura');
+                    if (/natureza|trilha|aventura/i.test(text)) interests.push('aventura');
+                }
+                return interests;
+            }
+            
+            detectLocation(text) {
+                const locations = [];
+                if (/centro|rua das pedras/i.test(text)) locations.push('centro');
+                if (/geribá/i.test(text)) locations.push('geribá');
+                if (/ferradura/i.test(text)) locations.push('ferradura');
+                return locations;
+            }
+            
+            detectActivity(text) {
+                const activities = [];
+                if (/comer|gastronomia|restaurante/i.test(text)) activities.push('gastronomia');
+                if (/passear|conhecer|visitar/i.test(text)) activities.push('turismo');
+                if (/comprar|shopping/i.test(text)) activities.push('compras');
+                if (/festa|balada|diversão/i.test(text)) activities.push('entretenimento');
+                return activities;
+            }
+            
+            analyzeSentiment(text) {
+                const positive = (text.match(nlpPatterns.positivo) || []).length;
+                const negative = (text.match(nlpPatterns.negativo) || []).length;
+                
+                if (positive > negative + 1) return 'muito_positivo';
+                if (positive > negative) return 'positivo';
+                if (negative > positive) return 'negativo';
+                return 'neutro';
+            }
+            
+            detectTone(text) {
+                if (/por favor|obrigado|desculpa/i.test(text)) return 'educado';
+                if (/!\s*$|!!|!!!/.test(text)) return 'animado';
+                if (/\?.*\?/.test(text)) return 'curioso';
+                return 'casual';
+            }
+            
+            calculateConfidence(text, words) {
+                let score = 0.3; // Base
+                
+                // Comprimento e detalhamento
+                if (words.length > 5) score += 0.2;
+                if (words.length > 10) score += 0.2;
+                
+                // Padrões identificados
+                Object.values(nlpPatterns).forEach(pattern => {
+                    if (pattern.test(text)) score += 0.1;
+                });
+                
+                // Contexto histórico
+                if (this.context.previousResponses.length > 0) score += 0.1;
+                
+                return Math.min(score, 1.0);
+            }
+            
+            generateSuggestions(text) {
+                const suggestions = [];
+                
+                if (/praia/i.test(text)) {
+                    suggestions.push('Que tal conhecer as praias mais bonitas de Búzios?');
+                }
+                if (/restaurante|comida/i.test(text)) {
+                    suggestions.push('Posso indicar os melhores restaurantes locais!');
+                }
+                if (/festa|noite/i.test(text)) {
+                    suggestions.push('A vida noturna de Búzios é incrível, quer dicas?');
+                }
+                
+                return suggestions;
+            }
+            
+            getDefaultAnalysis() {
+                return {
+                    urgency: 'baixa',
+                    budget: 'indefinido',
+                    groupType: 'indefinido',
+                    interests: [],
+                    sentiment: 'neutro',
+                    location: [],
+                    activity: [],
+                    confidence: 0.1,
+                    suggestions: [],
+                    tone: 'casual'
+                };
+            }
+        }
+        
+        // Instância global do NLP
+        const nlpProcessor = new AdvancedNLP();
 
         function analyzeUserIntent(text) {
             if (!text || typeof text !== 'string') return {};
@@ -2700,10 +3077,68 @@
             return typeMessages[Math.floor(Math.random() * typeMessages.length)];
         }
         
+        // === SISTEMA DE RECUPERAÇÃO DE ERROS E INICIALIZAÇÃO ROBUSTA ===
+        
+        // Verificação e inicialização segura de elementos DOM
+        function safeGetElement(id, fallbackHTML = '') {
+            try {
+                const element = document.getElementById(id);
+                if (!element && fallbackHTML) {
+                    console.warn(`Elemento ${id} não encontrado, criando fallback`);
+                    const fallback = document.createElement('div');
+                    fallback.id = id;
+                    fallback.innerHTML = fallbackHTML;
+                    document.body.appendChild(fallback);
+                    return fallback;
+                }
+                return element;
+            } catch (error) {
+                console.error(`Erro ao acessar elemento ${id}:`, error);
+                return null;
+            }
+        }
+        
+        // Sistema de recuperação de erros JavaScript
+        window.addEventListener('error', (event) => {
+            console.error('Erro JavaScript capturado:', event.error);
+            if (typeof feedback !== 'undefined') {
+                feedback.error('Ocorreu um erro. A página será recarregada automaticamente.');
+                setTimeout(() => location.reload(), 3000);
+            }
+        });
+        
         // Gerenciamento robusto de intervalos para prevenir vazamentos
-        let messageInterval = null;
-        let messageTimeout = null;
-        let statusBarTimeout = null;
+        const intervalManager = {
+            intervals: new Set(),
+            timeouts: new Set(),
+            
+            setInterval(callback, delay) {
+                const id = setInterval(callback, delay);
+                this.intervals.add(id);
+                return id;
+            },
+            
+            setTimeout(callback, delay) {
+                const id = setTimeout(() => {
+                    callback();
+                    this.timeouts.delete(id);
+                }, delay);
+                this.timeouts.add(id);
+                return id;
+            },
+            
+            clearAll() {
+                this.intervals.forEach(id => clearInterval(id));
+                this.timeouts.forEach(id => clearTimeout(id));
+                this.intervals.clear();
+                this.timeouts.clear();
+            }
+        };
+        
+        // Limpeza automática na saída da página
+        window.addEventListener('beforeunload', () => {
+            intervalManager.clearAll();
+        });
         
         function startDynamicMessaging() {
             // Limpa todos os intervalos e timeouts existentes
@@ -2759,14 +3194,175 @@
         // Limpa intervalos antes de sair da página
         window.addEventListener('beforeunload', stopDynamicMessaging);
         
-        document.addEventListener('DOMContentLoaded', () => {
-            init();
-            // Inicia o sistema de mensagens dinâmicas
-            setTimeout(() => {
-                updateStatusBar("🎯 Descobrindo experiências únicas para você...", "highlight", 3000);
-                setTimeout(startDynamicMessaging, 3000);
-            }, 1000);
-        });
+        // === INICIALIZAÇÃO ROBUSTA DO SISTEMA ===
+        function initializeHomepage() {
+            try {
+                // Verifica se elementos essenciais existem
+                const portalContainer = document.getElementById('ai-intro-portal');
+                const portalActions = document.getElementById('portal-actions');
+                const typingText = document.getElementById('intro-typing-text');
+                
+                if (!portalContainer || !portalActions || !typingText) {
+                    console.error('Elementos essenciais do portal não encontrados');
+                    return false;
+                }
+                
+                // Inicializa elementos globais
+                introPortal = portalContainer;
+                appContainer = document.getElementById('app-container');
+                chatMessages = document.getElementById('chat-messages');
+                backBtn = document.getElementById('back-btn');
+                animatedSignature = document.getElementById('animated-signature');
+                typingTextEl = typingText;
+                
+                // Cria botões do portal imediatamente
+                createPortalButtons();
+                
+                // Inicializa estado
+                init();
+                
+                // Inicia animações
+                createParticles();
+                cyclePhrases();
+                
+                // Sistema de mensagens dinâmicas
+                setTimeout(() => {
+                    if (typeof updateStatusBar === 'function') {
+                        updateStatusBar("🎯 Conectando você com Búzios...", "highlight", 3000);
+                        setTimeout(() => {
+                            if (typeof startDynamicMessaging === 'function') {
+                                startDynamicMessaging();
+                            }
+                        }, 3000);
+                    }
+                }, 1000);
+                
+                return true;
+            } catch (error) {
+                console.error('Erro na inicialização:', error);
+                showFallbackInterface();
+                return false;
+            }
+        }
+        
+        // Cria botões do portal principal
+        function createPortalButtons() {
+            const portalActions = document.getElementById('portal-actions');
+            if (!portalActions) return;
+            
+            const buttons = [
+                {
+                    icon: '🏖️',
+                    title: 'Sou Turista',
+                    description: 'Quero conhecer Búzios e suas atrações',
+                    action: () => handlePortalChoice('turista')
+                },
+                {
+                    icon: '🏠',
+                    title: 'Sou Morador',
+                    description: 'Moro aqui e busco conexões locais',
+                    action: () => handlePortalChoice('morador')
+                },
+                {
+                    icon: '📢',
+                    title: 'Quero Divulgar',
+                    description: 'Tenho um negócio ou serviço para promover',
+                    action: () => handlePortalChoice('divulgador')
+                }
+            ];
+            
+            const buttonsHTML = buttons.map(btn => `
+                <div class="portal-option" onclick="handlePortalChoice('${btn.title.toLowerCase().includes('turista') ? 'turista' : btn.title.toLowerCase().includes('morador') ? 'morador' : 'divulgador'}')">
+                    <span class="portal-option-icon">${btn.icon}</span>
+                    <div class="portal-option-title">${btn.title}</div>
+                    <div class="portal-option-description">${btn.description}</div>
+                </div>
+            `).join('');
+            
+            portalActions.innerHTML = buttonsHTML;
+        }
+        
+        // Manipula escolha do portal
+        function handlePortalChoice(choice) {
+            try {
+                currentProfile = choice;
+                
+                // Anima transição
+                const portal = document.getElementById('ai-intro-portal');
+                const app = document.getElementById('app-container');
+                
+                if (portal && app) {
+                    portal.style.opacity = '0';
+                    setTimeout(() => {
+                        portal.style.display = 'none';
+                        app.classList.remove('hidden');
+                        app.classList.add('flex');
+                        
+                        // Inicia conversa
+                        displayStep('start');
+                        
+                        // Ativa assinatura
+                        if (animatedSignature) {
+                            animatedSignature.classList.add('visible');
+                        }
+                    }, 800);
+                }
+                
+                feedback.success(`Perfil selecionado: ${choice.charAt(0).toUpperCase() + choice.slice(1)}`);
+                
+            } catch (error) {
+                console.error('Erro ao processar escolha:', error);
+                feedback.error('Erro ao processar sua escolha. Tente novamente.');
+            }
+        }
+        
+        // Interface de fallback para casos de erro
+        function showFallbackInterface() {
+            const body = document.body;
+            body.innerHTML = `
+                <div style="
+                    min-height: 100vh;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 2rem;
+                    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+                    color: white;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                    text-align: center;
+                ">
+                    <h1 style="font-size: 2rem; margin-bottom: 1rem;">Conexão Búzios</h1>
+                    <p style="margin-bottom: 2rem; opacity: 0.9;">Estamos com problemas técnicos temporários.</p>
+                    <button onclick="location.reload()" style="
+                        background: white;
+                        color: #0ea5e9;
+                        border: none;
+                        padding: 1rem 2rem;
+                        border-radius: 0.5rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        font-size: 1rem;
+                    ">Tentar Novamente</button>
+                </div>
+            `;
+        }
+
+        // Inicialização com múltiplas tentativas
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeHomepage);
+        } else {
+            initializeHomepage();
+        }
+        
+        // Fallback para casos extremos
+        setTimeout(() => {
+            const portal = document.getElementById('ai-intro-portal');
+            if (portal && portal.style.display !== 'none' && !portal.querySelector('.portal-option')) {
+                console.warn('Portal não inicializou corretamente, tentando recuperação...');
+                initializeHomepage();
+            }
+        }, 2000);
     </script>
 </body>
 </html>
