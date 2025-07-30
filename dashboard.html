@@ -4,2247 +4,491 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel de Oportunidades - Conexão Búzios</title>
-    <!-- Content Security Policy para maior segurança -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://script.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://script.google.com; img-src 'self' data: https:;">
-    <!-- Meta tags para SEO e acessibilidade -->
     <meta name="description" content="Painel de Oportunidades - Conexão Búzios. Gerencie leads qualificados e oportunidades de negócio em tempo real">
-    <meta name="keywords" content="Búzios, leads, oportunidades, negócios, dashboard, CRM">
+    <meta name="keywords" content="leads, oportunidades, negócios, Búzios, dashboard, gestão, vendas">
     <meta name="author" content="Conexão Búzios">
-    <meta name="robots" content="noindex, nofollow">
-    <!-- Preconexões para performance -->
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Painel de Oportunidades - Conexão Búzios">
+    <meta property="og:description" content="Gerencie leads qualificados e oportunidades de negócio em Búzios">
+    <meta property="og:type" content="website">
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link rel="dns-prefetch" href="https://unpkg.com">
     <link rel="dns-prefetch" href="https://script.google.com">
-    <!-- Tailwind CSS via CDN para simplicidade (corrigido e otimizado) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root {
-            /* === PALETA DE CORES CONEXÃO BÚZIOS - TEMA LITORÂNEO === */
-            --color-ocean-deep: #0a3d5c;
-            --color-ocean-medium: #1e6b96;
-            --color-ocean-light: #2980b9;
-            --color-turquoise: #17a2b8;
-            --color-sand-warm: #f4e6d3;
-            --color-sand-medium: #e8d5b7;
-            --color-gold-soft: #ffd700;
-            --color-green-leaf: #20c997;
-            --color-lilac-soft: #a78bfa;
-            --color-white-warm: #fdfcfa;
-            --color-gray-ocean: #34495e;
-            --color-gray-light: #95a5a6;
-            
-            /* === BACKGROUNDS E SURFACES === */
-            --color-bg: linear-gradient(135deg, var(--color-ocean-deep) 0%, var(--color-ocean-medium) 40%, var(--color-turquoise) 100%);
-            --color-surface: rgba(29, 107, 150, 0.15);
-            --color-glass: rgba(29, 107, 150, 0.25);
-            --color-border: rgba(244, 230, 211, 0.2);
-            --color-border-hover: rgba(244, 230, 211, 0.4);
-            
-            /* === TEXTOS === */
-            --color-text-primary: #fdfcfa;
-            --color-text-secondary: #f4e6d3;
-            --color-text-muted: #bdc3c7;
-            --color-text-accent: #2980b9;
-            
-            /* === ESTADOS === */
-            --color-success: #20c997;
-            --color-warning: #ffc107;
-            --color-danger: #dc3545;
-            --color-info: #17a2b8;
-            
-            /* === SOMBRAS E EFEITOS === */
-            --shadow-card: 0 8px 32px rgba(10, 61, 92, 0.3);
-            --shadow-card-hover: 0 12px 48px rgba(10, 61, 92, 0.4);
-            --shadow-button: 0 4px 16px rgba(41, 128, 185, 0.3);
-            --shadow-floating: 0 20px 60px rgba(0, 0, 0, 0.15);
-            
-            /* === TRANSIÇÕES === */
-            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: var(--color-bg);
-            color: var(--color-text-primary); 
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        /* === LAYOUT PRINCIPAL === */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1rem;
-            position: relative;
-        }
-
-        /* === HERO SECTION - APRESENTAÇÃO COMPACTA E INTELIGENTE === */
-        .hero-section {
-            position: relative;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, var(--color-ocean-deep) 0%, var(--color-ocean-medium) 50%, var(--color-turquoise) 100%);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(244, 230, 211, 0.3);
-            border-radius: 20px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow-floating);
-            overflow: hidden;
-            transition: var(--transition-smooth);
-            animation: heroSlideIn 1s ease-out;
-        }
-
-        /* Efeito de brilho sutil no background */
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: gentleFloat 6s ease-in-out infinite;
-        }
-
-        .hero-header {
-            text-align: center;
-            margin-bottom: 1.25rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .hero-title {
-            color: var(--color-white-warm);
-            font-size: clamp(1.5rem, 3.5vw, 2.2rem);
-            font-weight: 800;
-            margin: 0 0 0.25rem 0;
-            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-            letter-spacing: -0.02em;
-            line-height: 1.1;
-        }
-
-        .hero-subtitle {
-            color: var(--color-sand-warm);
-            font-size: clamp(0.8rem, 1.8vw, 1rem);
-            font-weight: 500;
-            margin: 0;
-            opacity: 0.95;
-        }
-
-        /* === CARDS DE FEATURES COM ANIMAÇÃO PROGRESSIVA === */
-        .hero-features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .feature-card {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: var(--transition-smooth);
-            opacity: 0;
-            transform: translateY(20px);
-            animation: featureSlideIn 0.6s ease-out forwards;
-        }
-
-        /* Delays progressivos para animação das features */
-        .feature-card:nth-child(1) { animation-delay: 0.2s; }
-        .feature-card:nth-child(2) { animation-delay: 0.4s; }
-        .feature-card:nth-child(3) { animation-delay: 0.6s; }
-        .feature-card:nth-child(4) { animation-delay: 0.8s; }
-
-        .feature-card:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .feature-icon {
-            width: 24px;
-            height: 24px;
-            color: var(--color-gold-soft);
-            flex-shrink: 0;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-        }
-
-        .feature-text {
-            color: var(--color-white-warm);
-            font-size: 0.85rem;
-            font-weight: 600;
-            line-height: 1.3;
-        }
-
-        /* === SEÇÃO EXPANSÍVEL === */
-        .expandable-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .content-summary {
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        .summary-text {
-            color: var(--color-sand-warm);
-            font-size: 0.9rem;
-            font-weight: 500;
-            line-height: 1.5;
-            margin-bottom: 0.75rem;
-        }
-
-        .expand-btn {
-            background: rgba(255, 215, 0, 0.2);
-            border: 1px solid var(--color-gold-soft);
-            border-radius: 20px;
-            padding: 0.375rem 1rem;
-            color: var(--color-gold-soft);
-            font-weight: 600;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            display: flex;
-            align-items: center;
-            gap: 0.375rem;
-            margin: 0 auto;
-        }
-
-        .expand-btn:hover {
-            background: rgba(255, 215, 0, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .detailed-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-out, opacity 0.3s ease-out;
-            opacity: 0;
-        }
-
-        .detailed-content.expanded {
-            max-height: 500px;
-            opacity: 1;
-            margin-top: 1.5rem;
-        }
-
-        .detailed-text {
-            color: var(--color-sand-warm);
-            font-size: 0.95rem;
-            line-height: 1.7;
-            padding: 1.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* === CALL TO ACTION PODEROSO === */
-        .hero-cta {
-            text-align: center;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            z-index: 2;
-        }
-
-        .cta-question {
-            color: var(--color-white-warm);
-            font-size: clamp(0.9rem, 2vw, 1.1rem);
-            font-weight: 700;
-            margin: 0 0 1rem 0;
-            line-height: 1.3;
-        }
-
-        .cta-button {
-            background: linear-gradient(135deg, var(--color-green-leaf), var(--color-turquoise));
-            border: none;
-            border-radius: 40px;
-            padding: 0.75rem 1.5rem;
-            color: var(--color-white-warm);
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: var(--transition-bounce);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: var(--shadow-button);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .cta-button:hover::before {
-            left: 100%;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 8px 30px rgba(32, 201, 151, 0.4);
-        }
-
-        /* === MINI BARRA FLUTUANTE INTELIGENTE === */
-        .floating-toolbar {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: rgba(10, 61, 92, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50px;
-            padding: 0.75rem 1.5rem;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            box-shadow: var(--shadow-floating);
-            z-index: 1000;
-            transition: var(--transition-smooth);
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .floating-toolbar.visible {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .toolbar-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 25px;
-            padding: 0.5rem 1rem;
-            color: var(--color-white-warm);
-            font-weight: 600;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            white-space: nowrap;
-        }
-
-        .toolbar-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        /* === FILTROS REESTRUTURADOS === */
-        .filters-section {
-            background: var(--color-glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--color-border);
-            border-radius: 16px;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--shadow-card);
-            transition: var(--transition-smooth);
-        }
-
-        .filters-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .filters-title {
-            color: var(--color-white-warm);
-            font-size: 1rem;
-            font-weight: 700;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 0.375rem;
-        }
-
-        .mobile-filters-toggle {
-            display: none;
-            background: rgba(41, 128, 185, 0.2);
-            border: 1px solid var(--color-turquoise);
-            border-radius: 20px;
-            padding: 0.375rem 0.75rem;
-            color: var(--color-turquoise);
-            font-weight: 600;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-        }
-
-        .mobile-filters-toggle:hover {
-            background: rgba(41, 128, 185, 0.3);
-            transform: translateY(-1px);
-        }
-
-        .filters-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .filter-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .filter-row-label {
-            color: var(--color-sand-warm);
-            font-size: 0.8rem;
-            font-weight: 600;
-            min-width: 120px;
-            text-align: center;
-            opacity: 0.9;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* === BOTÕES DE FILTRO APRIMORADOS === */
-        .filter-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            border: 1px solid var(--color-border);
-            background: rgba(10, 61, 92, 0.3);
-            color: var(--color-text-secondary);
-            font-weight: 600;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            display: flex;
-            align-items: center;
-            gap: 0.375rem;
-            min-height: 36px;
-            white-space: nowrap;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .filter-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: left 0.3s;
-        }
-
-        .filter-btn:hover::before {
-            left: 100%;
-        }
-
-        .filter-btn:hover {
-            border-color: var(--color-turquoise);
-            background: rgba(23, 162, 184, 0.2);
-            color: var(--color-white-warm);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-button);
-        }
-
-        .filter-btn.active {
-            background: linear-gradient(135deg, var(--color-turquoise), var(--color-ocean-light));
-            border-color: var(--color-turquoise);
-            color: var(--color-white-warm);
-            box-shadow: var(--shadow-button);
-        }
-
-        .filter-btn.active:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4);
-        }
-
-        /* === CONTADOR E REFRESH === */
-        .controls-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-top: 1rem;
-            justify-content: center;
-            padding-top: 1rem;
-            border-top: 1px solid var(--color-border);
-        }
-
-        .dossier-count {
-            color: var(--color-turquoise);
-            font-weight: 700;
-            font-size: 0.875rem;
-            padding: 0.375rem 0.75rem;
-            background: rgba(23, 162, 184, 0.1);
-            border-radius: 16px;
-            border: 1px solid rgba(23, 162, 184, 0.3);
-        }
-
-        .refresh-btn {
-            padding: 0.5rem;
-            border-radius: 50%;
-            border: 1px solid var(--color-border);
-            background: rgba(10, 61, 92, 0.3);
-            color: var(--color-sand-warm);
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-        }
-
-        .refresh-btn:hover {
-            background: var(--color-turquoise);
-            color: var(--color-white-warm);
-            transform: rotate(180deg) scale(1.1);
-        }
-
-        /* === GRID DE CARDS MELHORADO === */
-        .dossier-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        /* === CARDS DE LEAD APRIMORADOS === */
-        .dossier-card {
-            background: var(--color-glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--color-border);
-            border-radius: 20px;
-            padding: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            min-height: 200px;
-            box-shadow: var(--shadow-card);
-            animation: cardSlideIn 0.6s ease-out;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .dossier-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-            transition: left 0.5s;
-        }
-
-        .dossier-card:hover::before {
-            left: 100%;
-        }
-
-        .dossier-card:hover {
-            border-color: var(--color-turquoise);
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-card-hover);
-            background: rgba(23, 162, 184, 0.15);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 1rem;
-        }
-
-        .card-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--color-turquoise), var(--color-ocean-deep));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--color-white-warm);
-            font-weight: 800;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 16px rgba(23, 162, 184, 0.4);
-            flex-shrink: 0;
-        }
-
-        .card-badges {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            align-items: flex-end;
-        }
-
-        .profile-icon {
-            color: var(--color-gold-soft);
-            opacity: 0.9;
-        }
-
-        /* === STATUS TAGS APRIMORADOS === */
-        .status-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.375rem;
-            padding: 0.375rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border: 1px solid;
-            backdrop-filter: blur(10px);
-        }
-
-        .status-novo {
-            background: rgba(52, 152, 219, 0.2);
-            border-color: #3498db;
-            color: #3498db;
-        }
-
-        .status-contato {
-            background: rgba(255, 193, 7, 0.2);
-            border-color: #ffc107;
-            color: #ffc107;
-        }
-
-        .status-proposta {
-            background: rgba(32, 201, 151, 0.2);
-            border-color: #20c997;
-            color: #20c997;
-        }
-
-        .status-negociacao {
-            background: rgba(167, 139, 250, 0.2);
-            border-color: #a78bfa;
-            color: #a78bfa;
-        }
-
-        /* === CONTEÚDO DO CARD === */
-        .card-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .card-title {
-            color: var(--color-white-warm);
-            font-size: 1.125rem;
-            font-weight: 700;
-            margin: 0;
-            line-height: 1.3;
-        }
-
-        .card-description {
-            color: var(--color-sand-warm);
-            font-size: 0.875rem;
-            line-height: 1.5;
-            opacity: 0.9;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .card-phone {
-            font-size: 0.8rem;
-            color: var(--color-turquoise);
-            font-weight: 600;
-            margin-top: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.375rem;
-            font-family: 'Courier New', monospace;
-            opacity: 0.9;
-        }
-
-        .phone-indicator {
-            background: rgba(23, 162, 184, 0.2);
-            border: 1px solid var(--color-turquoise);
-            border-radius: 12px;
-            padding: 0.25rem;
-            color: var(--color-turquoise);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-        }
-
-        /* === CHAT HISTORY CONTAINER === */
-        .chat-history-container {
-            scrollbar-width: thin;
-            scrollbar-color: var(--color-border) transparent;
-        }
-
-        .chat-history-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .chat-history-container::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .chat-history-container::-webkit-scrollbar-thumb {
-            background: var(--color-border);
-            border-radius: 3px;
-        }
-
-        .chat-history-container::-webkit-scrollbar-thumb:hover {
-            background: var(--color-border-hover);
-        }
-
-        /* === FOOTER DO CARD === */
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 1rem;
-            border-top: 1px solid var(--color-border);
-            font-size: 0.75rem;
-        }
-
-        .card-time {
-            color: var(--color-text-muted);
-            font-weight: 500;
-        }
-
-        .card-potential {
-            display: flex;
-            align-items: center;
-            gap: 0.375rem;
-            font-weight: 700;
-            padding: 0.25rem 0.75rem;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-        }
-
-        .potential-alto {
-            color: #1abc9c;
-            background: rgba(26, 188, 156, 0.1);
-            border: 1px solid rgba(26, 188, 156, 0.3);
-        }
-
-        .potential-medio {
-            color: #f39c12;
-            background: rgba(243, 156, 18, 0.1);
-            border: 1px solid rgba(243, 156, 18, 0.3);
-        }
-
-        .potential-baixo {
-            color: #95a5a6;
-            background: rgba(149, 165, 166, 0.1);
-            border: 1px solid rgba(149, 165, 166, 0.3);
-        }
-
-        /* === ESTADOS DA UI === */
-        .ui-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            background: var(--color-glass);
-            border: 1px solid var(--color-border);
-            border-radius: 20px;
-            box-shadow: var(--shadow-card);
-        }
-
-        .loading-spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid var(--color-border);
-            border-top-color: var(--color-turquoise);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        .ui-state h3 {
-            color: var(--color-white-warm);
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin: 0 0 0.5rem 0;
-        }
-
-        .ui-state p {
-            color: var(--color-sand-warm);
-            margin: 0;
-        }
-
-        /* === MODAL APRIMORADO === */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(10, 61, 92, 0.8);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition-smooth);
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background: var(--color-glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--color-border);
-            border-radius: 24px;
-            width: 100%;
-            max-width: 1200px;
-            max-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: var(--shadow-floating);
-            transform: scale(0.9) translateY(20px);
-            transition: var(--transition-smooth);
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: scale(1) translateY(0);
-        }
-
-        .modal-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--color-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-            overflow-y: auto;
-            flex-grow: 1;
-        }
-
-        /* === BOTÕES DE AÇÃO === */
-        .action-btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            border: none;
-            font-weight: 600;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .action-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.3s;
-        }
-
-        .action-btn:hover::before {
-            left: 100%;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--color-turquoise), var(--color-ocean-medium));
-            color: var(--color-white-warm);
-            box-shadow: var(--shadow-button);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, var(--color-success), #17a085);
-            color: var(--color-white-warm);
-            box-shadow: 0 4px 16px rgba(32, 201, 151, 0.3);
-        }
-
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(32, 201, 151, 0.4);
-        }
-
-        .btn-secondary {
-            background: rgba(10, 61, 92, 0.3);
-            border: 1px solid var(--color-border);
-            color: var(--color-sand-warm);
-        }
-
-        .btn-secondary:hover {
-            background: var(--color-turquoise);
-            color: var(--color-white-warm);
-        }
-
-        .btn-close {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: rgba(220, 53, 69, 0.2);
-            border: 1px solid #dc3545;
-            color: #dc3545;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-        }
-
-        .btn-close:hover {
-            background: #dc3545;
-            color: white;
-            transform: scale(1.1);
-        }
-
-        /* === BOTÃO VOLTAR AO TOPO === */
-        .back-to-top {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--color-turquoise), var(--color-ocean-medium));
-            border: none;
-            color: var(--color-white-warm);
-            cursor: pointer;
-            box-shadow: var(--shadow-button);
-            transition: var(--transition-smooth);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
-        }
-
-        .back-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .back-to-top:hover {
-            transform: translateY(-4px) scale(1.1);
-            box-shadow: 0 8px 24px rgba(23, 162, 184, 0.4);
-        }
-
-        /* === ANIMAÇÕES === */
-        @keyframes heroSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-30px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        @keyframes featureSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes cardSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes gentleFloat {
-            0%, 100% {
-                transform: translateY(0px) rotate(0deg);
-            }
-            50% {
-                transform: translateY(-20px) rotate(10deg);
-            }
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
-
-        /* === RESPONSIVIDADE COM ELEGÂNCIA === */
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%); color: #f8fafc; }
+        .hero-grid { background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 1rem; backdrop-filter: blur(10px); transition: all 0.3s; }
+        .hero-grid:hover { background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.15) 0%, transparent 70%); border-color: rgba(59, 130, 246, 0.4); transform: translateY(-2px); }
+        .stat-card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.75rem; backdrop-filter: blur(10px); transition: all 0.3s; }
+        .stat-card:hover { background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.1) 100%); border-color: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
+        .filter-chip { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 9999px; padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 500; color: #93c5fd; cursor: pointer; transition: all 0.3s; }
+        .filter-chip:hover, .filter-chip.active { background: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.5); color: #dbeafe; }
+        .dossier-card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1rem; backdrop-filter: blur(10px); transition: all 0.3s; }
+        .dossier-card:hover { background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.1) 100%); border-color: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
+        .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .status-novo { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .status-contato { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .status-proposta { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .status-fechado { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .priority-alta { border-left: 4px solid #ef4444; }
+        .priority-media { border-left: 4px solid #f59e0b; }
+        .priority-baixa { border-left: 4px solid #10b981; }
+        .skip-link { position: absolute; top: -40px; left: 6px; background: #17a2b8; color: white; padding: 8px; text-decoration: none; border-radius: 4px; z-index: 1000; }
+        .skip-link:focus { top: 6px; }
         @media (max-width: 768px) {
-            .container {
-                padding: 0.5rem;
-            }
-
-            .hero-section {
-                padding: 1rem;
-                margin-bottom: 1rem;
-            }
-
-            .hero-header {
-                margin-bottom: 1rem;
-            }
-
-            .hero-features {
-                grid-template-columns: 1fr;
-                gap: 0.5rem;
-                margin-bottom: 1rem;
-            }
-
-            .feature-card {
-                padding: 0.625rem 0.75rem;
-            }
-
-            .feature-icon {
-                width: 20px;
-                height: 20px;
-            }
-
-            .feature-text {
-                font-size: 0.8rem;
-            }
-
-            .summary-text {
-                font-size: 0.85rem;
-                margin-bottom: 0.5rem;
-            }
-
-            .expand-btn {
-                padding: 0.25rem 0.75rem;
-                font-size: 0.75rem;
-            }
-
-            .cta-question {
-                font-size: 0.85rem;
-                margin-bottom: 0.75rem;
-            }
-
-            .cta-button {
-                padding: 0.625rem 1.25rem;
-                font-size: 0.875rem;
-            }
-
-            .filters-section {
-                padding: 0.75rem;
-                margin-bottom: 1rem;
-            }
-
-            .filters-header {
-                margin-bottom: 0.75rem;
-            }
-
-            .filters-title {
-                font-size: 0.9rem;
-            }
-
-            .mobile-filters-toggle {
-                display: flex;
-                align-items: center;
-                gap: 0.375rem;
-            }
-
-            .filters-container.collapsed {
-                display: none;
-            }
-
-            .filter-row {
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-
-            .filter-row-label {
-                min-width: auto;
-                font-size: 0.75rem;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-            }
-
-            .filter-btn {
-                padding: 0.375rem 0.75rem;
-                font-size: 0.75rem;
-                min-height: 32px;
-            }
-
-            .controls-info {
-                margin-top: 0.75rem;
-                padding-top: 0.75rem;
-            }
-
-            .dossier-count {
-                font-size: 0.8rem;
-                padding: 0.25rem 0.5rem;
-            }
-
-            .refresh-btn {
-                width: 28px;
-                height: 28px;
-                padding: 0.375rem;
-            }
-
-            .dossier-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .modal-content {
-                margin: 0.5rem;
-                max-height: 95vh;
-            }
-
-            .modal-header {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 1rem;
-            }
-
-            .floating-toolbar {
-                left: 1rem;
-                right: 1rem;
-                transform: translateX(0) translateY(100px);
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .floating-toolbar.visible {
-                transform: translateX(0) translateY(0);
-            }
-
-            .back-to-top {
-                bottom: 1rem;
-                right: 1rem;
-                width: 48px;
-                height: 48px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0.375rem;
-            }
-
-            .hero-section {
-                padding: 0.75rem;
-                border-radius: 16px;
-            }
-
-            .hero-title {
-                font-size: clamp(1.25rem, 4vw, 1.75rem);
-            }
-
-            .hero-subtitle {
-                font-size: clamp(0.75rem, 2vw, 0.9rem);
-            }
-
-            .feature-card {
-                padding: 0.5rem;
-                gap: 0.5rem;
-            }
-
-            .feature-icon {
-                width: 18px;
-                height: 18px;
-            }
-            
-            /* Melhorias para cards em mobile */
-            .dossier-card {
-                min-height: 44px; /* Touch target mínimo */
-                padding: 0.75rem;
-            }
-            
-            .card-avatar {
-                width: 32px;
-                height: 32px;
-                font-size: 0.75rem;
-            }
-            
-            .card-title {
-                font-size: 0.875rem;
-            }
-            
-            /* Modal responsivo */
-            .modal-overlay .modal-content {
-                margin: 0.5rem;
-                max-height: calc(100vh - 1rem);
-                border-radius: 12px;
-            }
-            
-            .modal-header {
-                padding: 0.75rem;
-            }
-            
-            .modal-body {
-                padding: 0.75rem;
-                max-height: calc(100vh - 8rem);
-            }
-        }
-        
-        /* Melhorias para dispositivos touch */
-        @media (hover: none) and (pointer: coarse) {
-            .dossier-card {
-                min-height: 44px;
-            }
-            
-            .dossier-card:active {
-                transform: scale(0.98);
-                background: rgba(255, 255, 255, 0.2);
-            }
-            
-            .refresh-btn, .back-to-top {
-                min-width: 44px;
-                min-height: 44px;
-            }
-                height: 18px;
-            }
-
-            .feature-text {
-                font-size: 0.75rem;
-            }
-
-            .summary-text {
-                font-size: 0.8rem;
-            }
-
-            .expand-btn {
-                padding: 0.25rem 0.625rem;
-                font-size: 0.7rem;
-            }
-
-            .cta-question {
-                font-size: 0.8rem;
-            }
-
-            .cta-button {
-                padding: 0.5rem 1rem;
-                font-size: 0.8rem;
-            }
-
-            .filters-section {
-                padding: 0.5rem;
-                border-radius: 12px;
-            }
-
-            .filters-title {
-                font-size: 0.85rem;
-            }
-
-            .filter-btn {
-                padding: 0.25rem 0.5rem;
-                font-size: 0.7rem;
-                min-height: 28px;
-                border-radius: 16px;
-            }
-
-            .filter-row-label {
-                font-size: 0.7rem;
-            }
-
-            .dossier-count {
-                font-size: 0.75rem;
-                padding: 0.25rem 0.375rem;
-            }
-
-            .refresh-btn {
-                width: 24px;
-                height: 24px;
-            }
-
-            .card-avatar {
-                width: 50px;
-                height: 50px;
-                font-size: 1.25rem;
-            }
-
-            .dossier-card {
-                padding: 1rem;
-            }
-
-            .toolbar-btn {
-                padding: 0.25rem 0.5rem;
-                font-size: 0.75rem;
-            }
-        }
-
-        /* === SCROLLBAR CUSTOMIZADA === */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(10, 61, 92, 0.1);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--color-turquoise);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--color-ocean-medium);
-        }
-
-        /* === DARK MODE PREPARATION === */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --color-text-primary: #fdfcfa;
-                --color-text-secondary: #f4e6d3;
-                --color-border: rgba(244, 230, 211, 0.15);
-            }
+            .hero-grid { grid-template-columns: 1fr; }
+            .stat-card { padding: 1rem; }
+            .dossier-card { padding: 1rem; }
         }
     </style>
 </head>
 <body class="min-h-screen">
-    <!-- Skip Links para Navegação por Teclado -->
     <a href="#hero-section" class="skip-link">Pular para conteúdo principal</a>
     <a href="#filters-section" class="skip-link">Pular para filtros</a>
     <a href="#dossier-grid" class="skip-link">Pular para lista de oportunidades</a>
     
     <div class="container">
-        <!-- === HERO SECTION - APRESENTAÇÃO ALTAMENTE VISUAL === -->
-        <section id="hero-section" class="hero-section">
-            <!-- Cabeçalho Principal -->
-            <div class="hero-header">
-                <h1 class="hero-title">Vitrine de Oportunidades</h1>
-                <p class="hero-subtitle">Leads Qualificados em Tempo Real | Conexão Búzios</p>
-            </div>
-
-            <!-- Cards de Features com Animação Progressiva -->
-            <div class="hero-features">
-                <div class="feature-card">
-                    <i data-lucide="zap" class="feature-icon"></i>
-                    <span class="feature-text">Leads verificados em tempo real</span>
-                </div>
-                <div class="feature-card">
-                    <i data-lucide="smartphone" class="feature-icon"></i>
-                    <span class="feature-text">Contato direto via WhatsApp</span>
-                </div>
-                <div class="feature-card">
-                    <i data-lucide="bot" class="feature-icon"></i>
-                    <span class="feature-text">Propostas personalizadas por IA</span>
-                </div>
-                <div class="feature-card">
-                    <i data-lucide="trending-up" class="feature-icon"></i>
-                    <span class="feature-text">Aumente suas chances de negócio em Búzios</span>
+        <header class="relative py-8 text-center" id="hero-section">
+            <h1 class="text-4xl font-bold text-white mb-2">Painel de Oportunidades</h1>
+            <p class="text-xl text-blue-200">Conexão Búzios - Dashboard de Leads</p>
+            <div class="absolute top-4 right-4">
+                <div class="flex items-center space-x-2 bg-black/20 px-3 py-1 rounded-full">
+                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span class="text-sm text-green-400">Online</span>
                 </div>
             </div>
+        </header>
 
-            <!-- Conteúdo Expansível -->
-            <div class="expandable-content">
-                <div class="content-summary">
-                    <p class="summary-text">Um painel inteligente que conecta você com leads qualificados e oportunidades reais no ecossistema de Búzios. Economize tempo, organize contatos e foque apenas em quem tem intenção real de compra.</p>
-                    <button id="expand-btn" class="expand-btn">
-                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
-                        <span>Saiba mais</span>
-                    </button>
-                </div>
-                
-                <div id="detailed-content" class="detailed-content">
-                    <div class="detailed-text">
-                        <p><strong>Para quem é ideal:</strong> Profissionais de vendas, turismo, serviços, divulgadores e investidores interessados no mercado de Búzios.</p>
-                        <p><strong>O que você encontra:</strong> Perfis completos de leads, histórico de interações, análises por IA, propostas personalizadas e contato direto.</p>
-                        <p><strong>Vantagem competitiva:</strong> Sistema inteligente que funciona 24 horas, filtra apenas leads com intenção real e organiza tudo de forma visual e prática.</p>
+        <section class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-400">Total de Leads</p>
+                        <p class="text-2xl font-bold text-white" id="total-leads">0</p>
+                    </div>
+                    <div class="p-3 bg-blue-500/20 rounded-lg">
+                        <i data-lucide="users" class="w-6 h-6 text-blue-400"></i>
                     </div>
                 </div>
             </div>
-
-            <!-- Call to Action Poderoso -->
-            <div class="hero-cta">
-                <p class="cta-question">Pronto para se conectar com as melhores oportunidades de Búzios em tempo real?</p>
-                <button id="cta-button" class="cta-button">
-                    <i data-lucide="waves" class="w-5 h-5"></i>
-                    <span>Ver Oportunidades</span>
-                </button>
+            <div class="stat-card p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-400">Novos Hoje</p>
+                        <p class="text-2xl font-bold text-white" id="novos-hoje">0</p>
+                    </div>
+                    <div class="p-3 bg-green-500/20 rounded-lg">
+                        <i data-lucide="trending-up" class="w-6 h-6 text-green-400"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-400">Em Andamento</p>
+                        <p class="text-2xl font-bold text-white" id="em-andamento">0</p>
+                    </div>
+                    <div class="p-3 bg-yellow-500/20 rounded-lg">
+                        <i data-lucide="clock" class="w-6 h-6 text-yellow-400"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-400">Convertidos</p>
+                        <p class="text-2xl font-bold text-white" id="convertidos">0</p>
+                    </div>
+                    <div class="p-3 bg-purple-500/20 rounded-lg">
+                        <i data-lucide="check-circle" class="w-6 h-6 text-purple-400"></i>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- === MINI BARRA FLUTUANTE INTELIGENTE === -->
-        <div id="floating-toolbar" class="floating-toolbar">
-            <button id="floating-filters" class="toolbar-btn">
-                <i data-lucide="filter" class="w-4 h-4"></i>
-                <span>Filtros</span>
-            </button>
-            <button id="floating-top" class="toolbar-btn">
-                <i data-lucide="arrow-up" class="w-4 h-4"></i>
-                <span>Topo</span>
-            </button>
-        </div>
-
-        <!-- === FILTROS REESTRUTURADOS === -->
-        <div id="filters-section" class="filters-section">
-            <div class="filters-header">
-                <h3 class="filters-title">
-                    <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
-                    Filtros e Controles
-                </h3>
-                <button id="mobile-filters-toggle" class="mobile-filters-toggle">
-                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
-                    <span id="toggle-text">Filtros</span>
-                </button>
-            </div>
-            
-            <div id="filters-container" class="filters-container">
-                <div class="filter-row">
-                    <span class="filter-row-label">Perfil do Lead:</span>
-                    <div class="filter-group" id="filters-profile">
-                        <button data-filter="all" class="filter-btn active">Todos</button>
-                        <button data-filter="Turista" class="filter-btn"><i data-lucide="sun-moon"></i> Turistas</button>
-                        <button data-filter="Morador" class="filter-btn"><i data-lucide="home"></i> Moradores</button>
-                        <button data-filter="Divulgador" class="filter-btn"><i data-lucide="megaphone"></i> Parceiros</button>
-                    </div>
+        <section class="mb-8" id="filters-section">
+            <div class="hero-grid p-6">
+                <h2 class="text-xl font-semibold text-white mb-4">Filtros e Busca</h2>
+                <div class="flex flex-wrap gap-4 mb-6">
+                    <input type="text" id="search-input" placeholder="Buscar por nome, telefone ou interesse..." class="flex-1 min-w-64 px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <button onclick="clearFilters()" class="px-6 py-3 bg-gray-600/50 text-white rounded-lg hover:bg-gray-600/70 transition-colors">
+                        <i data-lucide="x" class="w-4 h-4 mr-2 inline"></i>Limpar
+                    </button>
+                    <button onclick="refreshData()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        <i data-lucide="refresh-cw" class="w-4 h-4 mr-2 inline"></i>Atualizar
+                    </button>
                 </div>
-                
-                <div class="filter-row">
-                    <span class="filter-row-label">Status da Negociação:</span>
-                    <div class="filter-group" id="filters-status">
-                        <button data-status-filter="all" class="filter-btn active">Todos os Status</button>
-                        <button data-status-filter="Novo" class="filter-btn">Novos</button>
-                        <button data-status-filter="Em Contato" class="filter-btn">Em Contato</button>
-                        <button data-status-filter="Proposta" class="filter-btn">Proposta</button>
-                        <button data-status-filter="Negociação" class="filter-btn">Negociação</button>
-                    </div>
+                <div class="flex flex-wrap gap-3">
+                    <div class="filter-chip active" data-filter="todos">Todos</div>
+                    <div class="filter-chip" data-filter="turista">Turistas</div>
+                    <div class="filter-chip" data-filter="morador">Moradores</div>
+                    <div class="filter-chip" data-filter="divulgador">Divulgadores</div>
+                    <div class="filter-chip" data-filter="hoje">Hoje</div>
+                    <div class="filter-chip" data-filter="semana">Esta Semana</div>
+                    <div class="filter-chip" data-filter="alta-prioridade">Alta Prioridade</div>
                 </div>
             </div>
+        </section>
 
-            <div class="controls-info">
-                <span id="dossier-count" class="dossier-count" aria-live="polite"></span>
-                <button id="refresh-btn" class="refresh-btn" aria-label="Atualizar dossiês">
-                    <i data-lucide="refresh-cw" class="w-5 h-5"></i>
-                </button>
+        <section class="mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold text-white">Oportunidades</h2>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-400">Ordenar por:</span>
+                    <select id="sort-select" class="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="data">Data (Mais Recente)</option>
+                        <option value="nome">Nome (A-Z)</option>
+                        <option value="perfil">Perfil</option>
+                        <option value="prioridade">Prioridade</option>
+                    </select>
+                </div>
             </div>
-        </div>
-
-        <!-- GRID DE LEADS -->
-        <main id="dossier-grid" class="dossier-grid"></main>
-        
-        <!-- ESTADOS DA UI -->
-        <div id="status-container" aria-live="assertive">
-            <div id="loading-state" class="ui-state hidden">
-                <div class="loading-spinner"></div>
-                <h3>Buscando oportunidades...</h3>
-                <p>Carregando leads qualificados em tempo real</p>
+            <div id="dossier-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            <div id="loading" class="text-center py-8 hidden">
+                <div class="inline-flex items-center space-x-2">
+                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-400"></div>
+                    <span class="text-gray-400">Carregando oportunidades...</span>
+                </div>
             </div>
-            <div id="error-state" class="ui-state hidden">
-                <h3>⚠️ Falha na Conexão</h3>
-                <p>Não foi possível carregar os leads. Verifique sua conexão e tente novamente.</p>
+            <div id="no-results" class="text-center py-8 hidden">
+                <i data-lucide="search" class="w-12 h-12 text-gray-500 mx-auto mb-4"></i>
+                <p class="text-gray-400">Nenhuma oportunidade encontrada</p>
             </div>
-            <div id="empty-state" class="ui-state hidden">
-                <h3>Nenhuma oportunidade encontrada</h3>
-                <p>Ajuste os filtros ou aguarde novos leads entrarem.</p>
-            </div>
-        </div>
-
-        <!-- BOTÃO VOLTAR AO TOPO -->
-        <button id="back-to-top" class="back-to-top" aria-label="Voltar ao topo">
-            <i data-lucide="arrow-up" class="w-6 h-6"></i>
-        </button>
-    </div>
-
-    <!-- MODAL DE DETALHES DO LEAD -->
-    <div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <div id="modal-content" class="modal-content">
-            <!-- PAINEL 1: Cabeçalho e Ações Imediatas (Fixo) -->
-            <header id="modal-header" class="modal-header"></header>
-            
-            <!-- Corpo do Modal (Rolável) -->
-            <div id="modal-body" class="modal-body" tabindex="-1"></div>
-        </div>
+        </section>
     </div>
 
     <script>
-        const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHC3bAoL_c5rscJV2xbwVi9KMedM3QHbWCZ3bo64w0DbiMGOtnahL9BynJ5ADao63I/exec";
-        
-        // Elementos da DOM
-        const grid = document.getElementById('dossier-grid');
-        const loadingState = document.getElementById('loading-state');
-        const errorState = document.getElementById('error-state');
-        const emptyState = document.getElementById('empty-state');
-        const dossierCountEl = document.getElementById('dossier-count');
-        const modalOverlay = document.getElementById('modal-overlay');
-        const modalHeader = document.getElementById('modal-header');
-        const modalBody = document.getElementById('modal-body');
-        
-        // Estado da Aplicação
         let allDossiers = [];
-        let currentProfileFilter = 'all';
-        let currentStatusFilter = 'all';
-        let lastFocusedElement = null;
-
-        // --- DADOS MOCKADOS E CONFIGURAÇÕES (para demonstração) ---
-        const leadStatuses = ['Novo', 'Em Contato', 'Proposta', 'Negociação'];
-        const leadPotentials = {
-            'Alto': { icon: 'gem', color: 'text-cyan-400', text: 'Potencial Alto' },
-            'Médio': { icon: 'trending-up', color: 'text-amber-400', text: 'Potencial Médio' },
-            'Baixo': { icon: 'trending-down', color: 'text-slate-500', text: 'Potencial Baixo' }
-        };
-        const statusStyling = {
-            'Novo': { class: 'status-novo', icon: 'sparkles' },
-            'Em Contato': { class: 'status-contato', icon: 'phone-forwarded' },
-            'Proposta': { class: 'status-proposta', icon: 'file-check-2' },
-            'Negociação': { class: 'status-negociacao', icon: 'handshake' }
-        };
-        const profileIcons = { 'Turista': 'sun-moon', 'Morador': 'home', 'Divulgador': 'megaphone', 'N/A': 'help-circle' };
-        
-        // --- FUNÇÕES UTILITÁRIAS ---
-        // Função de sanitização robusta contra XSS
-        const sanitizeHTML = (str) => {
-            if (!str) return '';
-            
-            // Cria elemento temporário para escape básico
-            const temp = document.createElement('div');
-            temp.textContent = str;
-            let sanitized = temp.innerHTML;
-            
-            // Remove scripts e event handlers perigosos
-            sanitized = sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-            sanitized = sanitized.replace(/javascript:/gi, '');
-            sanitized = sanitized.replace(/on\w+\s*=/gi, '');
-            sanitized = sanitized.replace(/data:/gi, '');
-            sanitized = sanitized.replace(/vbscript:/gi, '');
-            
-            // Remove tags perigosas
-            const dangerousTags = /<(iframe|object|embed|form|input|button|script|style|link|meta)[^>]*>/gi;
-            sanitized = sanitized.replace(dangerousTags, '');
-            
-            return sanitized;
-        };
-        const formatRelativeTime = (isoString) => {
-            try {
-                const date = new Date(isoString);
-                const formatter = new Intl.RelativeTimeFormat('pt-BR', { numeric: 'auto' });
-                const diffSeconds = (date.getTime() - Date.now()) / 1000;
-                const diffDays = Math.round(diffSeconds / 86400);
-                if (Math.abs(diffDays) > 1) return formatter.format(diffDays, 'day');
-                const diffHours = Math.round(diffSeconds / 3600);
-                if (Math.abs(diffHours) > 1) return formatter.format(diffHours, 'hour');
-                const diffMinutes = Math.round(diffSeconds / 60);
-                return formatter.format(diffMinutes, 'minute');
-            } catch (e) { return isoString || 'Data indisponível'; }
-        };
-        const getInitials = (name) => {
-            if (!name || typeof name !== 'string' || name.trim().length === 0) return '?';
-            const parts = name.trim().split(' ').filter(Boolean);
-            if (parts.length > 1) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-            if (parts.length === 1 && parts[0].length > 1) return parts[0].substring(0, 2).toUpperCase();
-            return name[0].toUpperCase();
-        };
-
-        // --- VARIÁVEIS DE PAGINAÇÃO VIRTUAL ---
-        let currentPage = 0;
-        const itemsPerPage = 20; // Renderiza apenas 20 itens por vez
         let filteredDossiers = [];
+        let currentFilters = { profile: 'todos', timeRange: '', search: '', priority: '' };
         
-        // --- LÓGICA PRINCIPAL DA APLICAÇÃO OTIMIZADA ---
-        const renderDossiers = (loadMore = false) => {
-            if (!loadMore) {
-                grid.innerHTML = '';
-                currentPage = 0;
-            }
-            emptyState.classList.add('hidden');
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHC3bAoL_c5rscJV2xbwVi9KMedM3QHbWCZ3bo64w0DbiMGOtnahL9BynJ5ADao63I/exec";
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function getProfileIcon(perfil) {
+            const icons = { 'turista': '🏖️', 'morador': '🏠', 'divulgador': '📢' };
+            return icons[perfil?.toLowerCase()] || '👤';
+        }
+
+        function getStatusBadge(status) {
+            const statusMap = {
+                'novo': { class: 'status-novo', text: 'Novo' },
+                'contato': { class: 'status-contato', text: 'Contato' },
+                'proposta': { class: 'status-proposta', text: 'Proposta' },
+                'fechado': { class: 'status-fechado', text: 'Fechado' }
+            };
+            const statusInfo = statusMap[status] || { class: 'status-novo', text: 'Novo' };
+            return `<span class="status-badge ${statusInfo.class}">${statusInfo.text}</span>`;
+        }
+
+        function getPriorityClass(perfil, historico) {
+            const urgentKeywords = ['urgente', 'rápido', 'hoje', 'agora'];
+            const hasUrgency = historico?.some(item => urgentKeywords.some(keyword => item.resposta?.toLowerCase().includes(keyword)));
             
-            const profileFiltered = currentProfileFilter === 'all' ? allDossiers : allDossiers.filter(d => d && d.profile === currentProfileFilter);
-            filteredDossiers = currentStatusFilter === 'all' ? profileFiltered : profileFiltered.filter(d => d && d.status === currentStatusFilter);
+            if (hasUrgency || perfil === 'divulgador') return 'priority-alta';
+            if (perfil === 'turista') return 'priority-media';
+            return 'priority-baixa';
+        }
+
+        function renderDossier(dossier) {
+            const priorityClass = getPriorityClass(dossier.perfil, dossier.historico);
+            const profileIcon = getProfileIcon(dossier.perfil);
+            const statusBadge = getStatusBadge(dossier.status || 'novo');
             
-            dossierCountEl.textContent = `${filteredDossiers.length} Oportunidades`;
-            if (filteredDossiers.length === 0) { emptyState.classList.remove('hidden'); return; }
-
-            // Renderização paginada para melhor performance
-            const startIndex = currentPage * itemsPerPage;
-            const endIndex = Math.min(startIndex + itemsPerPage, filteredDossiers.length);
-            const dossiersToRender = filteredDossiers.slice(startIndex, endIndex);
-
-            // Fragment para melhor performance DOM
-            const fragment = document.createDocumentFragment();
-
-            dossiersToRender.forEach((dossier, index) => {
-                const card = document.createElement('button');
-                card.className = 'dossier-card';
-                card.style.animationDelay = `${index * 100}ms`;
-                card.dataset.id = dossier.id;
-                
-                const initials = getInitials(dossier.name);
-                const statusInfo = statusStyling[dossier.status] || {};
-                const potentialInfo = leadPotentials[dossier.potential] || {};
-                const profileIcon = profileIcons[dossier.profile] || 'help-circle';
-
-                // Mapear status para classes CSS
-                let statusClass = 'status-novo';
-                if (dossier.status === 'Em Contato') statusClass = 'status-contato';
-                else if (dossier.status === 'Proposta') statusClass = 'status-proposta';
-                else if (dossier.status === 'Negociação') statusClass = 'status-negociacao';
-
-                // Mapear potencial para classes CSS
-                let potentialClass = 'potential-baixo';
-                if (dossier.potential === 'Alto') potentialClass = 'potential-alto';
-                else if (dossier.potential === 'Médio') potentialClass = 'potential-medio';
-
-                // Verificar se tem telefone
-                const hasPhone = dossier.telefone && dossier.telefone !== 'N/A' && dossier.telefone.replace(/\D/g, '').length > 8;
-                const phoneDisplay = hasPhone ? dossier.telefone : '';
-
-                card.innerHTML = `
-                    <div class="card-header">
-                        <div class="card-avatar">${initials}</div>
-                        <div class="card-badges">
-                            <i data-lucide="${profileIcon}" class="w-5 h-5 profile-icon"></i>
-                            <span class="status-tag ${statusClass}">
-                                <i data-lucide="${statusInfo.icon || 'circle'}" class="w-3 h-3"></i>
-                                ${dossier.status}
-                            </span>
-                            ${hasPhone ? `<span class="phone-indicator" title="WhatsApp: ${phoneDisplay}"><i data-lucide="smartphone" class="w-3 h-3"></i></span>` : ''}
+            const interests = dossier.historico?.map(item => item.resposta).join(', ').substring(0, 100) || 'Não informado';
+            const phone = dossier.telefone || 'Não informado';
+            const whatsappLink = phone !== 'Não informado' ? `https://wa.me/55${phone.replace(/\D/g, '')}` : '#';
+            
+            return `
+                <div class="dossier-card p-6 ${priorityClass}">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-xl">
+                                ${profileIcon}
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-white text-lg">${dossier.nome || 'Nome não informado'}</h3>
+                                <p class="text-sm text-gray-400 capitalize">${dossier.perfil || 'Perfil não informado'}</p>
+                            </div>
+                        </div>
+                        ${statusBadge}
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-2 text-sm">
+                            <i data-lucide="phone" class="w-4 h-4 text-gray-400"></i>
+                            <span class="text-gray-300">${phone}</span>
+                        </div>
+                        <div class="flex items-start space-x-2 text-sm">
+                            <i data-lucide="message-square" class="w-4 h-4 text-gray-400 mt-0.5"></i>
+                            <span class="text-gray-300 line-clamp-2">${interests}</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm">
+                            <i data-lucide="calendar" class="w-4 h-4 text-gray-400"></i>
+                            <span class="text-gray-400">${formatDate(dossier.timestamp || new Date())}</span>
                         </div>
                     </div>
-                    <div class="card-content">
-                        <h3 class="card-title">${sanitizeHTML(dossier.name || 'Lead Anônimo')}</h3>
-                        <p class="card-description">${sanitizeHTML(dossier.interest || 'Nenhum interesse principal informado')}</p>
-                        ${hasPhone ? `<p class="card-phone"><i data-lucide="smartphone" class="w-4 h-4"></i>${phoneDisplay}</p>` : ''}
+                    
+                    <div class="flex space-x-2 mt-6">
+                        ${phone !== 'Não informado' ? 
+                            `<a href="${whatsappLink}" target="_blank" class="flex-1 bg-green-600 hover:bg-green-700 text-white text-center py-2 px-4 rounded-lg transition-colors text-sm font-medium">
+                                <i data-lucide="message-circle" class="w-4 h-4 mr-2 inline"></i>WhatsApp
+                            </a>` : ''
+                        }
+                        <button onclick="viewDossier('${dossier.id}')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium">
+                            <i data-lucide="eye" class="w-4 h-4 mr-2 inline"></i>Detalhes
+                        </button>
                     </div>
-                    <div class="card-footer">
-                        <span class="card-time">${formatRelativeTime(dossier.timestamp)}</span>
-                        <span class="card-potential ${potentialClass}">
-                            <i data-lucide="${potentialInfo.icon || 'trending-up'}" class="w-3.5 h-3.5"></i>
-                            ${dossier.potential}
-                        </span>
-                    </div>`;
-                card.addEventListener('click', () => openModal(dossier));
-                fragment.appendChild(card);
-            });
-            
-            grid.appendChild(fragment);
-            currentPage++;
-            
-            // Adiciona botão "Carregar Mais" se houver mais itens
-            if (endIndex < filteredDossiers.length) {
-                const loadMoreBtn = document.createElement('button');
-                loadMoreBtn.className = 'load-more-btn';
-                loadMoreBtn.textContent = `Carregar mais (${filteredDossiers.length - endIndex} restantes)`;
-                loadMoreBtn.style.cssText = `
-                    grid-column: 1 / -1;
-                    padding: 1rem 2rem;
-                    margin: 1rem 0;
-                    background: linear-gradient(135deg, var(--color-ocean-light), var(--color-turquoise));
-                    color: white;
-                    border: none;
-                    border-radius: 12px;
-                    font-weight: 600;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                `;
-                loadMoreBtn.addEventListener('click', () => {
-                    loadMoreBtn.remove();
-                    renderDossiers(true);
-                });
-                grid.appendChild(loadMoreBtn);
-            }
-            
-            lucide.createIcons();
-        };
-        
-        async function fetchFromAPI(payload) {
-            try {
-                const response = await fetch(GOOGLE_APP_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload), redirect: 'follow' });
-                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                const result = await response.json();
-                if (result.success === false) throw new Error(`API Error: ${result.error}`);
-                return result.data;
-            } catch (error) { console.error('Fetch API Error:', error); throw error; }
+                </div>
+            `;
         }
 
-        const loadDossiers = async () => {
-            loadingState.classList.remove('hidden');
-            errorState.classList.add('hidden');
-            grid.innerHTML = '';
-            try {
-                const dossiersFromApi = await fetchFromAPI({ action: 'listDossies' });
-                // Simula status e potencial, pois não vêm do backend
-                allDossiers = dossiersFromApi.map(d => ({
-                    ...d,
-                    status: leadStatuses[Math.floor(Math.random() * leadStatuses.length)],
-                    potential: Object.keys(leadPotentials)[Math.floor(Math.random() * Object.keys(leadPotentials).length)]
-                }));
-                renderDossiers();
-            } catch (error) { errorState.classList.remove('hidden'); }
-            finally { loadingState.classList.add('hidden'); }
-        };
+        function updateStats() {
+            const total = allDossiers.length;
+            const hoje = allDossiers.filter(d => {
+                const today = new Date().toDateString();
+                const dossierDate = new Date(d.timestamp || new Date()).toDateString();
+                return today === dossierDate;
+            }).length;
+            const emAndamento = allDossiers.filter(d => ['contato', 'proposta'].includes(d.status)).length;
+            const convertidos = allDossiers.filter(d => d.status === 'fechado').length;
 
-        const openModal = async (dossier) => {
-            lastFocusedElement = document.activeElement;
-            modalOverlay.classList.add('active');
-            modalHeader.innerHTML = ''; 
-            modalBody.innerHTML = '<div class="flex justify-center items-center h-full"><div class="spinner h-8 w-8 rounded-full border-4 border-slate-700"></div><p class="ml-4">Analisando dossiê completo...</p></div>';
-            
-            try {
-                const data = await fetchFromAPI({ action: 'getDossierContent', id: dossier.id });
+            document.getElementById('total-leads').textContent = total;
+            document.getElementById('novos-hoje').textContent = hoje;
+            document.getElementById('em-andamento').textContent = emAndamento;
+            document.getElementById('convertidos').textContent = convertidos;
+        }
+
+        function applyFilters() {
+            filteredDossiers = allDossiers.filter(dossier => {
+                const matchesProfile = currentFilters.profile === 'todos' || dossier.perfil === currentFilters.profile;
+                const matchesSearch = !currentFilters.search || 
+                    dossier.nome?.toLowerCase().includes(currentFilters.search.toLowerCase()) ||
+                    dossier.telefone?.includes(currentFilters.search) ||
+                    dossier.historico?.some(item => item.resposta?.toLowerCase().includes(currentFilters.search.toLowerCase()));
                 
-                // data.content agora pode ser um objeto com conteudoOriginal, telefone e chatCompleto
-                let content, telefone = 'N/A', chatCompleto = 'N/A';
-                
-                if (typeof data.content === 'object') {
-                    content = data.content.conteudoOriginal;
-                    telefone = data.content.telefone;
-                    chatCompleto = data.content.chatCompleto;
-                } else {
-                    content = data.content;
-                    // Fallback para dados já presentes no dossier (do listDossies)
-                    telefone = dossier.telefone || 'N/A';
-                    chatCompleto = dossier.chatCompleto || 'N/A';
+                let matchesTime = true;
+                if (currentFilters.timeRange === 'hoje') {
+                    const today = new Date().toDateString();
+                    const dossierDate = new Date(dossier.timestamp || new Date()).toDateString();
+                    matchesTime = today === dossierDate;
+                } else if (currentFilters.timeRange === 'semana') {
+                    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                    const dossierDate = new Date(dossier.timestamp || new Date());
+                    matchesTime = dossierDate >= weekAgo;
                 }
                 
-                const leadDetails = parseDossierContent(content, dossier);
-                leadDetails.telefone = telefone;
-                leadDetails.chatCompleto = chatCompleto;
+                const matchesPriority = !currentFilters.priority || 
+                    (currentFilters.priority === 'alta-prioridade' && getPriorityClass(dossier.perfil, dossier.historico) === 'priority-alta');
                 
-                renderModalContent(leadDetails);
-            } catch (error) { 
-                console.error('Erro ao carregar modal:', error);
-                modalBody.innerHTML = '<p class="text-red-400 text-center">Não foi possível carregar os detalhes deste lead.</p>'; 
-            }
-        };
-        
-        function parseDossierContent(content, baseDossier) {
-            const getMatch = (regex, flags = 'm') => (content.match(new RegExp(regex, flags)) || [])[1]?.trim() || '';
-            const getList = (regex) => {
-                const section = getMatch(regex);
-                return section ? section.split('\n').map(item => item.replace(/^[•\s*-]+/, '').trim()).filter(Boolean) : [];
-            };
+                return matchesProfile && matchesSearch && matchesTime && matchesPriority;
+            });
 
-            const getTable = (regex) => {
-                const tableContent = getMatch(regex);
-                if (!tableContent) return [];
-                return tableContent.split('\n').map(line => {
-                    const parts = line.split('\t'); 
-                    if (parts.length < 2) return null;
-                    return { 
-                        question: parts[0]?.replace('❓','').trim() || '', 
-                        answer: parts[1]?.trim() || ''
-                    };
-                }).filter(row => row && row.question && row.answer);
-            };
+            const sortBy = document.getElementById('sort-select').value;
+            filteredDossiers.sort((a, b) => {
+                switch (sortBy) {
+                    case 'nome': return (a.nome || '').localeCompare(b.nome || '');
+                    case 'perfil': return (a.perfil || '').localeCompare(b.perfil || '');
+                    case 'prioridade':
+                        const priorityOrder = { 'priority-alta': 3, 'priority-media': 2, 'priority-baixa': 1 };
+                        return priorityOrder[getPriorityClass(b.perfil, b.historico)] - priorityOrder[getPriorityClass(a.perfil, a.historico)];
+                    default: return new Date(b.timestamp || 0) - new Date(a.timestamp || 0);
+                }
+            });
 
-            // Se o content é um objeto (dados estruturados), usa os dados diretamente
-            if (typeof content === 'object' && content.conteudoOriginal) {
-                return { 
-                    ...baseDossier, 
-                    resumo: getMatch(/^Resumo do Perfil\n([\s\S]*?)(?=\n\n|$)/), 
-                    respostas: getTable(/HISTÓRICO DE INTERAÇÕES \(FUNIL COMPLETO\)\s*\n([\s\S]*?)(?=\n\s*💡 PROPOSTA PERSONALIZADA \(IA\)|$)/), 
-                    necessidades: getList(/Necessidades Reveladas\s*\n([\s\S]*?)(?=\n\n💡|$)/), 
-                    proposta: getMatch(/💡 PROPOSTA PERSONALIZADA \(IA\)\s*\n([\s\S]*?)(?=\n\nStatus do Lead:|$)/),
-                    objecoes: ["Pode ser sensível a preço devido ao orçamento informado.", "Busca por experiências autênticas, pode rejeitar opções muito turísticas."],
-                    telefone: content.telefone || 'N/A',
-                    chatCompleto: content.chatCompleto || []
-                };
-            }
-
-            // Fallback para conteúdo de texto simples
-            return { 
-                ...baseDossier, 
-                resumo: getMatch(/^Resumo do Perfil\n([\s\S]*?)(?=\n\n|$)/), 
-                respostas: getTable(/HISTÓRICO DE INTERAÇÕES \(FUNIL COMPLETO\)\s*\n([\s\S]*?)(?=\n\s*💡 PROPOSTA PERSONALIZADA \(IA\)|$)/), 
-                necessidades: getList(/Necessidades Reveladas\s*\n([\s\S]*?)(?=\n\n💡|$)/), 
-                proposta: getMatch(/💡 PROPOSTA PERSONALIZADA \(IA\)\s*\n([\s\S]*?)(?=\n\nStatus do Lead:|$)/),
-                objecoes: ["Pode ser sensível a preço devido ao orçamento informado.", "Busca por experiências autênticas, pode rejeitar opções muito turísticas."],
-                telefone: 'N/A',
-                chatCompleto: []
-            };
+            renderDossiers();
         }
 
-        function renderModalContent(details) {
-            const telefone = (details.respostas.find(r => r.question.toLowerCase().includes('whatsapp')) || {}).answer;
-            const statusInfo = statusStyling[details.status] || {};
-            const potentialInfo = leadPotentials[details.potential] || {};
+        function renderDossiers() {
+            const container = document.getElementById('dossier-grid');
+            const loading = document.getElementById('loading');
+            const noResults = document.getElementById('no-results');
 
-            const hasPhone = telefone && telefone.replace(/\D/g, '').length > 8;
-            const whatsappBtnHTML = hasPhone
-                ? `<a href="https://wa.me/55${telefone.replace(/\D/g, '')}" target="_blank" class="action-btn btn-success">
-                     <i data-lucide="send" class="w-4 h-4"></i>Iniciar Conversa
-                   </a>`
-                : `<button disabled class="action-btn btn-secondary opacity-50 cursor-not-allowed">
-                     <i data-lucide="phone-off" class="w-4 h-4"></i>WhatsApp não informado
-                   </button>`;
+            if (filteredDossiers.length === 0) {
+                container.innerHTML = '';
+                loading.classList.add('hidden');
+                noResults.classList.remove('hidden');
+                return;
+            }
 
-            // Mapear status para classes CSS
-            let statusClass = 'status-novo';
-            if (details.status === 'Em Contato') statusClass = 'status-contato';
-            else if (details.status === 'Proposta') statusClass = 'status-proposta';
-            else if (details.status === 'Negociação') statusClass = 'status-negociacao';
+            noResults.classList.add('hidden');
+            loading.classList.add('hidden');
+            container.innerHTML = filteredDossiers.map(renderDossier).join('');
+            
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
+        }
 
-            // Mapear potencial para classes CSS
-            let potentialClass = 'potential-baixo';
-            if (details.potential === 'Alto') potentialClass = 'potential-alto';
-            else if (details.potential === 'Médio') potentialClass = 'potential-medio';
+        async function loadDossiers() {
+            const loading = document.getElementById('loading');
+            const container = document.getElementById('dossier-grid');
+            
+            loading.classList.remove('hidden');
+            container.innerHTML = '';
 
-            // --- PAINEL 1: Cabeçalho e Ações Imediatas ---
-            modalHeader.innerHTML = `
-                <div class="flex items-center gap-4">
-                    <div class="card-avatar">${getInitials(details.name)}</div>
-                    <div>
-                        <h2 id="modal-title" class="text-xl font-bold" style="color: var(--color-white-warm);">${sanitizeHTML(details.name)}</h2>
-                        <div class="flex items-center gap-2 mt-1 flex-wrap">
-                            <span class="status-tag ${statusClass}">
-                                <i data-lucide="${statusInfo.icon || 'circle'}" class="w-3 h-3"></i>
-                                ${details.status}
-                            </span>
-                            <span class="status-tag ${potentialClass}" style="background: rgba(29, 107, 150, 0.2); border-color: var(--color-ocean-light);">
-                                <i data-lucide="${potentialInfo.icon || 'trending-up'}" class="w-3 h-3"></i>
-                                ${details.potential}
-                            </span>
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL + '?action=getDossiers');
+                const data = await response.json();
+                
+                if (data.success) {
+                    allDossiers = data.dossiers || [];
+                    updateStats();
+                    applyFilters();
+                } else {
+                    throw new Error(data.error || 'Erro ao carregar dados');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dossiers:', error);
+                loading.classList.add('hidden');
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <i data-lucide="wifi-off" class="w-12 h-12 text-red-500 mx-auto mb-4"></i>
+                        <p class="text-red-400 mb-4">Erro ao carregar dados</p>
+                        <button onclick="loadDossiers()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+                            Tentar Novamente
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function setupEventListeners() {
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    const filter = chip.dataset.filter;
+                    
+                    if (['todos', 'turista', 'morador', 'divulgador'].includes(filter)) {
+                        document.querySelectorAll('.filter-chip[data-filter="todos"], .filter-chip[data-filter="turista"], .filter-chip[data-filter="morador"], .filter-chip[data-filter="divulgador"]')
+                            .forEach(c => c.classList.remove('active'));
+                        currentFilters.profile = filter;
+                    } else if (['hoje', 'semana'].includes(filter)) {
+                        document.querySelectorAll('.filter-chip[data-filter="hoje"], .filter-chip[data-filter="semana"]')
+                            .forEach(c => c.classList.remove('active'));
+                        currentFilters.timeRange = currentFilters.timeRange === filter ? '' : filter;
+                    } else if (filter === 'alta-prioridade') {
+                        currentFilters.priority = currentFilters.priority === filter ? '' : filter;
+                    }
+                    
+                    chip.classList.toggle('active');
+                    applyFilters();
+                });
+            });
+
+            document.getElementById('search-input').addEventListener('input', (e) => {
+                currentFilters.search = e.target.value;
+                applyFilters();
+            });
+
+            document.getElementById('sort-select').addEventListener('change', applyFilters);
+        }
+
+        function clearFilters() {
+            currentFilters = { profile: 'todos', timeRange: '', search: '', priority: '' };
+            document.getElementById('search-input').value = '';
+            document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
+            document.querySelector('.filter-chip[data-filter="todos"]').classList.add('active');
+            applyFilters();
+        }
+
+        function refreshData() {
+            loadDossiers();
+        }
+
+        function viewDossier(id) {
+            const dossier = allDossiers.find(d => d.id === id);
+            if (!dossier) return;
+
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4';
+            modal.innerHTML = `
+                <div class="bg-gray-800 rounded-lg max-w-2xl w-full max-h-90vh overflow-y-auto">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-6">
+                            <h2 class="text-2xl font-bold text-white">Detalhes do Lead</h2>
+                            <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-white">
+                                <i data-lucide="x" class="w-6 h-6"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-sm text-gray-400">Nome</label>
+                                    <p class="text-white font-medium">${dossier.nome || 'Não informado'}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm text-gray-400">Perfil</label>
+                                    <p class="text-white font-medium capitalize">${dossier.perfil || 'Não informado'}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm text-gray-400">Telefone</label>
+                                    <p class="text-white font-medium">${dossier.telefone || 'Não informado'}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm text-gray-400">Data</label>
+                                    <p class="text-white font-medium">${formatDate(dossier.timestamp || new Date())}</p>
+                                </div>
+                            </div>
+                            
+                            ${dossier.historico && dossier.historico.length > 0 ? `
+                                <div>
+                                    <label class="text-sm text-gray-400 mb-2 block">Histórico da Conversa</label>
+                                    <div class="space-y-2 max-h-40 overflow-y-auto">
+                                        ${dossier.historico.map(item => `
+                                            <div class="bg-gray-700 p-3 rounded">
+                                                <p class="text-sm text-gray-300 mb-1">${item.pergunta}</p>
+                                                <p class="text-white font-medium">${item.resposta}</p>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                            
+                            ${dossier.proposta_personalizada ? `
+                                <div>
+                                    <label class="text-sm text-gray-400 mb-2 block">Proposta Personalizada</label>
+                                    <div class="bg-blue-900/30 p-4 rounded border border-blue-500/30">
+                                        <p class="text-blue-100">${dossier.proposta_personalizada}</p>
+                                    </div>
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-2 flex-wrap">
-                    ${whatsappBtnHTML}
-                    <a href="https://instagram.com/conexaobuzios" target="_blank" class="action-btn btn-primary">
-                        <i data-lucide="instagram" class="w-4 h-4"></i>Falar com Concierge
-                    </a>
-                    <div class="relative">
-                        <select onchange="updateLeadStatus('${details.id}', this.value)" class="action-btn btn-secondary" style="appearance: none; padding-right: 2rem;">
-                            ${leadStatuses.map(s => `<option value="${s}" ${s === details.status ? 'selected' : ''}>${s}</option>`).join('')}
-                        </select>
-                        <i data-lucide="chevron-down" class="w-4 h-4 absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none" style="color: var(--color-sand-warm);"></i>
-                    </div>
-                    <button id="close-modal-btn" class="btn-close" aria-label="Fechar modal">
-                        <i data-lucide="x" class="w-5 h-5"></i>
-                    </button>
-                </div>`;
+            `;
             
-            // --- PAINEL 2, 3, 4 e 5: Corpo do Modal ---
-            const necessidadesHTML = details.necessidades.length > 0 ? details.necessidades.map(need => `<li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 text-green-leaf mt-1 flex-shrink-0" style="color: var(--color-green-leaf);"></i><span style="color: var(--color-sand-warm); font-weight: 500;">${sanitizeHTML(need)}</span></li>`).join('') : '<li style="color: var(--color-sand-warm);">Nenhuma necessidade específica foi revelada pela IA.</li>';
-            const objecoesHTML = details.objecoes.length > 0 ? details.objecoes.map(obj => `<li class="flex items-start gap-3"><i data-lucide="shield-alert" class="w-5 h-5 mt-1 flex-shrink-0" style="color: var(--color-warning);"></i><span style="color: var(--color-sand-warm); font-weight: 500;">${sanitizeHTML(obj)}</span></li>`).join('') : '<li style="color: var(--color-sand-warm);">Nenhuma objeção provável identificada.</li>';
-            const respostasHTML = details.respostas.length > 0 ? details.respostas.map((resp) => `<div class="py-3" style="border-bottom: 1px solid var(--color-border);"><dt class="text-xs font-medium" style="color: var(--color-text-muted);">${sanitizeHTML(resp.question)}</dt><dd class="text-base font-semibold mt-1" style="color: var(--color-white-warm);">— ${sanitizeHTML(resp.answer)}</dd></div>`).join('') : '<p style="color: var(--color-sand-warm);">Sem respostas registradas.</p>';
+            document.body.appendChild(modal);
             
-            // Renderizar chat completo - CORRIGIDO
-            let chatCompletoHTML = '<p style="color: var(--color-sand-warm);">Chat não disponível.</p>';
-            
-            // Verifica se existe chatCompleto nos dados estruturados
-            if (details.chatCompleto && details.chatCompleto !== 'N/A') {
-                try {
-                    let chatData = details.chatCompleto;
-                    
-                    // Se for string, tenta fazer parse
-                    if (typeof chatData === 'string') {
-                        chatData = JSON.parse(chatData);
-                    }
-                    
-                    // Verifica se é array e tem mensagens
-                    if (Array.isArray(chatData) && chatData.length > 0) {
-                        chatCompletoHTML = chatData.map(msg => {
-                            if (msg && msg.text && msg.sender) {
-                                const isAI = msg.sender === 'ai';
-                                const icon = isAI ? 'bot' : 'user';
-                                const label = isAI ? 'IA' : 'Visitante';
-                                const color = isAI ? 'var(--color-turquoise)' : 'var(--color-green-leaf)';
-                                
-                                return `<div class="py-3" style="border-bottom: 1px solid var(--color-border);">
-                                    <dt class="text-xs font-medium flex items-center gap-2" style="color: ${color};">
-                                        <i data-lucide="${icon}" class="w-3 h-3"></i>${label}
-                                    </dt>
-                                    <dd class="text-sm mt-1" style="color: var(--color-sand-warm);">${sanitizeHTML(msg.text)}</dd>
-                                </div>`;
-                            }
-                            return '';
-                        }).join('');
-                        
-                        // Se não gerou HTML, significa que não havia mensagens válidas
-                        if (!chatCompletoHTML.trim()) {
-                            chatCompletoHTML = '<p style="color: var(--color-sand-warm);">Nenhuma mensagem válida encontrada.</p>';
-                        }
-                    } else {
-                        chatCompletoHTML = '<p style="color: var(--color-sand-warm);">Histórico de conversa vazio.</p>';
-                    }
-                } catch (e) {
-                    console.error('Erro ao processar chat completo:', e);
-                    chatCompletoHTML = '<p style="color: var(--color-warning);">Erro ao carregar histórico da conversa.</p>';
-                }
-            }
-
-            modalBody.innerHTML = `
-                <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                    <!-- Coluna Principal (3/5) -->
-                    <div class="lg:col-span-3 space-y-6">
-                        <!-- PAINEL 2: Análise Comercial -->
-                        <div class="glass-effect p-6 rounded-xl">
-                            <h3 class="flex items-center gap-3 text-lg font-bold mb-4" style="color: var(--color-white-warm);">
-                                <i data-lucide="user-check" class="w-6 h-6" style="color: var(--color-ocean-light);"></i>
-                                Resumo do Perfil (IA)
-                            </h3>
-                            <p class="leading-relaxed font-medium" style="color: var(--color-sand-warm);">${sanitizeHTML(details.resumo) || '<span style="color: var(--color-text-muted);">Resumo não disponível.</span>'}</p>
-                        </div>
-                        <div class="glass-effect p-6 rounded-xl">
-                            <h3 class="flex items-center gap-3 text-lg font-bold mb-4" style="color: var(--color-white-warm);">
-                                <i data-lucide="search-check" class="w-6 h-6" style="color: var(--color-green-leaf);"></i>
-                                Necessidades Reveladas (IA)
-                            </h3>
-                            <ul class="space-y-3">${necessidadesHTML}</ul>
-                        </div>
-                        <div class="glass-effect p-6 rounded-xl">
-                            <h3 class="flex items-center gap-3 text-lg font-bold mb-4" style="color: var(--color-white-warm);">
-                                <i data-lucide="shield-alert" class="w-6 h-6" style="color: var(--color-warning);"></i>
-                                Objeções Prováveis (IA)
-                            </h3>
-                            <ul class="space-y-3">${objecoesHTML}</ul>
-                        </div>
-                        <!-- PAINEL 3: Proposta -->
-                        <div class="glass-effect p-6 rounded-xl" style="background: linear-gradient(135deg, var(--color-ocean-deep), var(--color-ocean-medium));">
-                            <h3 class="flex items-center gap-3 text-lg font-bold mb-4" style="color: var(--color-white-warm);">
-                                <i data-lucide="sparkles" class="w-6 h-6" style="color: var(--color-sand-warm);"></i>
-                                Proposta Inteligente Personalizada (IA)
-                            </h3>
-                            <div class="leading-relaxed font-medium whitespace-pre-line" style="color: var(--color-sand-warm);">${sanitizeHTML(details.proposta)}</div>
-                            <button id="collapse-modal-btn" class="action-btn btn-secondary mt-4">
-                                <i data-lucide="chevron-up" class="w-4 h-4"></i>
-                                Recolher Seção
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Coluna Direita (2/5) -->
-                    <div class="lg:col-span-2 space-y-6">
-                        <!-- PAINEL 4: Histórico -->
-                        <div class="glass-effect p-6 rounded-xl">
-                            <h3 class="flex items-center gap-3 text-lg font-bold mb-4" style="color: var(--color-white-warm);">
-                                <i data-lucide="message-square-text" class="w-6 h-6" style="color: var(--color-ocean-light);"></i>
-                                Histórico de Interações
-                            </h3>
-                            <dl class="space-y-3">${respostasHTML}</dl>
-                        </div>
-                        <!-- PAINEL 4.5: Chat Completo -->
-                        <div class="glass-effect p-6 rounded-xl">
-                            <h3 class="flex items-center gap-3 text-lg font-bold mb-4" style="color: var(--color-white-warm);">
-                                <i data-lucide="messages-square" class="w-6 h-6" style="color: var(--color-turquoise);"></i>
-                                Conversa Completa com IA
-                            </h3>
-                            <div class="chat-history-container" style="max-height: 300px; overflow-y: auto; padding-right: 0.5rem;">
-                                <dl class="space-y-2">${chatCompletoHTML}</dl>
-                            </div>
-                        </div>
-                        <!-- PAINEL 5: Metadados -->
-                        <div class="glass-effect p-6 rounded-xl">
-                            <h3 class="flex items-center gap-3 text-lg font-bold mb-4" style="color: var(--color-white-warm);">
-                                <i data-lucide="database" class="w-6 h-6" style="color: var(--color-green-leaf);"></i>
-                                Dados do Lead
-                            </h3>
-                            <dl class="text-sm space-y-2">
-                                <div class="flex justify-between py-2" style="border-bottom: 1px solid var(--color-border);">
-                                    <dt class="font-semibold" style="color: var(--color-text-muted);">WhatsApp</dt>
-                                    <dd class="font-mono font-bold" style="color: var(--color-white-warm);">${telefone ? sanitizeHTML(telefone) : 'Não informado'}</dd>
-                                </div>
-                                <div class="flex justify-between py-2" style="border-bottom: 1px solid var(--color-border);">
-                                    <dt class="font-semibold" style="color: var(--color-text-muted);">Gerado em</dt>
-                                    <dd class="font-semibold" style="color: var(--color-white-warm);">${new Date(details.timestamp).toLocaleString('pt-BR')}</dd>
-                                </div>
-                                <div class="flex justify-between py-2">
-                                    <dt class="font-semibold" style="color: var(--color-text-muted);">Dossiê Original</dt>
-                                    <dd><a href="${details.url}" target="_blank" class="action-btn btn-primary text-xs">Abrir</a></dd>
-                                </div>
-                            </dl>
-                        </div>
-                    </div>
-                </div>`;
-
-            // Anexar event listeners
-            const collapseBtn = document.getElementById('collapse-modal-btn');
-            if (collapseBtn) {
-                collapseBtn.addEventListener('click', () => {
-                    const modalBody = document.getElementById('modal-body');
-                    const proposalSection = collapseBtn.closest('.glass-effect');
-                    const icon = collapseBtn.querySelector('i');
-                    
-                    if (proposalSection.style.display === 'none') {
-                        proposalSection.style.display = 'block';
-                        collapseBtn.innerHTML = '<i data-lucide="chevron-up" class="w-4 h-4"></i>Recolher Seção';
-                    } else {
-                        proposalSection.style.display = 'none';
-                        // Criar um botão para reabrir a seção
-                        const reopenBtn = document.createElement('button');
-                        reopenBtn.className = 'action-btn btn-primary mb-4';
-                        reopenBtn.innerHTML = '<i data-lucide="chevron-down" class="w-4 h-4"></i>Mostrar Proposta';
-                        reopenBtn.addEventListener('click', () => {
-                            proposalSection.style.display = 'block';
-                            reopenBtn.remove();
-                            lucide.createIcons();
-                        });
-                        modalBody.querySelector('.lg\\:col-span-3').insertBefore(reopenBtn, proposalSection);
-                    }
-                    lucide.createIcons();
-                });
-            }
-            
-            document.getElementById('close-modal-btn').addEventListener('click', closeModal);
-            lucide.createIcons();
-        }
-        
-        // Função para controlar o botão "voltar ao topo"
-        function toggleBackToTop() {
-            const backToTopBtn = document.getElementById('back-to-top');
-            if (window.pageYOffset > 300) {
-                backToTopBtn.classList.add('visible');
-            } else {
-                backToTopBtn.classList.remove('visible');
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
             }
         }
 
-        function updateLeadStatus(leadId, newStatus) {
-            // Ação de exemplo. O ideal é chamar o backend para persistir a mudança.
-            // Status updated successfully
-            const lead = allDossiers.find(d => d.id === leadId);
-            if (lead) {
-                lead.status = newStatus;
-                renderDossiers(); // Re-renderiza para refletir a mudança no card
-            }
-        }
-
-        const closeModal = () => { modalOverlay.classList.remove('active'); if (lastFocusedElement) lastFocusedElement.focus(); };
-
-        // === VARIÁVEIS GLOBAIS PARA A NOVA INTERFACE ===
-        let expandedContent = false;
-        let floatingToolbarVisible = false;
-
-        // === FUNÇÃO PARA EXPANDIR/RECOLHER CONTEÚDO DETALHADO ===
-        function toggleExpandedContent() {
-            const expandBtn = document.getElementById('expand-btn');
-            const detailedContent = document.getElementById('detailed-content');
-            const icon = expandBtn.querySelector('i');
-            const text = expandBtn.querySelector('span');
-            
-            if (expandedContent) {
-                // Recolher
-                detailedContent.classList.remove('expanded');
-                icon.setAttribute('data-lucide', 'chevron-down');
-                text.textContent = 'Saiba mais';
-                expandedContent = false;
-            } else {
-                // Expandir
-                detailedContent.classList.add('expanded');
-                icon.setAttribute('data-lucide', 'chevron-up');
-                text.textContent = 'Mostrar menos';
-                expandedContent = true;
-            }
-            
-            // Recriar ícones do Lucide
-            lucide.createIcons();
-        }
-
-        // === FUNÇÃO PARA SCROLL SUAVE ATÉ OS LEADS ===
-        function scrollToOpportunities() {
-            const leadsGrid = document.getElementById('dossier-grid');
-            if (leadsGrid) {
-                leadsGrid.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
-                });
-            }
-        }
-
-        // === FUNÇÃO PARA TOGGLE DOS FILTROS EM MOBILE ===
-        function toggleMobileFilters() {
-            const filtersContainer = document.getElementById('filters-container');
-            const toggleBtn = document.getElementById('mobile-filters-toggle');
-            const toggleText = document.getElementById('toggle-text');
-            const icon = toggleBtn.querySelector('i');
-            const isCollapsed = filtersContainer.classList.contains('collapsed');
-            
-            if (isCollapsed) {
-                filtersContainer.classList.remove('collapsed');
-                toggleText.textContent = 'Ocultar';
-                icon.setAttribute('data-lucide', 'chevron-up');
-            } else {
-                filtersContainer.classList.add('collapsed');
-                toggleText.textContent = 'Filtros';
-                icon.setAttribute('data-lucide', 'chevron-down');
-            }
-            
-            // Recriar ícones do Lucide
-            lucide.createIcons();
-        }
-
-        // === FUNÇÃO PARA MOSTRAR/OCULTAR BARRA FLUTUANTE ===
-        function toggleFloatingToolbar() {
-            const scrollPosition = window.pageYOffset;
-            const windowHeight = window.innerHeight;
-            const documentHeight = document.documentElement.scrollHeight;
-            const scrollPercentage = (scrollPosition / (documentHeight - windowHeight)) * 100;
-            
-            const toolbar = document.getElementById('floating-toolbar');
-            
-            // Mostrar toolbar após 30% de scroll
-            if (scrollPercentage > 30 && !floatingToolbarVisible) {
-                toolbar.classList.add('visible');
-                floatingToolbarVisible = true;
-            } else if (scrollPercentage <= 30 && floatingToolbarVisible) {
-                toolbar.classList.remove('visible');
-                floatingToolbarVisible = false;
-            }
-        }
-
-        // === FUNÇÃO PARA SCROLL SUAVE AO TOPO ===
-        function scrollToTop() {
-            window.scrollTo({ 
-                top: 0, 
-                behavior: 'smooth' 
-            });
-        }
-
-        // === FUNÇÃO PARA SCROLL SUAVE ATÉ FILTROS ===
-        function scrollToFilters() {
-            const filtersSection = document.getElementById('filters-section');
-            if (filtersSection) {
-                filtersSection.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
-                });
-            }
-        }
-
-        // === INICIALIZAÇÃO E EVENT LISTENERS ===
         document.addEventListener('DOMContentLoaded', () => {
-            // === EVENT LISTENERS PARA HERO SECTION ===
-            
-            // Botão expandir/recolher conteúdo
-            document.getElementById('expand-btn').addEventListener('click', toggleExpandedContent);
-            
-            // Botão CTA para scroll até oportunidades
-            document.getElementById('cta-button').addEventListener('click', scrollToOpportunities);
-            
-            // === EVENT LISTENERS PARA BARRA FLUTUANTE ===
-            
-            // Botão filtros na barra flutuante
-            document.getElementById('floating-filters').addEventListener('click', scrollToFilters);
-            
-            // Botão voltar ao topo na barra flutuante
-            document.getElementById('floating-top').addEventListener('click', scrollToTop);
-            
-            // === EVENT LISTENERS PARA FILTROS ===
-            
-            // Toggle mobile dos filtros
-            document.getElementById('mobile-filters-toggle').addEventListener('click', toggleMobileFilters);
-
-            // Event listeners para filtros de perfil
-            document.getElementById('filters-profile').addEventListener('click', (e) => {
-                const button = e.target.closest('button');
-                if (button) {
-                    // Remove active de todos os botões do grupo
-                    document.querySelectorAll('#filters-profile .filter-btn').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    // Adiciona active ao botão clicado
-                    button.classList.add('active');
-                    currentProfileFilter = button.dataset.filter;
-                    renderDossiers();
-                }
-            });
-
-            // Event listeners para filtros de status
-            document.getElementById('filters-status').addEventListener('click', (e) => {
-                const button = e.target.closest('button');
-                if (button) {
-                    // Remove active de todos os botões do grupo
-                    document.querySelectorAll('#filters-status .filter-btn').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    // Adiciona active ao botão clicado
-                    button.classList.add('active');
-                    currentStatusFilter = button.dataset.statusFilter;
-                    renderDossiers();
-                }
-            });
-
-            // === EVENT LISTENERS GERAIS ===
-            
-            // Botão refresh
-            document.getElementById('refresh-btn').addEventListener('click', loadDossiers);
-            
-            // Botão voltar ao topo principal
-            const backToTopBtn = document.getElementById('back-to-top');
-            backToTopBtn.addEventListener('click', scrollToTop);
-            
-            // Event listener para scroll - controla elementos dinâmicos
-            window.addEventListener('scroll', () => {
-                toggleBackToTop();
-                toggleFloatingToolbar();
-            });
-            
-            // === EVENT LISTENERS DO MODAL ===
-            modalOverlay.addEventListener('click', (e) => { 
-                if (e.target === modalOverlay) closeModal(); 
-            });
-            
-            document.addEventListener('keydown', (e) => { 
-                if (e.key === "Escape" && modalOverlay.classList.contains('active')) closeModal(); 
-            });
-            
-            // === INICIALIZAÇÃO FINAL ===
+            setupEventListeners();
             loadDossiers();
-            lucide.createIcons();
             
-            // Adicionar comentário de desenvolvimento
-                    // Dashboard Conexão Búzios initialized successfully
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
+            
+            setInterval(loadDossiers, 300000);
         });
+
+        window.clearFilters = clearFilters;
+        window.refreshData = refreshData;
+        window.viewDossier = viewDossier;
     </script>
 </body>
 </html>
