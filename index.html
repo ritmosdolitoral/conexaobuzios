@@ -4,6 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conexão Búzios - Seu Concierge Virtual</title>
+    <script>
+        // Suprime o aviso do Tailwind CSS em desenvolvimento
+        if (typeof console !== 'undefined' && console.warn) {
+            const originalWarn = console.warn;
+            console.warn = function(...args) {
+                if (args[0] && args[0].includes('tailwindcss.com should not be used in production')) {
+                    return; // Suprime este aviso específico
+                }
+                originalWarn.apply(console, args);
+            };
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1640,7 +1652,6 @@
             "Vamos conversar sobre suas preferências?"
         ];
         let phraseIndex = 0;
-        let typingTimeout;
 
         // --- FLUXO DE CONVERSA ---
         const conversationFlow = {
@@ -2873,7 +2884,7 @@
         }
 
         // Controle de requisições para evitar chamadas múltiplas
-        let activeRequest = null;
+        // activeRequest já declarado no topo do arquivo
         
         async function callBackendForProcessing() {
             // Previne múltiplas chamadas simultâneas
