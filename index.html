@@ -4,6 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conexão Búzios - Seu Concierge Virtual</title>
+    <script>
+        // Suprime o aviso do Tailwind CSS em desenvolvimento
+        if (typeof console !== 'undefined' && console.warn) {
+            const originalWarn = console.warn;
+            console.warn = function(...args) {
+                if (args[0] && args[0].includes('tailwindcss.com should not be used in production')) {
+                    return; // Suprime este aviso específico
+                }
+                originalWarn.apply(console, args);
+            };
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,13 +66,14 @@
         .portal-container {
             background: radial-gradient(ellipse at bottom, #1e3a8a 0%, #020617 70%);
             min-height: 100vh;
-            display: flex;
+            display: flex !important; /* Força visibilidade */
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 1rem;
             position: relative;
             overflow: hidden;
+            opacity: 1 !important; /* Força visibilidade */
         }
         
         .portal-content {
@@ -79,13 +92,13 @@
             text-shadow: 
                 0 0 20px rgba(59, 130, 246, 0.6),
                 0 2px 4px rgba(0, 0, 0, 0.3);
-            opacity: 0;
+            opacity: 1 !important; /* Força visibilidade */
             animation: fadeInUp 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards 0.5s;
             letter-spacing: -0.02em;
         }
         
         .portal-subtitle {
-            opacity: 0;
+            opacity: 1 !important; /* Força visibilidade */
             animation: fadeInUp 1s forwards 0.8s;
         }
         
@@ -131,8 +144,8 @@
             transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             position: relative;
             overflow: hidden;
-            opacity: 0;
-            transform: translateY(30px);
+            opacity: 1 !important; /* Força visibilidade */
+            transform: translateY(0) !important; /* Força posição */
             animation: slideInUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             box-shadow: 
                 0 4px 6px rgba(0, 0, 0, 0.1),
@@ -1639,7 +1652,6 @@
             "Vamos conversar sobre suas preferências?"
         ];
         let phraseIndex = 0;
-        let typingTimeout;
 
         // --- FLUXO DE CONVERSA ---
         const conversationFlow = {
@@ -2145,6 +2157,19 @@
         // --- FUNÇÕES DE UI E ANIMAÇÃO OTIMIZADAS ---
         function typeWriter(text, i = 0, onComplete) {
             clearTimeout(typingTimeout);
+            
+            if (!typingTextEl) {
+                console.error('Elemento de texto não encontrado no typeWriter');
+                if (onComplete) onComplete();
+                return;
+            }
+            
+            if (!text) {
+                console.error('Texto vazio no typeWriter');
+                if (onComplete) onComplete();
+                return;
+            }
+            
             if (i < text.length) {
                 // Usa batch operation para melhor performance
                 domBatcher.add(() => {
@@ -2353,6 +2378,17 @@
         }
 
         function cyclePhrases() {
+            if (!typingTextEl) {
+                console.error('Elemento de texto não encontrado');
+                return;
+            }
+            
+            // Fallback para garantir que algo apareça
+            if (!portalPhrases || portalPhrases.length === 0) {
+                typingTextEl.innerHTML = "Olá! Bem-vindo ao Conexão Búzios!";
+                return;
+            }
+            
             typeWriter(portalPhrases[phraseIndex], 0, () => {
                 typingTimeout = setTimeout(() => {
                     phraseIndex = (phraseIndex + 1) % portalPhrases.length;
@@ -2529,7 +2565,12 @@
             setState({ currentStepId: stepId });
             const isPortalStep = stepId === 'start';
             const targetContainer = isPortalStep ? portalActions : inputArea;
-            targetContainer.innerHTML = '';
+            if (targetContainer) {
+                targetContainer.innerHTML = '';
+            } else {
+                console.error('Container de destino não encontrado:', isPortalStep ? 'portal-actions' : 'input-area');
+                return;
+            }
 
             if (isPortalStep) {
                 if(state.chatLog.length === 0) addMessageToChat(step.message, 'ai', false, true);
@@ -2843,7 +2884,7 @@
         }
 
         // Controle de requisições para evitar chamadas múltiplas
-        let activeRequest = null;
+        // activeRequest já declarado no topo do arquivo
         
         async function callBackendForProcessing() {
             // Previne múltiplas chamadas simultâneas
@@ -2916,10 +2957,12 @@
 
         function init() {
             if (restoreState() && state.currentStepId !== 'start') {
-                introPortal.style.display = 'none';
-                appContainer.classList.remove('hidden');
-                appContainer.classList.add('flex');
-                animatedSignature.classList.add('visible'); // Garante que a assinatura seja visível se a sessão for restaurada
+                if (introPortal) introPortal.style.display = 'none';
+                if (appContainer) {
+                    appContainer.classList.remove('hidden');
+                    appContainer.classList.add('flex');
+                }
+                if (animatedSignature) animatedSignature.classList.add('visible'); // Garante que a assinatura seja visível se a sessão for restaurada
                 rebuildUIFromState();
                 displayStep(state.currentStepId);
                 
@@ -2931,12 +2974,16 @@
             } else {
                 state = JSON.parse(JSON.stringify(initialState)); // Deep copy
                 saveState();
-                chatMessages.innerHTML = '';
-                appContainer.classList.add('hidden');
-                appContainer.classList.remove('flex');
-                introPortal.style.display = 'flex';
-                introPortal.style.opacity = '1';
-                animatedSignature.classList.remove('visible'); // Garante que a assinatura comece invisível
+                if (chatMessages) chatMessages.innerHTML = '';
+                if (appContainer) {
+                    appContainer.classList.add('hidden');
+                    appContainer.classList.remove('flex');
+                }
+                if (introPortal) {
+                    introPortal.style.display = 'flex';
+                    introPortal.style.opacity = '1';
+                }
+                if (animatedSignature) animatedSignature.classList.remove('visible'); // Garante que a assinatura comece invisível
                 createParticles();
                 cyclePhrases(); // Inicia o ciclo de frases
                 displayStep('start');
@@ -3196,14 +3243,21 @@
         
         // === INICIALIZAÇÃO ROBUSTA DO SISTEMA ===
         function initializeHomepage() {
+            console.log('🚀 Iniciando inicialização da homepage...');
             try {
                 // Verifica se elementos essenciais existem
                 const portalContainer = document.getElementById('ai-intro-portal');
                 const portalActions = document.getElementById('portal-actions');
                 const typingText = document.getElementById('intro-typing-text');
                 
+                console.log('📋 Elementos encontrados:', {
+                    portalContainer: !!portalContainer,
+                    portalActions: !!portalActions,
+                    typingText: !!typingText
+                });
+                
                 if (!portalContainer || !portalActions || !typingText) {
-                    console.error('Elementos essenciais do portal não encontrados');
+                    console.error('❌ Elementos essenciais do portal não encontrados');
                     return false;
                 }
                 
@@ -3214,16 +3268,34 @@
                 backBtn = document.getElementById('back-btn');
                 animatedSignature = document.getElementById('animated-signature');
                 typingTextEl = typingText;
+                portalActions = document.getElementById('portal-actions');
+                inputArea = document.getElementById('input-area');
                 
                 // Cria botões do portal imediatamente
+                console.log('🔘 Criando botões do portal...');
                 createPortalButtons();
                 
                 // Inicializa estado
+                console.log('⚙️ Inicializando estado...');
                 init();
                 
                 // Inicia animações
+                console.log('✨ Iniciando animações...');
                 createParticles();
                 cyclePhrases();
+                
+                // Fallback para garantir que algo apareça na tela
+                setTimeout(() => {
+                    if (typingTextEl && (!typingTextEl.innerHTML || typingTextEl.innerHTML.trim() === '')) {
+                        typingTextEl.innerHTML = "Olá! Bem-vindo ao Conexão Búzios!";
+                        console.warn('Aplicado fallback de texto');
+                    }
+                    
+                    if (portalActions && (!portalActions.innerHTML || portalActions.innerHTML.trim() === '')) {
+                        createPortalButtons();
+                        console.warn('Aplicado fallback de botões');
+                    }
+                }, 2000);
                 
                 // Sistema de mensagens dinâmicas
                 setTimeout(() => {
@@ -3237,9 +3309,10 @@
                     }
                 }, 1000);
                 
+                console.log('✅ Inicialização concluída com sucesso!');
                 return true;
             } catch (error) {
-                console.error('Erro na inicialização:', error);
+                console.error('❌ Erro na inicialização:', error);
                 showFallbackInterface();
                 return false;
             }
@@ -3247,8 +3320,11 @@
         
         // Cria botões do portal principal
         function createPortalButtons() {
-            const portalActions = document.getElementById('portal-actions');
-            if (!portalActions) return;
+            const portalActionsEl = document.getElementById('portal-actions');
+            if (!portalActionsEl) {
+                console.error('Elemento portal-actions não encontrado');
+                return;
+            }
             
             const buttons = [
                 {
@@ -3279,7 +3355,8 @@
                 </div>
             `).join('');
             
-            portalActions.innerHTML = buttonsHTML;
+            portalActionsEl.innerHTML = buttonsHTML;
+            console.log('Botões do portal criados com sucesso');
         }
         
         // Manipula escolha do portal
@@ -3359,10 +3436,61 @@
         setTimeout(() => {
             const portal = document.getElementById('ai-intro-portal');
             if (portal && portal.style.display !== 'none' && !portal.querySelector('.portal-option')) {
-                console.warn('Portal não inicializou corretamente, tentando recuperação...');
-                initializeHomepage();
+                console.warn('⚠️ Portal não inicializou corretamente, tentando recuperação...');
+                emergencyRecovery();
             }
         }, 2000);
+        
+        // Função de recuperação de emergência
+        function emergencyRecovery() {
+            console.log('🚨 Iniciando recuperação de emergência...');
+            
+            const portal = document.getElementById('ai-intro-portal');
+            const portalActions = document.getElementById('portal-actions');
+            const typingText = document.getElementById('intro-typing-text');
+            
+            if (portal) {
+                portal.style.display = 'flex';
+                portal.style.opacity = '1';
+            }
+            
+            if (typingText) {
+                typingText.innerHTML = 'Olá! Bem-vindo ao Conexão Búzios!';
+            }
+            
+            if (portalActions) {
+                portalActions.innerHTML = `
+                    <div class="portal-option" onclick="handlePortalChoice('turista')" style="opacity: 1 !important; transform: translateY(0) !important;">
+                        <span class="portal-option-icon">🏖️</span>
+                        <div class="portal-option-title">Sou Turista</div>
+                        <div class="portal-option-description">Quero conhecer Búzios e suas atrações</div>
+                    </div>
+                    <div class="portal-option" onclick="handlePortalChoice('morador')" style="opacity: 1 !important; transform: translateY(0) !important;">
+                        <span class="portal-option-icon">🏠</span>
+                        <div class="portal-option-title">Sou Morador</div>
+                        <div class="portal-option-description">Moro aqui e busco conexões locais</div>
+                    </div>
+                    <div class="portal-option" onclick="handlePortalChoice('divulgador')" style="opacity: 1 !important; transform: translateY(0) !important;">
+                        <span class="portal-option-icon">📢</span>
+                        <div class="portal-option-title">Quero Divulgar</div>
+                        <div class="portal-option-description">Tenho um negócio ou serviço para promover</div>
+                    </div>
+                `;
+                console.log('✅ Botões de emergência criados');
+            }
+            
+            // Força inicialização das variáveis globais
+            introPortal = portal;
+            appContainer = document.getElementById('app-container');
+            chatMessages = document.getElementById('chat-messages');
+            backBtn = document.getElementById('back-btn');
+            animatedSignature = document.getElementById('animated-signature');
+            typingTextEl = typingText;
+            portalActions = portalActions;
+            inputArea = document.getElementById('input-area');
+            
+            console.log('🔧 Recuperação de emergência concluída');
+        }
     </script>
 </body>
 </html>
