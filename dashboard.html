@@ -1535,7 +1535,7 @@
         const profileIcons = { 'Turista': 'sun-moon', 'Morador': 'home', 'Divulgador': 'megaphone', 'N/A': 'help-circle' };
         
         // --- FUNÇÕES UTILITÁRIAS ---
-        // Função de sanitização robusta contra XSS
+        // Função de sanitização robusta contra XSS - CORRIGIDA
         const sanitizeHTML = (str) => {
             if (!str) return '';
             
@@ -1544,16 +1544,41 @@
             temp.textContent = str;
             let sanitized = temp.innerHTML;
             
-            // Remove scripts e event handlers perigosos
-            sanitized = sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-            sanitized = sanitized.replace(/javascript:/gi, '');
-            sanitized = sanitized.replace(/on\w+\s*=/gi, '');
-            sanitized = sanitized.replace(/data:/gi, '');
-            sanitized = sanitized.replace(/vbscript:/gi, '');
+            // Lista abrangente de protocolos perigosos
+            const dangerousProtocols = [
+                'javascript:', 'data:', 'vbscript:', 'file:', 'about:', 'chrome:', 'chrome-extension:',
+                'moz-extension:', 'ms-browser-extension:', 'livescript:', 'mocha:'
+            ];
             
-            // Remove tags perigosas
-            const dangerousTags = /<(iframe|object|embed|form|input|button|script|style|link|meta)[^>]*>/gi;
-            sanitized = sanitized.replace(dangerousTags, '');
+            // Remove protocolos perigosos com case-insensitive e variações de encoding
+            dangerousProtocols.forEach(protocol => {
+                const patterns = [
+                    new RegExp(protocol.replace(':', '\\s*:\\s*'), 'gi'),
+                    new RegExp(protocol.replace(':', '\\s*%3A\\s*'), 'gi'), // URL encoded
+                    new RegExp(protocol.replace(':', '\\s*&#58;\\s*'), 'gi'), // HTML entity
+                    new RegExp(protocol.replace(':', '\\s*&#x3A;\\s*'), 'gi') // Hex entity
+                ];
+                patterns.forEach(pattern => {
+                    sanitized = sanitized.replace(pattern, '');
+                });
+            });
+            
+            // Remove event handlers com regex mais robusta
+            sanitized = sanitized.replace(/\s*on[a-z]+\s*=\s*["'][^"']*["']/gi, '');
+            sanitized = sanitized.replace(/\s*on[a-z]+\s*=\s*[^>\s]+/gi, '');
+            
+            // Remove scripts com regex mais robusta para variações
+            sanitized = sanitized.replace(/<\s*script\b[^<]*(?:(?!<\s*\/\s*script\s*>)<[^<]*)*<\s*\/\s*script\s*>/gi, '');
+            
+            // Remove tags perigosas com whitelist approach
+            const allowedTags = ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 'span', 'div'];
+            const tagPattern = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi;
+            sanitized = sanitized.replace(tagPattern, (match, tagName) => {
+                return allowedTags.includes(tagName.toLowerCase()) ? match : '';
+            });
+            
+            // Remove atributos perigosos
+            sanitized = sanitized.replace(/\s*(src|href|action|formaction|background|poster)\s*=\s*["'][^"']*["']/gi, '');
             
             return sanitized;
         };
@@ -1864,45 +1889,99 @@
             // Renderizar chat completo - CORRIGIDO
             let chatCompletoHTML = '<p style="color: var(--color-sand-warm);">Chat não disponível.</p>';
             
-            // Verifica se existe chatCompleto nos dados estruturados
+            // Verifica se existe chatCompleto nos dados estruturados - CORRIGIDO
             if (details.chatCompleto && details.chatCompleto !== 'N/A') {
                 try {
                     let chatData = details.chatCompleto;
                     
-                    // Se for string, tenta fazer parse
+                    // Validação e parsing mais robusto
                     if (typeof chatData === 'string') {
-                        chatData = JSON.parse(chatData);
+                        // Remove caracteres de controle e espaços extras
+                        chatData = chatData.trim().replace(/[\x00-\x1F\x7F]/g, '');
+                        
+                        // Verifica se é JSON válido antes de fazer parse
+                        if (chatData.startsWith('[') || chatData.startsWith('{')) {
+                            try {
+                                chatData = JSON.parse(chatData);
+                            } catch (parseError) {
+                                console.warn('JSON malformado no chatCompleto:', parseError);
+                                // Tenta fazer parse linha por linha se for um array malformado
+                                const lines = chatData.split('\n').filter(line => line.trim());
+                                const parsedMessages = [];
+                                
+                                for (const line of lines) {
+                                    try {
+                                        const parsed = JSON.parse(line);
+                                        if (parsed && typeof parsed === 'object') {
+                                            parsedMessages.push(parsed);
+                                        }
+                                    } catch (lineError) {
+                                        // Ignora linhas que não conseguem ser parseadas
+                                        continue;
+                                    }
+                                }
+                                
+                                chatData = parsedMessages.length > 0 ? parsedMessages : null;
+                            }
+                        } else {
+                            // Não é JSON, trata como texto simples
+                            chatData = null;
+                        }
                     }
                     
-                    // Verifica se é array e tem mensagens
+                    // Validação da estrutura dos dados
                     if (Array.isArray(chatData) && chatData.length > 0) {
-                        chatCompletoHTML = chatData.map(msg => {
-                            if (msg && msg.text && msg.sender) {
-                                const isAI = msg.sender === 'ai';
+                        const validMessages = chatData.filter(msg => {
+                            return msg && 
+                                   typeof msg === 'object' && 
+                                   msg.text && 
+                                   typeof msg.text === 'string' && 
+                                   msg.text.trim().length > 0 &&
+                                   msg.sender && 
+                                   typeof msg.sender === 'string';
+                        });
+                        
+                        if (validMessages.length > 0) {
+                            chatCompletoHTML = validMessages.map(msg => {
+                                const isAI = msg.sender.toLowerCase() === 'ai' || msg.sender.toLowerCase() === 'bot';
                                 const icon = isAI ? 'bot' : 'user';
                                 const label = isAI ? 'IA' : 'Visitante';
                                 const color = isAI ? 'var(--color-turquoise)' : 'var(--color-green-leaf)';
+                                
+                                // Sanitiza e trunca mensagens muito longas
+                                let messageText = sanitizeHTML(msg.text);
+                                if (messageText.length > 500) {
+                                    messageText = messageText.substring(0, 497) + '...';
+                                }
                                 
                                 return `<div class="py-3" style="border-bottom: 1px solid var(--color-border);">
                                     <dt class="text-xs font-medium flex items-center gap-2" style="color: ${color};">
                                         <i data-lucide="${icon}" class="w-3 h-3"></i>${label}
                                     </dt>
-                                    <dd class="text-sm mt-1" style="color: var(--color-sand-warm);">${sanitizeHTML(msg.text)}</dd>
+                                    <dd class="text-sm mt-1" style="color: var(--color-sand-warm);">${messageText}</dd>
                                 </div>`;
-                            }
-                            return '';
-                        }).join('');
-                        
-                        // Se não gerou HTML, significa que não havia mensagens válidas
-                        if (!chatCompletoHTML.trim()) {
-                            chatCompletoHTML = '<p style="color: var(--color-sand-warm);">Nenhuma mensagem válida encontrada.</p>';
+                            }).join('');
+                        } else {
+                            chatCompletoHTML = '<p style="color: var(--color-sand-warm);">Nenhuma mensagem válida encontrada no histórico.</p>';
+                        }
+                    } else if (chatData && typeof chatData === 'object') {
+                        // Tenta extrair mensagens de um objeto
+                        const messages = chatData.messages || chatData.chat || chatData.historico || [];
+                        if (Array.isArray(messages) && messages.length > 0) {
+                            // Recursivamente processa como array
+                            details.chatCompleto = messages;
+                            // Re-executa o processamento
+                            return; // Sai e deixa o processamento normal continuar
+                        } else {
+                            chatCompletoHTML = '<p style="color: var(--color-sand-warm);">Estrutura de chat não reconhecida.</p>';
                         }
                     } else {
                         chatCompletoHTML = '<p style="color: var(--color-sand-warm);">Histórico de conversa vazio.</p>';
                     }
                 } catch (e) {
-                    console.error('Erro ao processar chat completo:', e);
-                    chatCompletoHTML = '<p style="color: var(--color-warning);">Erro ao carregar histórico da conversa.</p>';
+                    console.error('Erro crítico ao processar chat completo:', e);
+                    console.error('Dados originais:', details.chatCompleto);
+                    chatCompletoHTML = `<p style="color: var(--color-warning);">Erro ao carregar histórico da conversa: ${e.message}</p>`;
                 }
             }
 

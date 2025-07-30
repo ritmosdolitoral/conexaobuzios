@@ -1707,7 +1707,7 @@
             setState({ history: newHistory });
         }
 
-        // --- SISTEMA DE VALIDAÇÃO E SANITIZAÇÃO ROBUSTO ---
+        // --- SISTEMA DE VALIDAÇÃO E SANITIZAÇÃO ROBUSTO - CORRIGIDO ---
         function sanitizeHTML(str) {
             if (!str) return '';
             
@@ -1715,12 +1715,41 @@
             temp.textContent = str;
             let sanitized = temp.innerHTML;
             
-            // Remove conteúdo perigoso
-            sanitized = sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-            sanitized = sanitized.replace(/javascript:/gi, '');
-            sanitized = sanitized.replace(/on\w+\s*=/gi, '');
-            sanitized = sanitized.replace(/data:/gi, '');
-            sanitized = sanitized.replace(/vbscript:/gi, '');
+            // Lista abrangente de protocolos perigosos
+            const dangerousProtocols = [
+                'javascript:', 'data:', 'vbscript:', 'file:', 'about:', 'chrome:', 'chrome-extension:',
+                'moz-extension:', 'ms-browser-extension:', 'livescript:', 'mocha:'
+            ];
+            
+            // Remove protocolos perigosos com case-insensitive e variações de encoding
+            dangerousProtocols.forEach(protocol => {
+                const patterns = [
+                    new RegExp(protocol.replace(':', '\\s*:\\s*'), 'gi'),
+                    new RegExp(protocol.replace(':', '\\s*%3A\\s*'), 'gi'), // URL encoded
+                    new RegExp(protocol.replace(':', '\\s*&#58;\\s*'), 'gi'), // HTML entity
+                    new RegExp(protocol.replace(':', '\\s*&#x3A;\\s*'), 'gi') // Hex entity
+                ];
+                patterns.forEach(pattern => {
+                    sanitized = sanitized.replace(pattern, '');
+                });
+            });
+            
+            // Remove event handlers com regex mais robusta
+            sanitized = sanitized.replace(/\s*on[a-z]+\s*=\s*["'][^"']*["']/gi, '');
+            sanitized = sanitized.replace(/\s*on[a-z]+\s*=\s*[^>\s]+/gi, '');
+            
+            // Remove scripts com regex mais robusta para variações
+            sanitized = sanitized.replace(/<\s*script\b[^<]*(?:(?!<\s*\/\s*script\s*>)<[^<]*)*<\s*\/\s*script\s*>/gi, '');
+            
+            // Remove tags perigosas com whitelist approach
+            const allowedTags = ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 'span', 'div'];
+            const tagPattern = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi;
+            sanitized = sanitized.replace(tagPattern, (match, tagName) => {
+                return allowedTags.includes(tagName.toLowerCase()) ? match : '';
+            });
+            
+            // Remove atributos perigosos
+            sanitized = sanitized.replace(/\s*(src|href|action|formaction|background|poster)\s*=\s*["'][^"']*["']/gi, '');
             sanitized = sanitized.replace(/expression\s*\(/gi, '');
             
             return sanitized;
@@ -2108,13 +2137,93 @@
             };
         }
 
-        // Cache de elementos DOM para evitar consultas repetidas
+        // Cache de elementos DOM para evitar consultas repetidas - CORRIGIDO
         const domCache = new Map();
-        function getCachedElement(selector) {
-            if (!domCache.has(selector)) {
-                domCache.set(selector, document.querySelector(selector));
+        function getCachedElement(selector, options = {}) {
+            const { 
+                refresh = false, 
+                fallback = null, 
+                required = false,
+                timeout = 5000 
+            } = options;
+            
+            // Se refresh é true, remove do cache para buscar novamente
+            if (refresh && domCache.has(selector)) {
+                domCache.delete(selector);
             }
-            return domCache.get(selector);
+            
+            if (!domCache.has(selector)) {
+                try {
+                    let element = document.querySelector(selector);
+                    
+                    // Se elemento não existe e é requerido, tenta aguardar um tempo
+                    if (!element && required) {
+                        const startTime = Date.now();
+                        while (!element && (Date.now() - startTime) < timeout) {
+                            // Aguarda um pouco antes de tentar novamente
+                            const delay = new Promise(resolve => setTimeout(resolve, 100));
+                            await delay;
+                            element = document.querySelector(selector);
+                        }
+                    }
+                    
+                    // Se ainda não existe, usa fallback se fornecido
+                    if (!element && fallback) {
+                        if (typeof fallback === 'function') {
+                            element = fallback(selector);
+                        } else if (typeof fallback === 'string') {
+                            // Cria elemento com HTML do fallback
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = fallback;
+                            element = tempDiv.firstElementChild;
+                            if (element) {
+                                document.body.appendChild(element);
+                            }
+                        }
+                    }
+                    
+                    domCache.set(selector, element);
+                } catch (error) {
+                    console.error(`Erro ao buscar elemento ${selector}:`, error);
+                    domCache.set(selector, null);
+                }
+            }
+            
+            const element = domCache.get(selector);
+            
+            // Log de warning se elemento requerido não foi encontrado
+            if (!element && required) {
+                console.warn(`Elemento requerido não encontrado: ${selector}`);
+            }
+            
+            return element;
+        }
+        
+        // Função helper para verificar se elemento existe antes de usar
+        function safeElementAction(selector, action, fallbackAction = null) {
+            const element = getCachedElement(selector);
+            if (element && typeof action === 'function') {
+                try {
+                    return action(element);
+                } catch (error) {
+                    console.error(`Erro ao executar ação no elemento ${selector}:`, error);
+                    if (fallbackAction && typeof fallbackAction === 'function') {
+                        return fallbackAction(error);
+                    }
+                }
+            } else if (fallbackAction && typeof fallbackAction === 'function') {
+                return fallbackAction(new Error(`Elemento não encontrado: ${selector}`));
+            }
+            return null;
+        }
+        
+        // Limpa o cache DOM quando necessário
+        function clearDOMCache(selector = null) {
+            if (selector) {
+                domCache.delete(selector);
+            } else {
+                domCache.clear();
+            }
         }
 
         // Batch DOM operations para melhor performance
@@ -2142,23 +2251,96 @@
 
         const domBatcher = new DOMBatcher();
 
-        // --- FUNÇÕES DE UI E ANIMAÇÃO OTIMIZADAS ---
-        function typeWriter(text, i = 0, onComplete) {
-            clearTimeout(typingTimeout);
+        // --- FUNÇÕES DE UI E ANIMAÇÃO OTIMIZADAS - CORRIGIDAS ---
+        let activeTypewriterInstance = null;
+        
+        function typeWriter(text, i = 0, onComplete, instanceId = null) {
+            // Gera ID único para esta instância se não fornecido
+            if (!instanceId) {
+                instanceId = Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                activeTypewriterInstance = instanceId;
+            }
+            
+            // Verifica se esta instância ainda é a ativa
+            if (activeTypewriterInstance !== instanceId) {
+                console.log('Typewriter cancelado: nova instância iniciada');
+                return;
+            }
+            
+            // Limpa timeout anterior de forma segura
+            if (typingTimeout) {
+                clearTimeout(typingTimeout);
+                typingTimeout = null;
+            }
+            
+            // Validação de entrada
+            if (!text || typeof text !== 'string') {
+                console.warn('Texto inválido para typeWriter:', text);
+                if (onComplete && typeof onComplete === 'function') {
+                    onComplete();
+                }
+                return;
+            }
+            
             if (i < text.length) {
+                // Verifica se o elemento ainda existe antes de usar
+                if (!typingTextEl || !document.body.contains(typingTextEl)) {
+                    console.warn('Elemento typingTextEl não disponível, cancelando typewriter');
+                    activeTypewriterInstance = null;
+                    return;
+                }
+                
                 // Usa batch operation para melhor performance
                 domBatcher.add(() => {
-                    if (typingTextEl) {
-                        typingTextEl.innerHTML = sanitizeHTML(text.substring(0, i + 1));
+                    // Dupla verificação antes de modificar DOM
+                    if (typingTextEl && activeTypewriterInstance === instanceId) {
+                        try {
+                            typingTextEl.innerHTML = sanitizeHTML(text.substring(0, i + 1));
+                        } catch (error) {
+                            console.error('Erro ao atualizar typingTextEl:', error);
+                            activeTypewriterInstance = null;
+                        }
                     }
                 });
                 
                 // Velocidade mais natural e variável
                 const speed = Math.random() * 30 + 50; // Entre 50-80ms
-                typingTimeout = setTimeout(() => typeWriter(text, i + 1, onComplete), speed);
-            } else if (onComplete) {
-                onComplete();
+                
+                // Usa intervalManager para melhor controle de recursos
+                typingTimeout = intervalManager.setTimeout(() => {
+                    // Verifica novamente se ainda é a instância ativa
+                    if (activeTypewriterInstance === instanceId) {
+                        typeWriter(text, i + 1, onComplete, instanceId);
+                    }
+                }, speed);
+                
+            } else {
+                // Animação completa
+                activeTypewriterInstance = null;
+                typingTimeout = null;
+                
+                if (onComplete && typeof onComplete === 'function') {
+                    try {
+                        onComplete();
+                    } catch (error) {
+                        console.error('Erro no callback do typeWriter:', error);
+                    }
+                }
             }
+        }
+        
+        // Função para cancelar typewriter ativo
+        function cancelTypewriter() {
+            activeTypewriterInstance = null;
+            if (typingTimeout) {
+                clearTimeout(typingTimeout);
+                typingTimeout = null;
+            }
+        }
+        
+        // Função para verificar se typewriter está ativo
+        function isTypewriterActive() {
+            return activeTypewriterInstance !== null;
         }
 
         // Scroll otimizado com throttling
@@ -2842,76 +3024,105 @@
             }
         }
 
-        // Controle de requisições para evitar chamadas múltiplas
+        // Controle de requisições para evitar chamadas múltiplas - CORRIGIDO
         let activeRequest = null;
+        let requestLock = false;
+        const MAX_CONCURRENT_REQUESTS = 1;
+        const REQUEST_TIMEOUT = 30000; // 30 segundos
         
         async function callBackendForProcessing() {
-            // Previne múltiplas chamadas simultâneas
+            // Implementa lock mais robusto para prevenir race conditions
+            if (requestLock) {
+                console.warn('Requisição já está sendo preparada, aguardando...');
+                // Aguarda um pouco e tenta novamente
+                await new Promise(resolve => setTimeout(resolve, 100));
+                if (activeRequest) {
+                    return activeRequest;
+                }
+            }
+            
             if (activeRequest) {
-                console.warn('Requisição já em andamento, aguardando...');
+                console.warn('Requisição já em andamento, reutilizando...');
                 return activeRequest;
             }
             
-            // Estrutura o histórico corretamente
-            const historicoEstruturado = Object.values(state.userHistory || {}).map(item => ({
-                pergunta: item.question,
-                resposta: item.answer
-            }));
+            // Ativa o lock antes de qualquer operação assíncrona
+            requestLock = true;
+            
+            try {
+                // Estrutura o histórico corretamente
+                const historicoEstruturado = Object.values(state.userHistory || {}).map(item => ({
+                    pergunta: item.question,
+                    resposta: item.answer
+                }));
 
-            const userDataPayload = {
-                nome: state.userData.nome,
-                telefone: state.userData.telefone,
-                perfil: state.userData.perfil,
-                historico: historicoEstruturado,
-                chatCompleto: state.chatCompleto || [],
-                userData: state.userData
-            };
-            
-            // Cria promessa com timeout e controle de abort
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
-            
-            activeRequest = (async () => {
-                try {
-                    const response = await fetch(GOOGLE_APP_SCRIPT_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({ action: 'processAndSaveDossier', data: userDataPayload }),
-                        mode: 'cors',
-                        signal: controller.signal,
-                        headers: {
-                            'Content-Type': 'application/json'
+                const userDataPayload = {
+                    nome: state.userData.nome,
+                    telefone: state.userData.telefone,
+                    perfil: state.userData.perfil,
+                    historico: historicoEstruturado,
+                    chatCompleto: state.chatCompleto || [],
+                    userData: state.userData
+                };
+                
+                // Cria promessa com timeout e controle de abort
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => {
+                    controller.abort();
+                    console.warn('Requisição cancelada por timeout');
+                }, REQUEST_TIMEOUT);
+                
+                // Registra a requisição ativa ANTES de iniciar
+                activeRequest = (async () => {
+                    try {
+                        const response = await fetch(GOOGLE_APP_SCRIPT_URL, {
+                            method: 'POST',
+                            body: JSON.stringify({ action: 'processAndSaveDossier', data: userDataPayload }),
+                            mode: 'cors',
+                            signal: controller.signal,
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        clearTimeout(timeoutId);
+                        
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            throw new Error(`Erro ${response.status}: ${errorText}`);
                         }
-                    });
-                    
-                    clearTimeout(timeoutId);
-                    
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(`Erro ${response.status}: ${errorText}`);
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            displayStep('final_message', { proposal: result.data.proposta_personalizada });
+                            return result;
+                        } else {
+                            throw new Error(result.error || 'Erro desconhecido na API');
+                        }
+                    } catch (error) {
+                        clearTimeout(timeoutId);
+                        if (error.name === 'AbortError') {
+                            console.error("Requisição cancelada por timeout");
+                            displayStep('error_state');
+                        } else {
+                            console.error("Falha na comunicação:", error);
+                            displayStep('error_state');
+                        }
+                        throw error; // Re-throw para que o caller possa tratar
+                    } finally {
+                        activeRequest = null;
+                        requestLock = false;
                     }
-                    
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        displayStep('final_message', { proposal: result.data.proposta_personalizada });
-                    } else {
-                        throw new Error(result.error || 'Erro desconhecido na API');
-                    }
-                } catch (error) {
-                    clearTimeout(timeoutId);
-                    if (error.name === 'AbortError') {
-                        console.error("Requisição cancelada por timeout");
-                        displayStep('error_state');
-                    } else {
-                        console.error("Falha na comunicação:", error);
-                        displayStep('error_state');
-                    }
-                } finally {
-                    activeRequest = null;
-                }
-            })();
-            
-            return activeRequest;
+                })();
+                
+                return activeRequest;
+                
+            } catch (error) {
+                requestLock = false;
+                activeRequest = null;
+                throw error;
+            }
         }
 
         function init() {
@@ -3107,10 +3318,11 @@
             }
         });
         
-        // Gerenciamento robusto de intervalos para prevenir vazamentos
+        // Gerenciamento robusto de intervalos para prevenir vazamentos - CORRIGIDO
         const intervalManager = {
             intervals: new Set(),
             timeouts: new Set(),
+            animationFrames: new Set(),
             
             setInterval(callback, delay) {
                 const id = setInterval(callback, delay);
@@ -3120,24 +3332,114 @@
             
             setTimeout(callback, delay) {
                 const id = setTimeout(() => {
-                    callback();
-                    this.timeouts.delete(id);
+                    try {
+                        callback();
+                    } catch (error) {
+                        console.error('Erro no timeout callback:', error);
+                    } finally {
+                        this.timeouts.delete(id);
+                    }
                 }, delay);
                 this.timeouts.add(id);
                 return id;
             },
             
+            requestAnimationFrame(callback) {
+                const id = requestAnimationFrame(() => {
+                    try {
+                        callback();
+                    } catch (error) {
+                        console.error('Erro no animation frame callback:', error);
+                    } finally {
+                        this.animationFrames.delete(id);
+                    }
+                });
+                this.animationFrames.add(id);
+                return id;
+            },
+            
+            clearInterval(id) {
+                clearInterval(id);
+                this.intervals.delete(id);
+            },
+            
+            clearTimeout(id) {
+                clearTimeout(id);
+                this.timeouts.delete(id);
+            },
+            
+            cancelAnimationFrame(id) {
+                cancelAnimationFrame(id);
+                this.animationFrames.delete(id);
+            },
+            
             clearAll() {
-                this.intervals.forEach(id => clearInterval(id));
-                this.timeouts.forEach(id => clearTimeout(id));
+                // Limpa intervalos
+                this.intervals.forEach(id => {
+                    try {
+                        clearInterval(id);
+                    } catch (e) {
+                        console.warn('Erro ao limpar interval:', e);
+                    }
+                });
+                
+                // Limpa timeouts
+                this.timeouts.forEach(id => {
+                    try {
+                        clearTimeout(id);
+                    } catch (e) {
+                        console.warn('Erro ao limpar timeout:', e);
+                    }
+                });
+                
+                // Limpa animation frames
+                this.animationFrames.forEach(id => {
+                    try {
+                        cancelAnimationFrame(id);
+                    } catch (e) {
+                        console.warn('Erro ao limpar animation frame:', e);
+                    }
+                });
+                
                 this.intervals.clear();
                 this.timeouts.clear();
+                this.animationFrames.clear();
+            },
+            
+            // Método para verificar vazamentos
+            getActiveCount() {
+                return {
+                    intervals: this.intervals.size,
+                    timeouts: this.timeouts.size,
+                    animationFrames: this.animationFrames.size
+                };
             }
         };
         
-        // Limpeza automática na saída da página
+        // Limpeza automática na saída da página - MELHORADA
         window.addEventListener('beforeunload', () => {
             intervalManager.clearAll();
+            // Limpa também variáveis globais de controle
+            if (typeof messageInterval !== 'undefined' && messageInterval) {
+                clearInterval(messageInterval);
+            }
+            if (typeof messageTimeout !== 'undefined' && messageTimeout) {
+                clearTimeout(messageTimeout);
+            }
+            if (typeof statusBarTimeout !== 'undefined' && statusBarTimeout) {
+                clearTimeout(statusBarTimeout);
+            }
+            if (typeof typingTimeout !== 'undefined' && typingTimeout) {
+                clearTimeout(typingTimeout);
+            }
+        });
+        
+        // Limpeza quando a página fica oculta
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // Pausa operações não essenciais quando a página está oculta
+                intervalManager.clearAll();
+            }
         });
         
         function startDynamicMessaging() {

@@ -259,24 +259,69 @@ function doPost(e) {
   }
 }
 
-// === NÚCLEO DE INTELIGÊNCIA COMERCIAL (MELHORADO) ===
+// === NÚCLEO DE INTELIGÊNCIA COMERCIAL (MELHORADO E VALIDADO) ===
 function gerarAnaliseCompletaComGemini(dados) {
   log(LOG_LEVELS.INFO, "Iniciando análise com Gemini", { nome: dados.nome, perfil: dados.perfil });
   
-  const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${getGeminiApiKey()}`;
-  const nomeLead = dados.nome || 'cliente';
+  // VALIDAÇÃO ROBUSTA DE ENTRADA - CORRIGIDA
+  if (!dados || typeof dados !== 'object') {
+    throw new Error('Dados de entrada inválidos: objeto esperado');
+  }
   
-  // Prepara dados completos para análise
-  const dadosCompletos = {
-    nome: dados.nome,
-    telefone: dados.telefone,
-    perfil: dados.perfil,
-    historico: dados.historico || [],
-    chatCompleto: dados.chatCompleto || [],
-    userData: dados.userData || {}
+  // Validação de campos obrigatórios
+  const requiredFields = ['nome', 'perfil'];
+  const missingFields = requiredFields.filter(field => !dados[field] || dados[field].trim().length === 0);
+  
+  if (missingFields.length > 0) {
+    throw new Error(`Campos obrigatórios ausentes: ${missingFields.join(', ')}`);
+  }
+  
+  // Validação de tamanho dos dados para evitar overflow na API
+  const maxDataSize = 50000; // 50KB limite
+  const dataString = JSON.stringify(dados);
+  if (dataString.length > maxDataSize) {
+    log(LOG_LEVELS.WARN, "Dados muito grandes, truncando", { size: dataString.length });
+    
+    // Trunca dados não essenciais
+    if (dados.chatCompleto && Array.isArray(dados.chatCompleto)) {
+      dados.chatCompleto = dados.chatCompleto.slice(-20); // Mantém apenas últimas 20 mensagens
+    }
+    if (dados.historico && Array.isArray(dados.historico)) {
+      dados.historico = dados.historico.slice(-10); // Mantém apenas últimas 10 interações
+    }
+  }
+  
+  // Sanitização de dados para evitar injection
+  const sanitizeString = (str) => {
+    if (typeof str !== 'string') return str;
+    return str.replace(/[<>\"']/g, '').trim().substring(0, 500); // Remove caracteres perigosos e limita tamanho
   };
   
+  const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${getGeminiApiKey()}`;
+  const nomeLead = sanitizeString(dados.nome) || 'cliente';
+  
+  // Prepara dados completos para análise com validação
+  const dadosCompletos = {
+    nome: sanitizeString(dados.nome),
+    telefone: sanitizeString(dados.telefone),
+    perfil: sanitizeString(dados.perfil),
+    historico: Array.isArray(dados.historico) ? dados.historico.map(item => ({
+      pergunta: sanitizeString(item.pergunta || ''),
+      resposta: sanitizeString(item.resposta || '')
+    })) : [],
+    chatCompleto: Array.isArray(dados.chatCompleto) ? dados.chatCompleto.map(msg => ({
+      text: sanitizeString(msg.text || ''),
+      sender: sanitizeString(msg.sender || 'unknown')
+    })) : [],
+    userData: typeof dados.userData === 'object' ? dados.userData : {}
+  };
+  
+  // Validação final do tamanho dos dados processados
   const historicoCompleto = JSON.stringify(dadosCompletos, null, 2);
+  if (historicoCompleto.length > maxDataSize) {
+    log(LOG_LEVELS.ERROR, "Dados ainda muito grandes após sanitização", { size: historicoCompleto.length });
+    throw new Error('Dados de entrada muito extensos para processamento');
+  }
 
   const masterPrompt = `
 INSTRUÇÕES PARA ANÁLISE DE LEAD - CONEXÃO BÚZIOS
@@ -693,10 +738,49 @@ function extractTelefone(fileId) {
       }
     }
     
-    // Fallback: busca por padrão de telefone no texto com regex mais robusta
-    // Updated regex to properly validate Brazilian phone numbers
-    const phoneRegex = /\b(?:\+55\s?)?(?:\(?(?:1[1-9]|[2-9][0-9])\)?\s?)?(?:9\s?)?[1-9]\d{3}[-\s]?\d{4}\b/g;
-    const phoneMatch = content.match(phoneRegex);
+    // Fallback: busca por padrão de telefone no texto com regex mais robusta - CORRIGIDA
+    // Regex aprimorada para números brasileiros com todas as variações
+    const phoneRegexes = [
+      // Formato completo com +55: +55 (11) 99999-9999 ou +55 11 999999999
+      /\+55\s*\(?(?:1[1-9]|[2-9][0-9])\)?\s*9?\s*[1-9]\d{3}[-\s]?\d{4}/g,
+      // Formato com código de área: (11) 99999-9999 ou 11 999999999
+      /\(?(?:1[1-9]|[2-9][0-9])\)?\s*9?\s*[1-9]\d{3}[-\s]?\d{4}/g,
+      // Formato celular com 9: 99999-9999
+      /\b9[1-9]\d{3}[-\s]?\d{4}\b/g,
+      // Formato fixo: 3333-4444
+      /\b[2-5]\d{3}[-\s]?\d{4}\b/g
+    ];
+    
+    let phoneMatch = null;
+    for (const regex of phoneRegexes) {
+      phoneMatch = content.match(regex);
+      if (phoneMatch && phoneMatch.length > 0) {
+        // Valida se o número encontrado é realmente um telefone brasileiro
+        const phone = phoneMatch[0].replace(/\D/g, '');
+        
+        // Validações específicas para números brasileiros
+        if (phone.length >= 10 && phone.length <= 13) {
+          // Remove código do país se presente
+          const cleanPhone = phone.startsWith('55') && phone.length > 10 ? phone.substring(2) : phone;
+          
+          // Verifica se tem código de área válido (11-99)
+          if (cleanPhone.length >= 10) {
+            const areaCode = cleanPhone.substring(0, 2);
+            const areaCodeNum = parseInt(areaCode);
+            
+            if (areaCodeNum >= 11 && areaCodeNum <= 99) {
+              // Verifica se é celular (9 dígitos após área) ou fixo (8 dígitos)
+              const phoneNumber = cleanPhone.substring(2);
+              if ((phoneNumber.length === 9 && phoneNumber.startsWith('9')) || 
+                  (phoneNumber.length === 8 && !phoneNumber.startsWith('9'))) {
+                break; // Número válido encontrado
+              }
+            }
+          }
+        }
+        phoneMatch = null; // Reset se não passou na validação
+      }
+    }
     
     if (phoneMatch) {
       // Return the first valid phone number found
