@@ -383,16 +383,47 @@ IMPORTANTE: Substitua ${nomeLead} pelo nome real do lead. Evite aspas duplas des
   } catch (error) {
     log(LOG_LEVELS.ERROR, "Erro ao gerar análise com IA", { erro: error.toString() });
     
-    // Fallback robusto
+    // Sistema de fallback inteligente baseado nos dados disponíveis
+    const perfilLimpo = dados.perfil ? dados.perfil.replace(/🏖️|🏠|📢/g, '').trim() : 'visitante';
+    const interessePrincipal = dados.etapa_4 || dados.userData?.interesse || 'explorar a cidade';
+    const statusViagem = dados.etapa_1 || 'planejando a visita';
+    
+    // Gera fallback contextualizado baseado no perfil
+    let resumoInteligente, necessidadesContextuais, propostaRealista;
+    
+    if (perfilLimpo.toLowerCase().includes('turista')) {
+      resumoInteligente = `${nomeLead} é um turista interessado em ${interessePrincipal}. Status atual: ${statusViagem}. Busca experiências autênticas em Búzios com foco em descobertas locais.`;
+      necessidadesContextuais = [
+        "Informações sobre pontos turísticos locais",
+        "Recomendações de restaurantes e experiências gastronômicas",
+        "Dicas de hospedagem adequadas ao perfil",
+        "Orientações sobre atividades e passeios disponíveis"
+      ];
+      propostaRealista = `Oi, ${nomeLead}! Vi que você está interessado em ${interessePrincipal} aqui em Búzios. Posso te ajudar com informações locais, dicas de lugares especiais e sugestões personalizadas para sua visita. Vamos conversar sobre como tornar sua experiência em Búzios mais interessante?`;
+    } else if (perfilLimpo.toLowerCase().includes('morador')) {
+      resumoInteligente = `${nomeLead} é morador de Búzios interessado em ${interessePrincipal}. Busca conexões locais e oportunidades de engajamento na comunidade.`;
+      necessidadesContextuais = [
+        "Networking com outros moradores locais",
+        "Informações sobre eventos e atividades comunitárias",
+        "Oportunidades de negócios ou serviços locais",
+        "Conexões para melhorar a experiência de viver em Búzios"
+      ];
+      propostaRealista = `Oi, ${nomeLead}! Como morador de Búzios, você tem uma perspectiva única da cidade. Que tal conectarmos você com outros locais que compartilham interesses similares? Posso te ajudar a descobrir oportunidades e eventos na nossa comunidade.`;
+    } else {
+      resumoInteligente = `${nomeLead} busca divulgar ${interessePrincipal} em Búzios. Procura canais eficazes de comunicação e networking local para promover seu negócio ou serviço.`;
+      necessidadesContextuais = [
+        "Estratégias de marketing local eficazes",
+        "Conexões com outros empreendedores da região",
+        "Canais de divulgação adequados ao público-alvo",
+        "Orientações sobre regulamentações e melhores práticas locais"
+      ];
+      propostaRealista = `Oi, ${nomeLead}! Vi que você quer divulgar ${interessePrincipal} em Búzios. Posso te conectar com a rede local e compartilhar estratégias que funcionam aqui na região. Vamos conversar sobre como ampliar seu alcance de forma eficiente?`;
+    }
+    
     return {
-      resumo_perfil: `Perfil de ${nomeLead}: ${dados.perfil || 'N/A'}. Interesse principal: ${dados.etapa_4 || 'N/A'}. A análise detalhada da IA falhou, mas os dados básicos foram capturados.`,
-      necessidades_reveladas: [
-        `Perfil identificado: ${dados.perfil || 'N/A'}`,
-        `Desejo principal: ${dados.etapa_4 || 'N/A'}`,
-        `Status da viagem: ${dados.etapa_1 || 'N/A'}`,
-        "Análise manual recomendada para insights mais profundos"
-      ],
-      proposta_personalizada: `Oi, ${nomeLead}! Recebi suas informações sobre ${dados.perfil || 'sua visita'} a Búzios e já estou buscando as melhores opções personalizadas para você. Em breve te chamo no WhatsApp com detalhes exclusivos que vão transformar sua experiência!`
+      resumo_perfil: resumoInteligente,
+      necessidades_reveladas: necessidadesContextuais,
+      proposta_personalizada: propostaRealista
     };
   }
 }
