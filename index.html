@@ -4,7 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conexão Búzios - Seu Concierge Virtual</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Content Security Policy para maior segurança -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://script.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://script.google.com; img-src 'self' data: https:;">
+    <!-- Meta tags para SEO e acessibilidade -->
+    <meta name="description" content="Conexão Búzios - Seu concierge virtual inteligente para descobrir as melhores experiências em Búzios">
+    <meta name="keywords" content="Búzios, concierge, virtual, IA, turismo, hospedagem, experiências">
+    <meta name="author" content="Conexão Búzios">
+    <meta name="robots" content="index, follow">
+    <!-- Open Graph para redes sociais -->
+    <meta property="og:title" content="Conexão Búzios - Seu Concierge Virtual">
+    <meta property="og:description" content="Descubra as melhores experiências em Búzios com nosso concierge virtual inteligente">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ritmosedolitoral.github.io/conexaobuzios/">
+    <!-- Preconexões para performance -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://script.google.com">
+    <!-- Tailwind CSS compilado localmente para produção -->
+    <link rel="stylesheet" href="./dist/output.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -1501,6 +1519,10 @@
     </style>
 </head>
 <body class="antialiased text-gray-800">
+    <!-- Skip Links para Navegação por Teclado -->
+    <a href="#ai-intro-portal" class="skip-link">Pular para conteúdo principal</a>
+    <a href="#app-container" class="skip-link">Pular para chat</a>
+    <a href="#session-controls" class="skip-link">Pular para controles</a>
 
     <!-- Portal de IA (Camada de Introdução) -->
     <div id="ai-intro-portal" class="portal-container">
@@ -1600,7 +1622,7 @@
         let messageInterval = null;
         let messageTimeout = null;
         let statusBarTimeout = null;
-        let typingTimeout = null;
+        let typingTimeout = null; // Declaração unificada da variável typingTimeout
         let activeRequest = null;
         
         // Inicializa ícones Lucide quando disponível
@@ -1639,7 +1661,7 @@
             "Vamos conversar sobre suas preferências?"
         ];
         let phraseIndex = 0;
-        let typingTimeout;
+        // Removida declaração duplicada de typingTimeout para evitar conflito
 
         // --- FLUXO DE CONVERSA ---
         const conversationFlow = {
@@ -2286,10 +2308,12 @@
         // Instância global do sistema de feedback
         const feedback = new FeedbackSystem();
 
-        // Loading indicator moderno
+        // Loading indicator moderno e acessível
         function showLoadingIndicator(message = 'Carregando...') {
             const loading = document.createElement('div');
             loading.id = 'modern-loading';
+            loading.setAttribute('role', 'dialog');
+            loading.setAttribute('aria-label', 'Carregando conteúdo');
             loading.style.cssText = `
                 position: fixed;
                 top: 0;
@@ -2314,16 +2338,16 @@
                     border-radius: 50%;
                     animation: spin 1s linear infinite;
                     margin-bottom: 1rem;
-                "></div>
+                " aria-hidden="true"></div>
                 <p style="
                     color: white;
                     font-size: var(--font-size-lg);
                     font-weight: 500;
                     text-align: center;
-                ">${sanitizeHTML(message)}</p>
+                " aria-live="polite">${sanitizeHTML(message)}</p>
             `;
 
-            // Adiciona CSS da animação
+            // Adiciona CSS da animação se não existir
             if (!document.querySelector('#spin-animation')) {
                 const style = document.createElement('style');
                 style.id = 'spin-animation';
@@ -2621,8 +2645,10 @@
                 case 'text':
                 case 'tel':
                     container.innerHTML = `<form onsubmit="handleUserAction('form', {event: event, nextStep: '${step.nextStep}', variable: '${step.variable}', validation: '${step.validation}'})" class="flex space-x-3 animate-pop-in">
-                        <input type="${step.type}" id="text-input" required class="flex-1 px-4 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-300 text-base" placeholder="${step.placeholder}">
-                        <button type="submit" class="action-button bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold px-6 py-4 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">OK</button>
+                        <label for="text-input" class="sr-only">${step.message}</label>
+                        <input type="${step.type}" id="text-input" required class="flex-1 px-4 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all duration-300 text-base" placeholder="${step.placeholder}" aria-describedby="input-help">
+                        <button type="submit" class="action-button bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold px-6 py-4 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1" aria-label="Enviar resposta">OK</button>
+                        <div id="input-help" class="sr-only">Digite sua resposta e pressione OK ou Enter para continuar</div>
                     </form>`;
                     document.getElementById('text-input').focus();
                     break;
@@ -2842,8 +2868,7 @@
             }
         }
 
-        // Controle de requisições para evitar chamadas múltiplas
-        let activeRequest = null;
+        // Variável activeRequest já declarada globalmente acima - removida duplicata
         
         async function callBackendForProcessing() {
             // Previne múltiplas chamadas simultâneas

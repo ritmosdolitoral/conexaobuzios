@@ -4,7 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel de Oportunidades - Conexão Búzios</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Content Security Policy para maior segurança -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://script.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://script.google.com; img-src 'self' data: https:;">
+    <!-- Meta tags para SEO e acessibilidade -->
+    <meta name="description" content="Painel de Oportunidades - Conexão Búzios. Gerencie leads qualificados e oportunidades de negócio em tempo real">
+    <meta name="keywords" content="Búzios, leads, oportunidades, negócios, dashboard, CRM">
+    <meta name="author" content="Conexão Búzios">
+    <meta name="robots" content="noindex, nofollow">
+    <!-- Preconexões para performance -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://script.google.com">
+    <!-- Tailwind CSS compilado localmente para produção -->
+    <link rel="stylesheet" href="./dist/output.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1349,6 +1362,11 @@
     </style>
 </head>
 <body class="min-h-screen">
+    <!-- Skip Links para Navegação por Teclado -->
+    <a href="#hero-section" class="skip-link">Pular para conteúdo principal</a>
+    <a href="#filters-section" class="skip-link">Pular para filtros</a>
+    <a href="#dossier-grid" class="skip-link">Pular para lista de oportunidades</a>
+    
     <div class="container">
         <!-- === HERO SECTION - APRESENTAÇÃO ALTAMENTE VISUAL === -->
         <section id="hero-section" class="hero-section">
